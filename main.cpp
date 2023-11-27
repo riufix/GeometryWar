@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "Player.h"
+#include "BulletBehaviour.h"
 
 int main()
 {

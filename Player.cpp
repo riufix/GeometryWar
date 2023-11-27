@@ -40,9 +40,10 @@ void Player::UpdateSprite(float px, float py, float angle)
 {
 	shape.setPosition(px, py);
 
-	shape.setPoint(2, sf::Vector2f(std::sin(px / 50) * 10 + 60, -20));
-	shape.setPoint(3, sf::Vector2f(std::sin(px / 50) * 20, -60));
-	shape.setPoint(4, sf::Vector2f(std::sin(px / 50) * 10 - 60, -20));
+	float bodyOffset = std::sin(angle / 10);
+	shape.setPoint(2, sf::Vector2f(bodyOffset * 10 + 60, -20));
+	shape.setPoint(3, sf::Vector2f(bodyOffset * 20, -60));
+	shape.setPoint(4, sf::Vector2f(bodyOffset * 10 - 60, -20));
 
 	shape.setRotation(angle);
 }
