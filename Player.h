@@ -5,7 +5,6 @@
 class Player
 {
 private:
-	sf::ConvexShape shape;
 	float currentRate = 0;
 
 	//Propreties
@@ -13,6 +12,7 @@ private:
 	float fireRate = .2;
 
 public:
+	sf::ConvexShape shape;
 	void InitializeGraphic(sf::Vector2f origin);
 	void DrawSprite(sf::RenderWindow& window);
 

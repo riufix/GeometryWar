@@ -19,6 +19,9 @@ int main()
 	sf::Clock frameClock;
 
 	float convexRotate = 0;
+
+	BulletBehaviour newBullet(BulletBehaviour::Owner::Player, 100, player.shape.getPosition());
+
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -46,6 +49,9 @@ int main()
 
 		// Affichage
 		window.clear();
+
+		newBullet.ProcessBullet(sf::Vector2f(0,0));
+		newBullet.DisplayBullet(window);
 
 		player.DrawSprite(window);
 

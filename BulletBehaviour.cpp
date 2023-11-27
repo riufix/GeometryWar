@@ -1,8 +1,41 @@
 #include "BulletBehaviour.h"
+#include <iostream>
 
-void BulletBehaviour::ProcessBullet()
+BulletBehaviour::BulletBehaviour(Owner newOwner, int newProgression, sf::Vector2f spawnPosition)
 {
+	currentOwner = newOwner;
+	progression = newProgression;
 
+	switch (currentOwner)
+	{
+	case BulletBehaviour::Owner::Player:
+		direction = BulletBehaviour::Direction::Fond;
+		break;
+	case BulletBehaviour::Owner::Ennemy:
+		direction = BulletBehaviour::Direction::Bord;
+		break;
+	default :
+		direction = BulletBehaviour::Direction::Bord;
+		break;
+	}
+
+	//Init shape
+	shape.setRadius(10);
+	shape.setFillColor(sf::Color::Transparent);
+	shape.setOutlineColor(sf::Color::Red);
+	shape.setOutlineThickness(3);
+	shape.setPosition(spawnPosition.x - shape.getRadius(), spawnPosition.y - shape.getRadius());
+}
+
+bool BulletBehaviour::ProcessBullet(sf::Vector2f origin)
+{
+	std::cout << progression << std::endl;
+	progression = progression + (int)direction;
+
+	float newScale = fullScale * ((float)progression / 100.0f);
+	shape.setScale(newScale, newScale);
+
+	return (progression < 0 || progression > 100);
 }
 
 void BulletBehaviour::DisplayBullet(sf::RenderWindow& window)
