@@ -33,7 +33,7 @@ int main()
 		}
 
 		float deltaTime = frameClock.restart().asSeconds();
-		std::cout << 1.f / deltaTime << " FPS" << std::endl;
+		//std::cout << 1.f / deltaTime << " FPS" << std::endl;
 		
 		// Logique
 		convexRotate = convexRotate + 50 * deltaTime;
