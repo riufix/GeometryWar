@@ -4,12 +4,8 @@
 
 #include "Player.h"
 
-constexpr float cubeSpeed = 500.f;
-
 int main()
 {
-	// Initialisation
-
 	sf::RenderWindow window(sf::VideoMode(1280, 720), "Geometry Wars");
 	window.setVerticalSyncEnabled(true);
 
@@ -21,7 +17,6 @@ int main()
 	float convexRotate = 0;
 	while (window.isOpen())
 	{
-		// Gérer les événéments survenus depuis le dernier tour de boucle
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
@@ -29,7 +24,6 @@ int main()
 			switch (event.type)
 			{
 				case sf::Event::Closed:
-					// L'utilisateur a cliqué sur la croix => on ferme la fenêtre
 					window.close();
 					break;
 
@@ -41,20 +35,16 @@ int main()
 		float deltaTime = frameClock.restart().asSeconds();
 		std::cout << 1.f / deltaTime << " FPS" << std::endl;
 		
-		convexRotate = convexRotate + 50 * deltaTime;
 		// Logique
+		convexRotate = convexRotate + 50 * deltaTime;
 		sf::Vector2f playerPos = player.ProcessInput(deltaTime);
 		player.UpdateSprite(playerPos.x, playerPos.y, convexRotate);
 
 		// Affichage
-		
-		// Remise au noir de toute la fenêtre
 		window.clear();
 
-		// Tout le rendu va se dérouler ici
 		player.DrawSprite(window);
 
-		// On présente la fenêtre sur l'écran
 		window.display();
 	}
 }
