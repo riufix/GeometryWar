@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
+#pragma once <map.cpp>
 
 constexpr float cubeSpeed = 500.f;
 
