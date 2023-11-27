@@ -14,7 +14,7 @@ int main()
 	window.setVerticalSyncEnabled(true);
 
 	Player player;
-	player.InitializeGraphic(player.shape, sf::Vector2f(200,200));
+	player.InitializeGraphic(sf::Vector2f(200,200));
 
 	sf::Clock frameClock;
 
@@ -43,12 +43,8 @@ int main()
 		
 		convexRotate = convexRotate + 50 * deltaTime;
 		// Logique
-		sf::Vector2f pos = player.shape.getPosition();
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) pos.x = pos.x - deltaTime * cubeSpeed;
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) pos.x = pos.x + deltaTime * cubeSpeed;
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) pos.y = pos.y - deltaTime * cubeSpeed;
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) pos.y = pos.y + deltaTime * cubeSpeed;
-		player.DisplaySprite(player.shape, pos.x, pos.y, convexRotate);
+		sf::Vector2f playerPos = player.ProcessInput(deltaTime);
+		player.UpdateSprite(playerPos.x, playerPos.y, convexRotate);
 
 		// Affichage
 		
@@ -56,7 +52,7 @@ int main()
 		window.clear();
 
 		// Tout le rendu va se dérouler ici
-		window.draw(player.shape);
+		player.DrawSprite(window);
 
 		// On présente la fenêtre sur l'écran
 		window.display();

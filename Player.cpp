@@ -1,27 +1,40 @@
 #include "Player.h"
 #include <iostream>
 
-void Player::InitializeGraphic(sf::ConvexShape& convex, sf::Vector2f origin)
+void Player::InitializeGraphic(sf::Vector2f origin)
 {
-	convex.setPointCount(6);
-	convex.setFillColor(sf::Color::Yellow);
+	shape.setPointCount(6);
+	shape.setFillColor(sf::Color::Yellow);
 	
 	int px = origin.x;
 	int py = origin.y;
 
-	convex.setPoint(0, sf::Vector2f(px, py));
-	convex.setPoint(1, sf::Vector2f(px + 50, py + 30));
-	convex.setPoint(2, sf::Vector2f(px + 60, py - 20));
-	convex.setPoint(3, sf::Vector2f(px, py - 60));
-	convex.setPoint(4, sf::Vector2f(px - 60, py - 20));
-	convex.setPoint(5, sf::Vector2f(px - 50, py + 30));
-	convex.setOrigin(px, py);
+	shape.setPoint(0, sf::Vector2f(px, py));
+	shape.setPoint(1, sf::Vector2f(px + 50, py + 30));
+	shape.setPoint(2, sf::Vector2f(px + 60, py - 20));
+	shape.setPoint(3, sf::Vector2f(px, py - 60));
+	shape.setPoint(4, sf::Vector2f(px - 60, py - 20));
+	shape.setPoint(5, sf::Vector2f(px - 50, py + 30));
+	shape.setOrigin(px, py);
 
 }
 
-void Player::DisplaySprite(sf::ConvexShape& convex, float px, float py, float angle)
+sf::Vector2f Player::ProcessInput(float deltaTime)
 {
-	convex.setPosition(px, py);
-	convex.setRotation(angle);
+	sf::Vector2f pos = shape.getPosition();
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) pos.x = pos.x - deltaTime * moveSpeed;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) pos.x = pos.x + deltaTime * moveSpeed;
 
+	return pos;
+}
+
+void Player::UpdateSprite(float px, float py, float angle)
+{
+	shape.setPosition(px, py);
+	shape.setRotation(angle);
+}
+
+void Player::DrawSprite(sf::RenderWindow& window) 
+{
+	window.draw(shape);
 }
