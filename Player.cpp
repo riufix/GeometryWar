@@ -9,14 +9,13 @@ void Player::InitializeGraphic(sf::Vector2f origin)
 	int px = origin.x;
 	int py = origin.y;
 
-	shape.setPoint(0, sf::Vector2f(px, py));
-	shape.setPoint(1, sf::Vector2f(px + 50, py + 30));
-	shape.setPoint(2, sf::Vector2f(px + 60, py - 20));
-	shape.setPoint(3, sf::Vector2f(px, py - 60));
-	shape.setPoint(4, sf::Vector2f(px - 60, py - 20));
-	shape.setPoint(5, sf::Vector2f(px - 50, py + 30));
-
-	shape.setOrigin(px, py);
+	shape.setPoint(0, sf::Vector2f(0, 0));
+	shape.setPoint(1, sf::Vector2f(0 + 50, 0 + 30));
+	shape.setPoint(2, sf::Vector2f(0 + 60, 0 - 20));
+	shape.setPoint(3, sf::Vector2f(0, 0 - 60));
+	shape.setPoint(4, sf::Vector2f(0 - 60, 0 - 20));
+	shape.setPoint(5, sf::Vector2f(0 - 50, 0 + 30));
+	shape.setOrigin(0, 0);
 	
 	shape.setPosition(px,py);
 }
@@ -40,6 +39,11 @@ sf::Vector2f Player::ProcessInput(float deltaTime)
 void Player::UpdateSprite(float px, float py, float angle)
 {
 	shape.setPosition(px, py);
+
+	shape.setPoint(2, sf::Vector2f(std::sin(px / 50) * 10 + 60, -20));
+	shape.setPoint(3, sf::Vector2f(std::sin(px / 50) * 20, -60));
+	shape.setPoint(4, sf::Vector2f(std::sin(px / 50) * 10 - 60, -20));
+
 	shape.setRotation(angle);
 }
 

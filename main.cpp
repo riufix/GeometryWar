@@ -6,7 +6,10 @@
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(1280, 720), "Geometry Wars");
+	sf::ContextSettings settings;
+	settings.antialiasingLevel = 8;
+
+	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Geometry Wars",sf::Style::Default, settings);
 	window.setVerticalSyncEnabled(true);
 
 	Player player;
