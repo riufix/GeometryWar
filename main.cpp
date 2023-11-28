@@ -1,38 +1,41 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
-#include "map.h"
+#include <list>
 
-constexpr float cubeSpeed = 500.f;
+#include "Player.h"
+#include "BulletBehaviour.h"
+#include "map.h"
 
 int main()
 {
-	// Initialisation
+	sf::ContextSettings settings;
+	settings.antialiasingLevel = 8;
 
-	sf::RenderWindow window(sf::VideoMode(1280, 720), "Geometry Wars");
+	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Geometry Wars",sf::Style::Default, settings);
 	window.setVerticalSyncEnabled(true);
 
-	// Début de la boucle de jeu
-	sf::RectangleShape rectangle;
-	rectangle.setFillColor(sf::Color::Red);
-	rectangle.setPosition(640, 360);
-	rectangle.setSize(sf::Vector2f(128, 128));
+	Player player;
+	player.InitializeGraphic(sf::Vector2f(200,200));
 
 	sf::Clock frameClock;
 
+	float convexRotate = 0;
+	
+	std::list<BulletBehaviour> bulletList;
+	BulletBehaviour newBullet(BulletBehaviour::Owner::Player, 100, player.shape.getPosition());
+	bulletList.push_back(newBullet);
+
+	sf::ConvexShape map = InitializeTriangle();
 	while (window.isOpen())
 	{
-		// Gérer les événéments survenus depuis le dernier tour de boucle
 		sf::Event event;
-		
-
 		while (window.pollEvent(event))
 		{
 			// On gère l'événément
 			switch (event.type)
 			{
 				case sf::Event::Closed:
-					// L'utilisateur a cliqué sur la croix => on ferme la fenêtre
 					window.close();
 					break;
 
@@ -42,36 +45,40 @@ int main()
 		}
 
 		float deltaTime = frameClock.restart().asSeconds();
-		std::cout << 1.f / deltaTime << " FPS" << std::endl;
-
-		// Logique
-		sf::Vector2f pos = rectangle.getPosition();
+		//std::cout << 1.f / deltaTime << " FPS" << std::endl;
 		
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
-			pos.x = pos.x - deltaTime * cubeSpeed;
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-			pos.x = pos.x + deltaTime * cubeSpeed;
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
-			pos.y = pos.y - deltaTime * cubeSpeed;
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-			pos.y = pos.y + deltaTime * cubeSpeed;
-
-		rectangle.setPosition(pos);
+		// Logique
+		convexRotate = convexRotate + 50 * deltaTime;
+		sf::Vector2f playerPos = player.ProcessMoveInput(deltaTime);
+		player.ProcessFireInput(deltaTime);
+		player.UpdateSprite(playerPos.x, playerPos.y, convexRotate);
+		
 
 		// Affichage
-		
-		// Remise au noir de toute la fenêtre
 		window.clear();
 
-		// Tout le rendu va se dérouler ici
-		//window.draw(rectangle);
-		maps(window);
-		Square(window);
+		sf::Vector2f centerVector;
+		centerVector.x = window.getSize().x / 2.0;
+		centerVector.y = window.getSize().y / 2.0;
+		DrawLevel(window, map, centerVector, 5, 15);
 
-		// On présente la fenêtre sur l'écran
+		//Gestion bullets
+		std::list<BulletBehaviour>::iterator bulletListIt = bulletList.begin();
+		while (bulletListIt != bulletList.end())
+		{
+			if (bulletListIt->ProcessBullet(sf::Vector2f(0, 0))) 
+			{
+				bulletListIt = bulletList.erase(bulletListIt);
+			}
+			else 
+			{
+				bulletListIt->DisplayBullet(window);
+				bulletListIt++;
+			}
+		}
+
+		player.DrawSprite(window);
+
 		window.display();
 	}
 }

@@ -1,0 +1,22 @@
+#pragma once
+
+#include <SFML/Graphics.hpp>
+
+class Player
+{
+private:
+	float currentRate = 0;
+
+	//Propreties
+	float moveSpeed = 500;
+	float fireRate = .2;
+
+public:
+	sf::ConvexShape shape;
+	void InitializeGraphic(sf::Vector2f origin);
+	void DrawSprite(sf::RenderWindow& window);
+
+	sf::Vector2f ProcessMoveInput(float deltaTime);
+	void ProcessFireInput(float deltaTime);
+	void UpdateSprite(float px, float py, float angle);
+};
