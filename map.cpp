@@ -43,11 +43,22 @@ void maps(sf::RenderWindow& window) {
 }
 
 void Square(sf::RenderWindow& window) {
-    sf::RectangleShape square(sf::Vector2f(50,50));
+    sf::ConvexShape square;
+
+    square.setPointCount(4);
+
+    int cx = window.getSize().x / 2;
+    int cy = window.getSize().y / 2;
 
     square.setOutlineColor(sf::Color::Blue);
     square.setFillColor(sf::Color::Transparent);
     square.setOutlineThickness(1);
+    square.setOrigin(0, 0);
+    square.setPoint(0, sf::Vector2f(cx -50,cy -50));
+    square.setPoint(1, sf::Vector2f(cx +50,cy -50));
+    square.setPoint(2, sf::Vector2f(cx +50,cy +50));
+    square.setPoint(3, sf::Vector2f(cx -50,cy +50));
+    square.setPosition(cx, cy);
     window.draw(square);
 
 }
