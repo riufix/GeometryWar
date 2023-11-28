@@ -16,6 +16,7 @@ public:
 	void InitializeGraphic(sf::Vector2f origin);
 	void DrawSprite(sf::RenderWindow& window);
 
-	sf::Vector2f ProcessInput(float deltaTime);
+	sf::Vector2f ProcessMoveInput(float deltaTime);
+	void ProcessFireInput(float deltaTime);
 	void UpdateSprite(float px, float py, float angle);
 };

@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
+#include <list>
 
 #include "Player.h"
 #include "BulletBehaviour.h"
@@ -19,9 +20,10 @@ int main()
 	sf::Clock frameClock;
 
 	float convexRotate = 0;
-
+	
+	std::list<BulletBehaviour> bulletList;
 	BulletBehaviour newBullet(BulletBehaviour::Owner::Player, 100, player.shape.getPosition());
-
+	bulletList.push_back(newBullet);
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -44,14 +46,28 @@ int main()
 		
 		// Logique
 		convexRotate = convexRotate + 50 * deltaTime;
-		sf::Vector2f playerPos = player.ProcessInput(deltaTime);
+		sf::Vector2f playerPos = player.ProcessMoveInput(deltaTime);
+		player.ProcessFireInput(deltaTime);
 		player.UpdateSprite(playerPos.x, playerPos.y, convexRotate);
+		
 
 		// Affichage
 		window.clear();
 
-		newBullet.ProcessBullet(sf::Vector2f(0,0));
-		newBullet.DisplayBullet(window);
+		//Gestion bullets
+		std::list<BulletBehaviour>::iterator bulletListIt = bulletList.begin();
+		while (bulletListIt != bulletList.end())
+		{
+			if (bulletListIt->ProcessBullet(sf::Vector2f(0, 0))) 
+			{
+				bulletListIt = bulletList.erase(bulletListIt);
+			}
+			else 
+			{
+				bulletListIt->DisplayBullet(window);
+				bulletListIt++;
+			}
+		}
 
 		player.DrawSprite(window);
 

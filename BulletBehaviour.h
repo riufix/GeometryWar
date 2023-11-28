@@ -18,7 +18,7 @@ public :
 private:
 	sf::CircleShape shape;
 	int progression;
-	float fullScale = 10;
+	float fullScale = 5;
 
 	Owner currentOwner;
 

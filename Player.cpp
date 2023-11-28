@@ -20,20 +20,22 @@ void Player::InitializeGraphic(sf::Vector2f origin)
 	shape.setPosition(px,py);
 }
 
-sf::Vector2f Player::ProcessInput(float deltaTime)
+sf::Vector2f Player::ProcessMoveInput(float deltaTime)
 {
 	sf::Vector2f pos = shape.getPosition();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) pos.x = pos.x - deltaTime * moveSpeed;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) pos.x = pos.x + deltaTime * moveSpeed;
-	
+	return pos;
+}
+
+void Player::ProcessFireInput(float deltaTime)
+{	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && currentRate <= 0) 
 	{
 		currentRate = fireRate;
 		std::cout << "FIRE" << std::endl;
 	}
 	if (currentRate > 0) currentRate = currentRate - deltaTime;
-
-	return pos;
 }
 
 void Player::UpdateSprite(float px, float py, float angle)
