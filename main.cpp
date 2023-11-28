@@ -5,6 +5,7 @@
 
 #include "Player.h"
 #include "BulletBehaviour.h"
+#include "map.h"
 
 int main()
 {
@@ -24,6 +25,8 @@ int main()
 	std::list<BulletBehaviour> bulletList;
 	BulletBehaviour newBullet(BulletBehaviour::Owner::Player, 100, player.shape.getPosition());
 	bulletList.push_back(newBullet);
+
+	sf::ConvexShape map = InitializeTriangle();
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -53,6 +56,11 @@ int main()
 
 		// Affichage
 		window.clear();
+
+		sf::Vector2f centerVector;
+		centerVector.x = window.getSize().x / 2.0;
+		centerVector.y = window.getSize().y / 2.0;
+		DrawLevel(window, map, centerVector, 5, 15);
 
 		//Gestion bullets
 		std::list<BulletBehaviour>::iterator bulletListIt = bulletList.begin();

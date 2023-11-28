@@ -23,8 +23,8 @@ void Player::InitializeGraphic(sf::Vector2f origin)
 sf::Vector2f Player::ProcessMoveInput(float deltaTime)
 {
 	sf::Vector2f pos = shape.getPosition();
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) pos.x = pos.x - deltaTime * moveSpeed;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) pos.x = pos.x + deltaTime * moveSpeed;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) pos.x = pos.x - deltaTime * moveSpeed;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) pos.x = pos.x + deltaTime * moveSpeed;
 	return pos;
 }
 
