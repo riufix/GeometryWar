@@ -16,9 +16,9 @@ void maps(sf::RenderWindow& window) {
     triangle.setOutlineColor(sf::Color::Blue);
     triangle.setOutlineThickness(.5f);
     triangle.setFillColor(sf::Color::Transparent);
-    triangle.setOrigin(centerX, centerY +10);
+    triangle.setOrigin(centerX, centerY + 10);
     triangle.setPoint(0, sf::Vector2f(centerX - 15, centerY + 20));
-    triangle.setPoint(1, sf::Vector2f(centerX, centerY ));
+    triangle.setPoint(1, sf::Vector2f(centerX, centerY));
     triangle.setPoint(2, sf::Vector2f(centerX + 15, centerY + 20));
     triangle.scale(20, 20);
 
@@ -28,11 +28,9 @@ void maps(sf::RenderWindow& window) {
     triangle.setScale(10, 10);
     window.draw(triangle);
 
-    sf::Vector2f lignePos1 = triangle.getPoint(1);
-
+    //line point position
     sf::Vertex Line[] = {
-        sf::Vertex(lignePos1),
-        //sf::Vertex(sf::Vector2f(centerX, centerY - 100), sf::Color::Blue),
+        sf::Vertex(sf::Vector2f(centerX, centerY - 100), sf::Color::Blue),
         sf::Vertex(sf::Vector2f(centerX, centerY - 200), sf::Color::Blue),
         sf::Vertex(sf::Vector2f(centerX - 300,centerY + 200), sf::Color::Blue),
         sf::Vertex(sf::Vector2f(centerX - 150,centerY + 100), sf::Color::Blue),
@@ -41,5 +39,15 @@ void maps(sf::RenderWindow& window) {
     };
     window.draw(Line, 6, sf::Lines);
     
+
+}
+
+void Square(sf::RenderWindow& window) {
+    sf::RectangleShape square(sf::Vector2f(50,50));
+
+    square.setOutlineColor(sf::Color::Blue);
+    square.setFillColor(sf::Color::Transparent);
+    square.setOutlineThickness(1);
+    window.draw(square);
 
 }

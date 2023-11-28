@@ -69,6 +69,7 @@ int main()
 		// Tout le rendu va se dérouler ici
 		//window.draw(rectangle);
 		maps(window);
+		Square(window);
 
 		// On présente la fenêtre sur l'écran
 		window.display();
