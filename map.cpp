@@ -1,22 +1,45 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
-#pragma once <main.cpp>
+#include "map.h"
 
-int main() {
+void maps(sf::RenderWindow& window) {
 	sf::ConvexShape triangle;
 
     triangle.setPointCount(3);
 
-    //int center = *
-    int px = 300;
-    int py = 500;
+    //center of the screen
+    int centerX = window.getSize().x / 2;
+    int centerY = window.getSize().y / 2;
 
-    triangle.setFillColor(sf::Color::Blue);
-    triangle.setOrigin(px, py);
-    triangle.setPoint(0, sf::Vector2f(px, py));
-    triangle.setPoint(1, sf::Vector2f(px + 50, py + 30));
-    triangle.setPoint(2, sf::Vector2f(px + 60, py - 20));
 
+    triangle.setOutlineColor(sf::Color::Blue);
+    triangle.setOutlineThickness(.5f);
+    triangle.setFillColor(sf::Color::Transparent);
+    triangle.setOrigin(centerX, centerY +10);
+    triangle.setPoint(0, sf::Vector2f(centerX - 15, centerY + 20));
+    triangle.setPoint(1, sf::Vector2f(centerX, centerY ));
+    triangle.setPoint(2, sf::Vector2f(centerX + 15, centerY + 20));
+    triangle.scale(20, 20);
+
+    triangle.setPosition(centerX, centerY);
+    window.draw(triangle);
+
+    triangle.setScale(10, 10);
+    window.draw(triangle);
+
+    sf::Vector2f lignePos1 = triangle.getPoint(1);
+
+    sf::Vertex Line[] = {
+        sf::Vertex(lignePos1),
+        //sf::Vertex(sf::Vector2f(centerX, centerY - 100), sf::Color::Blue),
+        sf::Vertex(sf::Vector2f(centerX, centerY - 200), sf::Color::Blue),
+        sf::Vertex(sf::Vector2f(centerX - 300,centerY + 200), sf::Color::Blue),
+        sf::Vertex(sf::Vector2f(centerX - 150,centerY + 100), sf::Color::Blue),
+        sf::Vertex(sf::Vector2f(centerX + 300,centerY + 200), sf::Color::Blue),
+        sf::Vertex(sf::Vector2f(centerX + 150,centerY + 100), sf::Color::Blue),
+    };
+    window.draw(Line, 6, sf::Lines);
+    
 
 }

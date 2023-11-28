@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
-#pragma once <map.cpp>
+#include "map.h"
 
 constexpr float cubeSpeed = 500.f;
 
@@ -24,6 +24,8 @@ int main()
 	{
 		// Gérer les événéments survenus depuis le dernier tour de boucle
 		sf::Event event;
+		
+
 		while (window.pollEvent(event))
 		{
 			// On gère l'événément
@@ -65,7 +67,8 @@ int main()
 		window.clear();
 
 		// Tout le rendu va se dérouler ici
-		window.draw(rectangle);
+		//window.draw(rectangle);
+		maps(window);
 
 		// On présente la fenêtre sur l'écran
 		window.display();
