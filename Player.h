@@ -8,7 +8,8 @@ private:
 	float currentRate = 0;
 
 	//Propreties
-	float moveSpeed = 500;
+	float moveRate = .2;
+	
 	float fireRate = .2;
 
 public:
@@ -16,7 +17,7 @@ public:
 	void InitializeGraphic(sf::Vector2f origin);
 	void DrawSprite(sf::RenderWindow& window);
 
-	sf::Vector2f ProcessMoveInput(float deltaTime);
-	void ProcessFireInput(float deltaTime);
+	int ProcessMoveInput(float deltaTime);
+	bool ProcessFireInput(float deltaTime);
 	void UpdateSprite(float px, float py, float angle);
 };
