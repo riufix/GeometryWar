@@ -5,3 +5,4 @@ sf::ConvexShape InitializeTriangle();
 
 void DrawLevel(sf::RenderWindow& window, sf::ConvexShape shape, sf::Vector2f Position, float minScale, float maxScale);
 sf::ConvexShape InitializeSquare();
+sf::ConvexShape InitializePantagone();

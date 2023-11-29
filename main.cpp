@@ -8,6 +8,13 @@
 #include "map.h"
 #include "Monster.h"
 
+constexpr enum levelShape {
+	triangle,
+	square,
+	pantagone
+};
+
+
 int main()
 {
 	//Init Window
@@ -19,8 +26,8 @@ int main()
 	sf::Clock frameClock;
 	//Center of window
 	sf::Vector2f windowCenter;
-	windowCenter.x = window.getSize().x / 2.0;
-	windowCenter.y = window.getSize().y / 2.0;
+	windowCenter.x = window.getSize().x / 2;
+	windowCenter.y = window.getSize().y / 2;
 	
 	//Init Player
 	Player player;
@@ -32,8 +39,10 @@ int main()
 
 	//Init Map
 	sf::ConvexShape map = InitializeTriangle();
+	map = InitializeSquare();
+	map = InitializePantagone();
 
-	//Init position list
+	//Init player position list
 	sf::Vector3f TrianglePositionList[9] = {
 	{1090,330,55},
 	{1220,500, 60},
@@ -45,11 +54,59 @@ int main()
 	{690,510,-55},
 	{830,330,-55}
 	};
+	sf::Vector3f SquarePositionList[8] = {
+	{1100,195,0},
+	{1300,400,90},
+	{1300,650,90},
+	{1100,875,180},
+	{800,875,180},
+	{620,650,-90},
+	{620,400,-90},
+	{820,195,0}
+	};
+	sf::Vector3f PantagonePositionList[8] = {
+	{0,0,0},
+	{0,0,0},
+	{0,0,0},
+	{0,0,0},
+	{0,0,0},
+	{0,0,0},
+	{0,0,0},
+	{0,0,0}
+	};
+
 	std::vector<sf::Vector3f> positionVector;
-	for (int i = 0; i < 9; i++) {
-		positionVector.push_back(TrianglePositionList[i]);
+	int positionVectorSize;
+	levelShape currentlevel = square;
+
+	switch (currentlevel)
+	{
+	case triangle:
+		positionVectorSize = 9;
+		for (int i = 0; i < 9; i++) {
+			positionVector.push_back(TrianglePositionList[i]);
+		}
+		break;
+
+	case square:
+		positionVectorSize = 8;
+		for (int i = 0; i < 8; i++) {
+			positionVector.push_back(SquarePositionList[i]);
+		}
+		break;
+
+	case pantagone:
+		positionVectorSize = 8;
+		for (int i = 0; i < 8; i++) {
+			positionVector.push_back(PantagonePositionList[i]);
+		}
+		break;
+
+	default:
+		break;
 	}
-	int positionVectorSize = 9;
+
+	
 
 	//Init Ennemy List
 	std::list<Monster> monsterList;

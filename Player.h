@@ -7,16 +7,15 @@ class Player
 private:
 	float currentFireRate = 0;
 	float currentMoveRate = 0;
-
 	//Propreties
-	float moveRate = .1;
-	float fireRate = .2;
+	float moveRate = .2f;
+	
+	float fireRate = .2f;
 
 public:
 	sf::ConvexShape shape;
 	int positionIndex = 0;
-
-	void InitializeGraphic();
+	void InitializeGraphic(sf::Vector2f origin);
 	void DrawSprite(sf::RenderWindow& window);
 
 	void ProcessMoveInput(int maxPosition, float deltaTime);
