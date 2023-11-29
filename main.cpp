@@ -55,6 +55,7 @@ int main()
 		float deltaTime = frameClock.restart().asSeconds();
 		//std::cout << 1.f / deltaTime << " FPS" << std::endl;
 
+		//Event
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
@@ -69,26 +70,31 @@ int main()
 					break;
 			}
 		}
-
+		//Process Player Input
 		if (player.ProcessFireInput(deltaTime))
 		{
 
 			bulletList.push_back(BulletBehaviour(BulletBehaviour::Owner::Player, 100, player.shape.getPosition()));
 		}
 		player.ProcessMoveInput(positionVectorSize, deltaTime);
-		std::cout << player.positionIndex << std::endl;
+		//Update playerPosition
 		player.UpdateSprite(positionVector[player.positionIndex].x,
 							positionVector[player.positionIndex].y,
 							positionVector[player.positionIndex].z);
 
-		// Affichage
+
+
+		/* --------------
+			DISPLAY
+		-------------- */
 		window.clear();
-		//Affichage de la carte
+
+		//Display level
 		DrawLevel(window, map, windowCenter, 5, 30);
 
-		//Affichage des ennemis 
+		//Display ennemies
 
-		//Gestion et affichage des projectiles
+		//Display & manage projectiles
 		std::list<BulletBehaviour>::iterator bulletListIt = bulletList.begin();
 		while (bulletListIt != bulletList.end())
 		{
@@ -104,7 +110,7 @@ int main()
 		}
 
 
-		//affichage du joueur
+		//Display player
 		player.DrawSprite(window);
 
 		window.display();

@@ -22,10 +22,6 @@ void Player::InitializeGraphic(sf::Vector2f origin)
 
 void Player::ProcessMoveInput(int maxPosition, float deltaTime)
 {
-	//A FAIRE MERCREDI
-	// - FAIRE UN COUNTDOWN
-	// - RENVOYER LA TRANSITION DES POSITIONS
-
 	if (currentMoveRate <= 0)
 	{
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
@@ -49,8 +45,6 @@ bool Player::ProcessFireInput(float deltaTime)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && currentFireRate <= 0) 
 	{
 		currentFireRate = fireRate;
-		std::cout << "FIRE" << std::endl;
-
 		return true;
 	}
 	if (currentFireRate > 0) currentFireRate = currentFireRate - deltaTime;
