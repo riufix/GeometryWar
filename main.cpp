@@ -156,6 +156,11 @@ int main()
 			bool skipToNext = false; //skip if collision
 			if (monsterListIt->ProcessMonster(deltaTime))
 			{
+				if (monsterListIt->progression > 100 && monsterListIt->positionIndex == player.positionIndex)
+				{
+					std::cout << "HIT player" << std::endl;
+				}
+
 				monsterListIt = monsterList.erase(monsterListIt);
 
 				int newCorridor = rand() % positionVector.size();
