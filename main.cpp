@@ -63,15 +63,15 @@ int main()
 	{820,195,0}
 	};
 	sf::Vector3f PantagonePositionList[5] = {
-	{0,0,0},
-	{0,0,0},
-	{0,0,0},
-	{0,0,0},
-	{0,0,0}
+	{1150,370,54},
+	{0,0,108},
+	{0,0,162},
+	{0,0,-108},
+	{0,0,-54}
 	};
 
 	std::vector<sf::Vector3f> positionVector;
-	levelShape currentlevel = triangle;
+	levelShape currentlevel = pantagone;
 
 	switch (currentlevel)
 	{
@@ -91,7 +91,7 @@ int main()
 
 	case pantagone:
 		map = InitializePantagone();
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 5; i++) {
 			positionVector.push_back(PantagonePositionList[i]);
 		}
 		break;
