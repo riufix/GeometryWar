@@ -4,7 +4,8 @@
 //Prototype
 sf::Vector2f Vector2Lerp(sf::Vector2f a, sf::Vector2f b, float t);
 
-Monster::Monster(sf::Vector2f start, sf::Vector3f end) {
+Monster::Monster(sf::Vector2f start, sf::Vector3f end, int corridor) {
+	positionIndex = corridor;
 	SpawningPosition = start;
 	EndingPosition = sf::Vector2f(end.x,end.y);
 	shape.setRotation(end.z + 180);
@@ -38,7 +39,6 @@ void Monster::DrawSprite(sf::RenderWindow& window)
 bool Monster::ProcessMonster() 
 {
 	progression = progression + 1;
-	std::cout << progression << std::endl;
 
 	float newScale = maxScale * ((float)progression / 100.0f);
 	shape.setScale(newScale, newScale);
@@ -46,7 +46,7 @@ bool Monster::ProcessMonster()
 	sf::Vector2f newPosition = Vector2Lerp(SpawningPosition, EndingPosition, ((float)progression / 100.0f));
 	shape.setPosition(newPosition);
 
-	shape.rotate(sin(progression / 10) * 2);
+	shape.rotate(cos(progression / 10) * 2);
 
 	return (progression < 0 || progression > 100);
 }
@@ -55,4 +55,10 @@ void Monster::UpdateSprite(float px, float py, float angle)
 {
 	shape.setPosition(px, py);
 	shape.setRotation(angle);
+}
+
+bool Monster::ChkCollision(BulletBehaviour bullet)
+{
+	return ((bullet.progression == progression || bullet.progression + 1 == progression) && 
+			positionIndex == bullet.positionIndex);
 }

@@ -105,7 +105,8 @@ int main()
 
 	//Init Ennemy List
 	std::list<Monster> monsterList;
-	monsterList.push_back(Monster(windowCenter,{1220,500,60}));
+	int newCorridor = rand() % positionVector.size();
+	monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor));
 
 	while (window.isOpen())
 	{
@@ -131,7 +132,7 @@ int main()
 		//Process Player Input
 		if (player.ProcessFireInput(deltaTime))
 		{
-			bulletList.push_back(BulletBehaviour(BulletBehaviour::Owner::Player, 100, player.shape.getPosition()));
+			bulletList.push_back(BulletBehaviour(BulletBehaviour::Owner::Player, 100, player.positionIndex, player.shape.getPosition()));
 		}
 		player.ProcessMoveInput(positionVector.size(), deltaTime);
 		//Update playerPosition
@@ -151,18 +152,44 @@ int main()
 		std::list<Monster>::iterator monsterListIt = monsterList.begin();
 		while (monsterListIt != monsterList.end())
 		{
+			bool skipToNext = false; //skip if collision
 			if (monsterListIt->ProcessMonster())
 			{
 				monsterListIt = monsterList.erase(monsterListIt);
-				monsterList.push_back(Monster(windowCenter, positionVector[rand() % positionVector.size()]));
 
+				int newCorridor = rand() % positionVector.size();
+				monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor));
 			}
 			else
 			{
+				//Manage Ennemies - Bullet Collision
+				std::list<BulletBehaviour>::iterator bulletCollisionListIt = bulletList.begin();
+				while (bulletCollisionListIt != bulletList.end())
+				{
+					if (monsterListIt->ChkCollision(*bulletCollisionListIt))
+					{
+						skipToNext = true;
+
+						monsterListIt = monsterList.erase(monsterListIt);
+						bulletCollisionListIt = bulletList.erase(bulletCollisionListIt);
+
+						int newCorridor = rand() % positionVector.size();
+						monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor));
+
+						bulletCollisionListIt = bulletList.end();
+					}
+					else
+					{
+						bulletCollisionListIt++;
+					}
+				}
+
+				if (skipToNext) continue;
 				monsterListIt->DrawSprite(window);
 				monsterListIt++;
 			}
 		}
+
 
 		//Display & manage projectiles
 		std::list<BulletBehaviour>::iterator bulletListIt = bulletList.begin();

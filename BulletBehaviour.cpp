@@ -4,10 +4,11 @@
 //Prototype
 sf::Vector2f Vector2Lerp(sf::Vector2f a, sf::Vector2f b, float t);
 
-BulletBehaviour::BulletBehaviour(Owner newOwner, int newProgression, sf::Vector2f newSpawnPosition)
+BulletBehaviour::BulletBehaviour(Owner newOwner, int newProgression, int spawningCorridor, sf::Vector2f newSpawnPosition)
 {
 	currentOwner = newOwner;
 	progression = newProgression;
+	positionIndex = spawningCorridor;
 	spawnPosition = newSpawnPosition;
 
 	switch (currentOwner)
