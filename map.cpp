@@ -10,7 +10,7 @@ sf::ConvexShape InitializeTriangle()
     triangle.setPointCount(9);
 
     triangle.setOutlineColor(sf::Color::Blue);
-    triangle.setOutlineThickness(.5f);
+    triangle.setOutlineThickness(.75f);
     triangle.setFillColor(sf::Color::Transparent);
     triangle.setOrigin(0, 0);
 
