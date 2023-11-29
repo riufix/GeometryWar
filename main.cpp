@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "BulletBehaviour.h"
 #include "map.h"
+#include "Monster.h"
 
 int main()
 {
@@ -23,7 +24,7 @@ int main()
 	
 	//Init Player
 	Player player;
-	player.InitializeGraphic(sf::Vector2f(200,200));
+	player.InitializeGraphic();
 	float convexRotate = 0;
 	
 	//Init Bullet List
@@ -50,6 +51,10 @@ int main()
 	}
 	int positionVectorSize = 9;
 
+	//Init Ennemy List
+	std::list<Monster> monsterList;
+	monsterList.push_back(Monster(windowCenter,{1090,330,55}));
+
 	while (window.isOpen())
 	{
 		float deltaTime = frameClock.restart().asSeconds();
@@ -70,6 +75,7 @@ int main()
 					break;
 			}
 		}
+
 		//Process Player Input
 		if (player.ProcessFireInput(deltaTime))
 		{
@@ -82,8 +88,6 @@ int main()
 							positionVector[player.positionIndex].y,
 							positionVector[player.positionIndex].z);
 
-
-
 		/* --------------
 			DISPLAY
 		-------------- */
@@ -91,8 +95,6 @@ int main()
 
 		//Display level
 		DrawLevel(window, map, windowCenter, 5, 30);
-
-		//Display ennemies
 
 		//Display & manage projectiles
 		std::list<BulletBehaviour>::iterator bulletListIt = bulletList.begin();
