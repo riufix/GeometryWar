@@ -37,11 +37,11 @@ int main()
 	
 	//Init GameState
 	gameState currentGameState = Game;
+	int score = 0;
 
 	//Init Player
 	Player player;
 	player.InitializeGraphic();
-	float convexRotate = 0;
 	
 	//Init Bullet List
 	std::list<BulletBehaviour> bulletList;
@@ -151,6 +151,7 @@ int main()
 			}
 			player.ProcessMoveInput(positionVector.size(), deltaTime);
 
+			player.ProcessInvincibility(deltaTime);
 			player.UpdateSprite(positionVector[player.positionIndex].x, positionVector[player.positionIndex].y, positionVector[player.positionIndex].z);
 			break;
 
@@ -177,7 +178,7 @@ int main()
 		{
 
 		}
-			break;
+		break;
 		case Game:
 		{
 			//Display level
@@ -192,7 +193,10 @@ int main()
 				{
 					if (monsterListIt->progression > 100 && monsterListIt->positionIndex == player.positionIndex)
 					{
-						std::cout << "HIT player" << std::endl;
+						if (!player.isInvincible())
+							if (player.Hit())
+								currentGameState = GameOver;
+						std::cout << player.Health << std::endl;
 					}
 
 					monsterListIt = monsterList.erase(monsterListIt);
@@ -209,6 +213,7 @@ int main()
 						if (monsterListIt->ChkCollision(*bulletCollisionListIt))
 						{
 							skipToNext = true;
+							score = score + 25;
 
 							monsterListIt = monsterList.erase(monsterListIt);
 							bulletCollisionListIt = bulletList.erase(bulletCollisionListIt);
@@ -219,8 +224,7 @@ int main()
 							bulletCollisionListIt = bulletList.end();
 						}
 						else
-							bulletCollisionListIt++;
-						
+							bulletCollisionListIt++;			
 					}
 
 					if (skipToNext) continue;
@@ -228,7 +232,6 @@ int main()
 					monsterListIt++;
 				}
 			}
-
 
 			//Display & manage projectiles
 			std::list<BulletBehaviour>::iterator bulletListIt = bulletList.begin();
@@ -245,18 +248,21 @@ int main()
 
 			//Display player
 			player.DrawSprite(window);
-			break;
+
+			//Display UI
 		}
+		break;
 		case GameOver:
 		{
 
 		}
-			break;
+		break;
 		case LevelTransition:
 		{
 
 		}
-			break;
+		break;
+
 		}
 
 
@@ -269,10 +275,6 @@ int main()
 States :
 Main Menu
 Game :
-	Score
-	Hit
-	Player :
-		Invicibility framr
 	UI :
 		Lives
 Game Over
