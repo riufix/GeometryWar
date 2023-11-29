@@ -55,21 +55,18 @@ sf::ConvexShape InitializeSquare() {
 sf::ConvexShape InitializePantagone() {
     sf::ConvexShape pantagone;
 
-    pantagone.setPointCount(8);
+    pantagone.setPointCount(5);
 
     pantagone.setOutlineColor(sf::Color::Blue);
     pantagone.setFillColor(sf::Color::Transparent);
     pantagone.setOutlineThickness(.75f);
     pantagone.setOrigin(0, 0);
 
-    pantagone.setPoint(0, sf::Vector2f(-10, -10));
-    pantagone.setPoint(1, sf::Vector2f(+10, -10));
-    pantagone.setPoint(2, sf::Vector2f(-10, -10));
-    pantagone.setPoint(3, sf::Vector2f(-10, -10));
-    pantagone.setPoint(4, sf::Vector2f(-10, -10));
-    pantagone.setPoint(5, sf::Vector2f(-10, -10));
-    pantagone.setPoint(6, sf::Vector2f(-10, -10));
-    pantagone.setPoint(7, sf::Vector2f(-10, -10));
+    pantagone.setPoint(0, sf::Vector2f(0,-9.5f));
+    pantagone.setPoint(1, sf::Vector2f(10,0));
+    pantagone.setPoint(2, sf::Vector2f(6,10));
+    pantagone.setPoint(3, sf::Vector2f(-6,10));
+    pantagone.setPoint(4, sf::Vector2f(-10,0));
 
     return pantagone;
 }

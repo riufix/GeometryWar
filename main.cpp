@@ -63,10 +63,7 @@ int main()
 	{620,400,-90},
 	{820,195,0}
 	};
-	sf::Vector3f PantagonePositionList[8] = {
-	{0,0,0},
-	{0,0,0},
-	{0,0,0},
+	sf::Vector3f PantagonePositionList[5] = {
 	{0,0,0},
 	{0,0,0},
 	{0,0,0},
@@ -95,8 +92,8 @@ int main()
 		break;
 
 	case pantagone:
-		positionVectorSize = 8;
-		for (int i = 0; i < 8; i++) {
+		positionVectorSize = 5;
+		for (int i = 0; i < 5; i++) {
 			positionVector.push_back(PantagonePositionList[i]);
 		}
 		break;
