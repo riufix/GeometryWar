@@ -15,12 +15,17 @@ sf::ConvexShape InitializeTriangle()
     triangle.setOrigin(0, 0);
 
     triangle.setPoint(0, sf::Vector2f(-15,10));
-    triangle.setPoint(1, sf::Vector2f(-10.2, 4));
-    triangle.setPoint(2, sf::Vector2f(-5, -3));
+    //triangle.setPoint(1, sf::Vector2f(-10.2, 4));
+    //triangle.setPoint(2, sf::Vector2f(-5, -3));
+    triangle.setPoint(1, sf::Vector2f(-10, 3.33333333333333));
+    triangle.setPoint(2, sf::Vector2f(-5, -3.333333333333));
     
     triangle.setPoint(3, sf::Vector2f(0, -10));
-    triangle.setPoint(4, sf::Vector2f(5, -3));
-    triangle.setPoint(5, sf::Vector2f(10.2, 4));
+    triangle.setPoint(4, sf::Vector2f(5, -3.333333333333));
+    triangle.setPoint(5, sf::Vector2f(10, 3.33333333333333));
+    //triangle.setPoint(4, sf::Vector2f(5, -3));
+    //triangle.setPoint(5, sf::Vector2f(10.2, 4));
+
 
     triangle.setPoint(6, sf::Vector2f(15, 10));
     triangle.setPoint(7, sf::Vector2f(5, 10));
