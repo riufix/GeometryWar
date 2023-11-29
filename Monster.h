@@ -6,7 +6,7 @@ class Monster
 {
 private :
 	int progression = 0;
-	float maxScale = 5;
+	float maxScale = 2;
 
 public:
 	sf::ConvexShape shape;

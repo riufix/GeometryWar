@@ -15,7 +15,7 @@ private:
 public:
 	sf::ConvexShape shape;
 	int positionIndex = 0;
-	void InitializeGraphic(sf::Vector2f origin);
+	void InitializeGraphic();
 	void DrawSprite(sf::RenderWindow& window);
 
 	void ProcessMoveInput(int maxPosition, float deltaTime);

@@ -7,7 +7,7 @@ sf::Vector2f Vector2Lerp(sf::Vector2f a, sf::Vector2f b, float t);
 Monster::Monster(sf::Vector2f start, sf::Vector3f end) {
 	SpawningPosition = start;
 	EndingPosition = sf::Vector2f(end.x,end.y);
-	shape.setRotation(end.z);
+	shape.setRotation(end.z + 180);
 
 	InitializeGraphic();
 }
@@ -27,7 +27,7 @@ void Monster::InitializeGraphic()
 	shape.setPoint(7, sf::Vector2f(-30, 30));
 	shape.setPoint(8, sf::Vector2f(-20, 10));
 	shape.setPoint(9, sf::Vector2f(-10, 30));
-	shape.setOrigin(0, 0);
+	shape.setOrigin(0, -10);
 }
 
 void Monster::DrawSprite(sf::RenderWindow& window)

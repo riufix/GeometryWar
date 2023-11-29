@@ -39,8 +39,8 @@ int main()
 
 	//Init Map
 	sf::ConvexShape map = InitializeTriangle();
-	map = InitializeSquare();
 	map = InitializePantagone();
+	map = InitializeSquare();
 
 	//Init player position list
 	sf::Vector3f TrianglePositionList[9] = {
@@ -106,11 +106,10 @@ int main()
 		break;
 	}
 
-	
 
 	//Init Ennemy List
 	std::list<Monster> monsterList;
-	monsterList.push_back(Monster(windowCenter,{1090,330,55}));
+	monsterList.push_back(Monster(windowCenter,{1220,500,60}));
 
 	while (window.isOpen())
 	{
@@ -153,6 +152,21 @@ int main()
 		//Display level
 		DrawLevel(window, map, windowCenter, 5, 30);
 
+		//Display & manage Ennemies
+		std::list<Monster>::iterator monsterListIt = monsterList.begin();
+		while (monsterListIt != monsterList.end())
+		{
+			if (monsterListIt->ProcessMonster())
+			{
+				monsterListIt = monsterList.erase(monsterListIt);
+			}
+			else
+			{
+				monsterListIt->DrawSprite(window);
+				monsterListIt++;
+			}
+		}
+
 		//Display & manage projectiles
 		std::list<BulletBehaviour>::iterator bulletListIt = bulletList.begin();
 		while (bulletListIt != bulletList.end())
@@ -167,7 +181,6 @@ int main()
 				bulletListIt++;
 			}
 		}
-
 
 		//Display player
 		player.DrawSprite(window);
