@@ -15,6 +15,8 @@ private:
 public:
 	sf::ConvexShape shape;
 	int positionIndex = 0;
+	int Health = 3;
+
 	void InitializeGraphic();
 	void DrawSprite(sf::RenderWindow& window);
 
