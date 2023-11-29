@@ -272,11 +272,22 @@ int main()
 
 
 /*
-States :
 Main Menu
+
 Game :
+	Effect :
+		when hit
+		when dead
+		when kill monster
+		on invincibility frames
+
 	UI :
 		Lives
+		Score
 Game Over
-LevelTransition
+
+LevelTransition :
+	When ?
+	Transition
+	Change Level
 */
