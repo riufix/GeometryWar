@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "BulletBehaviour.h"
 #include "map.h"
+#include "Monster.h"
 
 constexpr enum levelShape {
 	triangle,
@@ -25,31 +26,29 @@ int main()
 	sf::Clock frameClock;
 	//Center of window
 	sf::Vector2f windowCenter;
-	windowCenter.x = window.getSize().x / 2;
-	windowCenter.y = window.getSize().y / 2;
+	windowCenter.x = window.getSize().x / 2.0f;
+	windowCenter.y = window.getSize().y / 2.0f;
 	
 	//Init Player
 	Player player;
-	player.InitializeGraphic(sf::Vector2f(200,200));
+	player.InitializeGraphic();
 	float convexRotate = 0;
 	
 	//Init Bullet List
 	std::list<BulletBehaviour> bulletList;
 
 	//Init Map
-	sf::ConvexShape map = InitializeTriangle();
-	map = InitializeSquare();
-	map = InitializePantagone();
+	sf::ConvexShape map;
 
 	//Init player position list
 	sf::Vector3f TrianglePositionList[9] = {
 	{1090,330,55},
 	{1220,500, 60},
-	{1360,700,55},
+	{1360,730,55},
 	{1250,890,180},
 	{960,890,180},
 	{690,890,180},
-	{560,700,-50},
+	{560,730,-50},
 	{690,510,-55},
 	{830,330,-55}
 	};
@@ -72,28 +71,27 @@ int main()
 	};
 
 	std::vector<sf::Vector3f> positionVector;
-	int positionVectorSize;
-	levelShape currentlevel = square;
+	levelShape currentlevel = triangle;
 
 	switch (currentlevel)
 	{
 	case triangle:
-		positionVectorSize = 9;
+		map = InitializeTriangle();
 		for (int i = 0; i < 9; i++) {
 			positionVector.push_back(TrianglePositionList[i]);
 		}
 		break;
 
 	case square:
-		positionVectorSize = 8;
+		map = InitializeSquare();
 		for (int i = 0; i < 8; i++) {
 			positionVector.push_back(SquarePositionList[i]);
 		}
 		break;
 
 	case pantagone:
-		positionVectorSize = 5;
-		for (int i = 0; i < 5; i++) {
+		map = InitializePantagone();
+		for (int i = 0; i < 8; i++) {
 			positionVector.push_back(PantagonePositionList[i]);
 		}
 		break;
@@ -102,7 +100,11 @@ int main()
 		break;
 	}
 
-	
+
+	//Init Ennemy List
+	std::list<Monster> monsterList;
+	int newCorridor = rand() % positionVector.size();
+	monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor));
 
 	while (window.isOpen())
 	{
@@ -124,19 +126,17 @@ int main()
 					break;
 			}
 		}
+
 		//Process Player Input
 		if (player.ProcessFireInput(deltaTime))
 		{
-
-			bulletList.push_back(BulletBehaviour(BulletBehaviour::Owner::Player, 100, player.shape.getPosition()));
+			bulletList.push_back(BulletBehaviour(BulletBehaviour::Owner::Player, 100, player.positionIndex, player.shape.getPosition()));
 		}
-		player.ProcessMoveInput(positionVectorSize, deltaTime);
+		player.ProcessMoveInput(positionVector.size(), deltaTime);
 		//Update playerPosition
 		player.UpdateSprite(positionVector[player.positionIndex].x,
 							positionVector[player.positionIndex].y,
 							positionVector[player.positionIndex].z);
-
-
 
 		/* --------------
 			DISPLAY
@@ -146,7 +146,48 @@ int main()
 		//Display level
 		DrawLevel(window, map, windowCenter, 5, 30);
 
-		//Display ennemies
+		//Display & manage Ennemies
+		std::list<Monster>::iterator monsterListIt = monsterList.begin();
+		while (monsterListIt != monsterList.end())
+		{
+			bool skipToNext = false; //skip if collision
+			if (monsterListIt->ProcessMonster(deltaTime))
+			{
+				monsterListIt = monsterList.erase(monsterListIt);
+
+				int newCorridor = rand() % positionVector.size();
+				monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor));
+			}
+			else
+			{
+				//Manage Ennemies - Bullet Collision
+				std::list<BulletBehaviour>::iterator bulletCollisionListIt = bulletList.begin();
+				while (bulletCollisionListIt != bulletList.end())
+				{
+					if (monsterListIt->ChkCollision(*bulletCollisionListIt))
+					{
+						skipToNext = true;
+
+						monsterListIt = monsterList.erase(monsterListIt);
+						bulletCollisionListIt = bulletList.erase(bulletCollisionListIt);
+
+						int newCorridor = rand() % positionVector.size();
+						monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor));
+
+						bulletCollisionListIt = bulletList.end();
+					}
+					else
+					{
+						bulletCollisionListIt++;
+					}
+				}
+
+				if (skipToNext) continue;
+				monsterListIt->DrawSprite(window);
+				monsterListIt++;
+			}
+		}
+
 
 		//Display & manage projectiles
 		std::list<BulletBehaviour>::iterator bulletListIt = bulletList.begin();
@@ -162,7 +203,6 @@ int main()
 				bulletListIt++;
 			}
 		}
-
 
 		//Display player
 		player.DrawSprite(window);

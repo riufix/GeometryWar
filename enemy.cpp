@@ -2,7 +2,7 @@
 #include <SFML/Window.hpp>
 #include <iostream>
 
-void drawEnemy(sf::RenderWindow& window, sf::Vector2f position, sf::Color color) {
+void drawEnemy(sf::RenderWindow& window) {
     // create an empty shape
     sf::ConvexShape enemy1;
 
