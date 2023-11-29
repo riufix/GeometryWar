@@ -36,9 +36,15 @@ void Monster::DrawSprite(sf::RenderWindow& window)
 	window.draw(shape);
 }
 
-bool Monster::ProcessMonster() 
+bool Monster::ProcessMonster(float deltaTime) 
 {
+	if (currentStep > 0)
+	{
+		currentStep = currentStep - deltaTime;
+		return false;
+	}
 	progression = progression + 1;
+	currentStep = timeStep;
 
 	float newScale = maxScale * ((float)progression / 100.0f);
 	shape.setScale(newScale, newScale);

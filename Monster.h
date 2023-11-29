@@ -8,11 +8,12 @@ class Monster
 private :
 	int progression = 0;
 	float maxScale = 2;
+	float currentStep;
 
 public:
 	sf::ConvexShape shape;
 	int positionIndex = 0;
-	int Health = 1;
+	float timeStep = .01f; //Time between step
 
 	sf::Vector2f SpawningPosition;
 	sf::Vector2f EndingPosition;
@@ -22,7 +23,7 @@ public:
 	void InitializeGraphic();
 	void DrawSprite(sf::RenderWindow& window);
 
-	bool ProcessMonster();
+	bool ProcessMonster(float deltaTime);
 	void UpdateSprite(float px, float py, float angle);
 	bool ChkCollision(BulletBehaviour bullet);
 };

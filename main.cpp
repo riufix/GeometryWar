@@ -26,8 +26,8 @@ int main()
 	sf::Clock frameClock;
 	//Center of window
 	sf::Vector2f windowCenter;
-	windowCenter.x = window.getSize().x / 2;
-	windowCenter.y = window.getSize().y / 2;
+	windowCenter.x = window.getSize().x / 2.0f;
+	windowCenter.y = window.getSize().y / 2.0f;
 	
 	//Init Player
 	Player player;
@@ -153,7 +153,7 @@ int main()
 		while (monsterListIt != monsterList.end())
 		{
 			bool skipToNext = false; //skip if collision
-			if (monsterListIt->ProcessMonster())
+			if (monsterListIt->ProcessMonster(deltaTime))
 			{
 				monsterListIt = monsterList.erase(monsterListIt);
 
