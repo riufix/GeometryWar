@@ -26,7 +26,8 @@ BulletBehaviour::BulletBehaviour(Owner newOwner, int newProgression, sf::Vector2
 	}
 
 	//Init shape
-	shape.setRadius(10);
+	shape.setRadius(7);
+	shape.setPointCount(8);
 	shape.setFillColor(sf::Color::Transparent);
 	shape.setOutlineThickness(3);
 	shape.setOrigin(shape.getRadius(), shape.getRadius());
@@ -42,6 +43,8 @@ bool BulletBehaviour::ProcessBullet(sf::Vector2f origin)
 	
 	sf::Vector2f newPosition = Vector2Lerp(origin, spawnPosition, ((float)progression / 100.0f));
 	shape.setPosition(newPosition);
+
+	shape.rotate(1);
 
 	return (progression < 0 || progression > 100);
 }

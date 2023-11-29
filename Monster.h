@@ -27,8 +27,5 @@ public:
 
 /*
 	TODO :
--Déplacement
--Spawning
--Atteint la fin
 - collision
 */

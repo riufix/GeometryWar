@@ -27,7 +27,7 @@ void Monster::InitializeGraphic()
 	shape.setPoint(7, sf::Vector2f(-30, 30));
 	shape.setPoint(8, sf::Vector2f(-20, 10));
 	shape.setPoint(9, sf::Vector2f(-10, 30));
-	shape.setOrigin(0, -10);
+	shape.setOrigin(0, 30);
 }
 
 void Monster::DrawSprite(sf::RenderWindow& window)
@@ -45,6 +45,8 @@ bool Monster::ProcessMonster()
 
 	sf::Vector2f newPosition = Vector2Lerp(SpawningPosition, EndingPosition, ((float)progression / 100.0f));
 	shape.setPosition(newPosition);
+
+	shape.rotate(sin(progression / 10) * 2);
 
 	return (progression < 0 || progression > 100);
 }

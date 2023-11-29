@@ -131,7 +131,6 @@ int main()
 		//Process Player Input
 		if (player.ProcessFireInput(deltaTime))
 		{
-
 			bulletList.push_back(BulletBehaviour(BulletBehaviour::Owner::Player, 100, player.shape.getPosition()));
 		}
 		player.ProcessMoveInput(positionVector.size(), deltaTime);
@@ -155,6 +154,8 @@ int main()
 			if (monsterListIt->ProcessMonster())
 			{
 				monsterListIt = monsterList.erase(monsterListIt);
+				monsterList.push_back(Monster(windowCenter, positionVector[rand() % positionVector.size()]));
+
 			}
 			else
 			{
