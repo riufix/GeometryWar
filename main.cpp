@@ -38,9 +38,7 @@ int main()
 	std::list<BulletBehaviour> bulletList;
 
 	//Init Map
-	sf::ConvexShape map = InitializeTriangle();
-	map = InitializePantagone();
-	map = InitializeSquare();
+	sf::ConvexShape map;
 
 	//Init player position list
 	sf::Vector3f TrianglePositionList[9] = {
@@ -76,23 +74,26 @@ int main()
 	};
 
 	std::vector<sf::Vector3f> positionVector;
-	levelShape currentlevel = square;
+	levelShape currentlevel = triangle;
 
 	switch (currentlevel)
 	{
 	case triangle:
+		map = InitializeTriangle();
 		for (int i = 0; i < 9; i++) {
 			positionVector.push_back(TrianglePositionList[i]);
 		}
 		break;
 
 	case square:
+		map = InitializeSquare();
 		for (int i = 0; i < 8; i++) {
 			positionVector.push_back(SquarePositionList[i]);
 		}
 		break;
 
 	case pantagone:
+		map = InitializePantagone();
 		for (int i = 0; i < 8; i++) {
 			positionVector.push_back(PantagonePositionList[i]);
 		}
