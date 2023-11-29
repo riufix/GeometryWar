@@ -9,26 +9,53 @@
 
 int main()
 {
+	//Init Window
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 8;
-
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Geometry Wars",sf::Style::Default, settings);
 	window.setVerticalSyncEnabled(true);
-
+	//clock
+	sf::Clock frameClock;
+	//Center of window
+	sf::Vector2f windowCenter;
+	windowCenter.x = window.getSize().x / 2.0;
+	windowCenter.y = window.getSize().y / 2.0;
+	
+	//Init Player
 	Player player;
 	player.InitializeGraphic(sf::Vector2f(200,200));
-
-	sf::Clock frameClock;
-
 	float convexRotate = 0;
 	
+	//Init Bullet List
 	std::list<BulletBehaviour> bulletList;
-	BulletBehaviour newBullet(BulletBehaviour::Owner::Player, 100, player.shape.getPosition());
-	bulletList.push_back(newBullet);
 
+	//Init Map
 	sf::ConvexShape map = InitializeTriangle();
+
+	//Init position list
+	sf::Vector3f TrianglePositionList[9] = {
+	{1090,330,55},
+	{1220,500, 60},
+	{1360,700,55},
+	{1250,890,180},
+	{960,890,180},
+	{690,890,180},
+	{560,700,-50},
+	{690,510,-55},
+	{830,330,-55}
+	};
+	std::vector<sf::Vector3f> positionVector;
+	for (int i = 0; i < 9; i++) {
+		positionVector.push_back(TrianglePositionList[i]);
+	}
+	int positionVectorSize = 9;
+
 	while (window.isOpen())
 	{
+		float deltaTime = frameClock.restart().asSeconds();
+		//std::cout << 1.f / deltaTime << " FPS" << std::endl;
+
+		//Event
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
@@ -43,30 +70,35 @@ int main()
 					break;
 			}
 		}
+		//Process Player Input
+		if (player.ProcessFireInput(deltaTime))
+		{
 
-		float deltaTime = frameClock.restart().asSeconds();
-		//std::cout << 1.f / deltaTime << " FPS" << std::endl;
-		
-		// Logique
-		convexRotate = convexRotate + 50 * deltaTime;
-		sf::Vector2f playerPos = player.ProcessMoveInput(deltaTime);
-		player.ProcessFireInput(deltaTime);
-		player.UpdateSprite(playerPos.x, playerPos.y, convexRotate);
-		
+			bulletList.push_back(BulletBehaviour(BulletBehaviour::Owner::Player, 100, player.shape.getPosition()));
+		}
+		player.ProcessMoveInput(positionVectorSize, deltaTime);
+		//Update playerPosition
+		player.UpdateSprite(positionVector[player.positionIndex].x,
+							positionVector[player.positionIndex].y,
+							positionVector[player.positionIndex].z);
 
-		// Affichage
+
+
+		/* --------------
+			DISPLAY
+		-------------- */
 		window.clear();
 
-		sf::Vector2f centerVector;
-		centerVector.x = window.getSize().x / 2.0;
-		centerVector.y = window.getSize().y / 2.0;
-		DrawLevel(window, map, centerVector, 5, 15);
+		//Display level
+		DrawLevel(window, map, windowCenter, 5, 30);
 
-		//Gestion bullets
+		//Display ennemies
+
+		//Display & manage projectiles
 		std::list<BulletBehaviour>::iterator bulletListIt = bulletList.begin();
 		while (bulletListIt != bulletList.end())
 		{
-			if (bulletListIt->ProcessBullet(sf::Vector2f(0, 0))) 
+			if (bulletListIt->ProcessBullet(windowCenter)) 
 			{
 				bulletListIt = bulletList.erase(bulletListIt);
 			}
@@ -77,6 +109,8 @@ int main()
 			}
 		}
 
+
+		//Display player
 		player.DrawSprite(window);
 
 		window.display();

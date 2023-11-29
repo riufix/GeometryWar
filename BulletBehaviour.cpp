@@ -10,9 +10,11 @@ BulletBehaviour::BulletBehaviour(Owner newOwner, int newProgression, sf::Vector2
 	{
 	case BulletBehaviour::Owner::Player:
 		direction = BulletBehaviour::Direction::Fond;
+		shape.setOutlineColor(sf::Color::Yellow);
 		break;
 	case BulletBehaviour::Owner::Ennemy:
 		direction = BulletBehaviour::Direction::Bord;
+		shape.setOutlineColor(sf::Color::Red);
 		break;
 	default :
 		direction = BulletBehaviour::Direction::Bord;
@@ -22,7 +24,6 @@ BulletBehaviour::BulletBehaviour(Owner newOwner, int newProgression, sf::Vector2
 	//Init shape
 	shape.setRadius(10);
 	shape.setFillColor(sf::Color::Transparent);
-	shape.setOutlineColor(sf::Color::Red);
 	shape.setOutlineThickness(3);
 	shape.setPosition(spawnPosition.x - shape.getRadius(), spawnPosition.y - shape.getRadius());
 }
@@ -42,3 +43,11 @@ void BulletBehaviour::DisplayBullet(sf::RenderWindow& window)
 {
 	window.draw(shape);
 }
+
+/*
+public static Vector2 Lerp(Vector2 a, Vector2 b, float t)
+{
+    t = Mathf.Clamp01(t);
+    return new Vector2(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t);
+}
+*/

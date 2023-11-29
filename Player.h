@@ -5,18 +5,20 @@
 class Player
 {
 private:
-	float currentRate = 0;
-
+	float currentFireRate = 0;
+	float currentMoveRate = 0;
 	//Propreties
-	float moveSpeed = 500;
+	float moveRate = .2;
+	
 	float fireRate = .2;
 
 public:
 	sf::ConvexShape shape;
+	int positionIndex = 0;
 	void InitializeGraphic(sf::Vector2f origin);
 	void DrawSprite(sf::RenderWindow& window);
 
-	sf::Vector2f ProcessMoveInput(float deltaTime);
-	void ProcessFireInput(float deltaTime);
+	void ProcessMoveInput(int maxPosition, float deltaTime);
+	bool ProcessFireInput(float deltaTime);
 	void UpdateSprite(float px, float py, float angle);
 };

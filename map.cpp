@@ -7,16 +7,24 @@ sf::ConvexShape InitializeTriangle()
 {
     sf::ConvexShape triangle;
 
-    triangle.setPointCount(3);
+    triangle.setPointCount(9);
 
     triangle.setOutlineColor(sf::Color::Blue);
     triangle.setOutlineThickness(.5f);
     triangle.setFillColor(sf::Color::Transparent);
     triangle.setOrigin(0, 0);
-    triangle.setPoint(0, sf::Vector2f(-15,10));
-    triangle.setPoint(1, sf::Vector2f(0, -10));
-    triangle.setPoint(2, sf::Vector2f(15, 10));
 
+    triangle.setPoint(0, sf::Vector2f(-15,10));
+    triangle.setPoint(1, sf::Vector2f(-10, 3.33333333333333));
+    triangle.setPoint(2, sf::Vector2f(-5, -3.333333333333));
+    
+    triangle.setPoint(3, sf::Vector2f(0, -10));
+    triangle.setPoint(4, sf::Vector2f(5, -3.333333333333));
+    triangle.setPoint(5, sf::Vector2f(10, 3.33333333333333));
+
+    triangle.setPoint(6, sf::Vector2f(15, 10));
+    triangle.setPoint(7, sf::Vector2f(5, 10));
+    triangle.setPoint(8, sf::Vector2f(-5, 10));
 
     return triangle;
 }

@@ -20,22 +20,36 @@ void Player::InitializeGraphic(sf::Vector2f origin)
 	shape.setPosition(px,py);
 }
 
-sf::Vector2f Player::ProcessMoveInput(float deltaTime)
+void Player::ProcessMoveInput(int maxPosition, float deltaTime)
 {
-	sf::Vector2f pos = shape.getPosition();
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) pos.x = pos.x - deltaTime * moveSpeed;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) pos.x = pos.x + deltaTime * moveSpeed;
-	return pos;
+	if (currentMoveRate <= 0)
+	{
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		{
+			positionIndex = positionIndex - 1;
+			if (positionIndex < 0) positionIndex = maxPosition - 1;
+			currentMoveRate = .3f;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		{
+			positionIndex = positionIndex + 1;
+			if (positionIndex >= maxPosition) positionIndex = 0;
+			currentMoveRate = .3f;
+		};
+	}
+	if (currentMoveRate > 0) currentMoveRate = currentMoveRate - deltaTime;
 }
 
-void Player::ProcessFireInput(float deltaTime)
+bool Player::ProcessFireInput(float deltaTime)
 {	
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && currentRate <= 0) 
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && currentFireRate <= 0) 
 	{
-		currentRate = fireRate;
-		std::cout << "FIRE" << std::endl;
+		currentFireRate = fireRate;
+		return true;
 	}
-	if (currentRate > 0) currentRate = currentRate - deltaTime;
+	if (currentFireRate > 0) currentFireRate = currentFireRate - deltaTime;
+
+	return false;
 }
 
 void Player::UpdateSprite(float px, float py, float angle)
