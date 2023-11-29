@@ -8,9 +8,9 @@ private:
 	float currentFireRate = 0;
 	float currentMoveRate = 0;
 	//Propreties
-	float moveRate = .2;
+	float moveRate = .2f;
 	
-	float fireRate = .2;
+	float fireRate = .2f;
 
 public:
 	sf::ConvexShape shape;
