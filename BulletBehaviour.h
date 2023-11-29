@@ -28,5 +28,6 @@ private:
 	};
 	Direction direction;
 
+	sf::Vector2f spawnPosition;
 };
 
