@@ -76,27 +76,23 @@ int main()
 	};
 
 	std::vector<sf::Vector3f> positionVector;
-	int positionVectorSize;
 	levelShape currentlevel = square;
 
 	switch (currentlevel)
 	{
 	case triangle:
-		positionVectorSize = 9;
 		for (int i = 0; i < 9; i++) {
 			positionVector.push_back(TrianglePositionList[i]);
 		}
 		break;
 
 	case square:
-		positionVectorSize = 8;
 		for (int i = 0; i < 8; i++) {
 			positionVector.push_back(SquarePositionList[i]);
 		}
 		break;
 
 	case pantagone:
-		positionVectorSize = 8;
 		for (int i = 0; i < 8; i++) {
 			positionVector.push_back(PantagonePositionList[i]);
 		}
@@ -138,7 +134,7 @@ int main()
 
 			bulletList.push_back(BulletBehaviour(BulletBehaviour::Owner::Player, 100, player.shape.getPosition()));
 		}
-		player.ProcessMoveInput(positionVectorSize, deltaTime);
+		player.ProcessMoveInput(positionVector.size(), deltaTime);
 		//Update playerPosition
 		player.UpdateSprite(positionVector[player.positionIndex].x,
 							positionVector[player.positionIndex].y,
