@@ -1,10 +1,12 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include "Lerp.h"
 
 class BulletBehaviour
 {
 public :
+	int progression;
 	enum class Owner {
 		Player,
 		Ennemy
@@ -17,7 +19,6 @@ public :
 
 private:
 	sf::CircleShape shape;
-	int progression;
 	float fullScale = 5;
 
 	Owner currentOwner;

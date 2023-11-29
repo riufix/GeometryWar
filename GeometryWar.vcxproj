@@ -87,6 +87,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BulletBehaviour.cpp" />
+    <ClCompile Include="Lerp.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="Monster.cpp" />
@@ -94,6 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BulletBehaviour.h" />
+    <ClInclude Include="Lerp.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Player.h" />
