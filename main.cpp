@@ -182,7 +182,7 @@ int main()
 			DISPLAY
 		-------------- */
 		window.clear();
-		
+		effect.UpdateEffect(window, deltaTime);
 
 		switch (currentGameState)
 		{
@@ -203,11 +203,15 @@ int main()
 				bool skipToNext = false; //skip if collision
 				if (monsterListIt->ProcessMonster(deltaTime))
 				{
-					if (monsterListIt->progression > 100 && monsterListIt->positionIndex == player.positionIndex)
+					if (monsterListIt->progression > 100)
 					{
 						if (!player.isInvincible())
 							if (player.Hit())
 								currentGameState = GameOver;
+							else
+							{
+								effect.ChangeFlashScreen(1.f, false, sf::Color::Red);
+							}
 					}
 
 					monsterListIt = monsterList.erase(monsterListIt);
@@ -295,7 +299,6 @@ Main Menu - F
 
 Game :
 	Effect : - F
-		when hit 
 		when dead 
 		when kill monster
 	Types of ennemies :

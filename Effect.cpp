@@ -9,16 +9,21 @@ void Effect::ChangeFlashScreen(int duration, bool randomness, sf::Color color)
 	FlashScreenColor = color; 
 }
 
+sf::Color Effect::RandomColor()
+{
+	return sf::Color(rand() % 255, rand() % 255, rand() % 255);
+}
+
 void Effect::UpdateEffect(sf::RenderWindow& window, float deltatime)
 {
-	if (FlashScreenDuration >= 0)
+	if (FlashScreenDuration > 0)
 	{
 
 		FlashScreenDuration = FlashScreenDuration - deltatime;
 
 		sf::RectangleShape rectScreen;
-		rectScreen.setPosition(window.getSize().x / 2.0f, window.getSize().y / 2.0f);
-		rectScreen.setScale(10, 10);
+		rectScreen.setPosition(0, 0);
+		rectScreen.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
 
 		if(FlashScreenRandom)
 		{
