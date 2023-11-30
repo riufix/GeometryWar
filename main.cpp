@@ -7,6 +7,7 @@
 #include "BulletBehaviour.h"
 #include "map.h"
 #include "Monster.h"
+#include "Effect.h"
 
 constexpr enum levelShape {
 	triangle,
@@ -40,6 +41,8 @@ int main()
 	int score = 0;
 	int scoreNeeded = 100;
 	int scoreNextLvl = 150;
+	//Init Effect
+	Effect effect;
 
 	//Init Player
 	Player player;
@@ -179,7 +182,7 @@ int main()
 			DISPLAY
 		-------------- */
 		window.clear();
-
+		
 
 		switch (currentGameState)
 		{

@@ -1,8 +1,5 @@
 #pragma once
 
-<<<<<<< Updated upstream
-void 
-=======
 #include <SFML/Graphics.hpp>
 
 class Effect
@@ -16,4 +13,3 @@ public:
 
 	void UpdateEffect(sf::RenderWindow& window, float deltatime);
 };
->>>>>>> Stashed changes
