@@ -38,6 +38,8 @@ int main()
 	//Init GameState
 	gameState currentGameState = Game;
 	int score = 0;
+	int scoreNeeded = 100;
+	int scoreNextLvl = 150;
 
 	//Init Player
 	Player player;
@@ -81,6 +83,7 @@ int main()
 
 	std::vector<sf::Vector3f> positionVector;
 	levelShape currentlevel = triangle;
+	positionVector.clear();
 	switch (currentlevel)
 	{
 	case triangle:
@@ -145,14 +148,20 @@ int main()
 			break;
 		case Game:
 			//Process Player Input
+			player.ProcessMoveInput(positionVector.size(), deltaTime);
+			player.UpdateSprite(positionVector[player.positionIndex].x, positionVector[player.positionIndex].y, positionVector[player.positionIndex].z);
 			if (player.ProcessFireInput(deltaTime))
 			{
 				bulletList.push_back(BulletBehaviour(BulletBehaviour::Owner::Player, 100, player.positionIndex, player.shape.getPosition()));
 			}
-			player.ProcessMoveInput(positionVector.size(), deltaTime);
-
+			
 			player.ProcessInvincibility(deltaTime);
-			player.UpdateSprite(positionVector[player.positionIndex].x, positionVector[player.positionIndex].y, positionVector[player.positionIndex].z);
+			
+			if (score >= scoreNeeded) 
+			{
+				scoreNeeded = scoreNeeded + scoreNextLvl;
+			}
+
 			break;
 
 		case GameOver:
@@ -196,7 +205,6 @@ int main()
 						if (!player.isInvincible())
 							if (player.Hit())
 								currentGameState = GameOver;
-						std::cout << player.Health << std::endl;
 					}
 
 					monsterListIt = monsterList.erase(monsterListIt);
@@ -250,6 +258,11 @@ int main()
 			player.DrawSprite(window);
 
 			//Display UI
+			for (int i = 0; i < player.Health; i++)
+			{
+				player.UpdateSprite(100 + i * 150, 100, player.shape.getRotation());
+				player.DrawSprite(window);
+			}
 		}
 		break;
 		case GameOver:
@@ -270,24 +283,27 @@ int main()
 	}
 }
 
+void changeLevel(sf::ConvexShape map, std::vector<sf::Vector3f> positionList) {
+
+}
 
 /*
-Main Menu
+Main Menu - V
 
 Game :
-	Effect :
-		when hit
-		when dead
+	Effect : - V
+		when hit 
+		when dead 
 		when kill monster
-		on invincibility frames
-
+	Types of ennemies :
+		2 hit
+		3 hit + Fire back
 	UI :
-		Lives
-		Score
+		Score - V
 Game Over
 
 LevelTransition :
 	When ?
-	Transition
+	Transition - V
 	Change Level
 */

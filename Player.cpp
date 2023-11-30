@@ -68,6 +68,13 @@ void Player::UpdateSprite(float px, float py, float angle)
 
 void Player::DrawSprite(sf::RenderWindow& window) 
 {
+	shape.setFillColor(sf::Color::Yellow);
+	if (currentInvicibilityRate > 0)
+	{
+		int flashColor = 255 * cos(currentInvicibilityRate * 100);
+		shape.setFillColor(sf::Color(flashColor, flashColor, 0));
+	}
+
 	window.draw(shape);
 }
 
