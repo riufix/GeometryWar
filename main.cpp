@@ -288,10 +288,10 @@ void changeLevel(sf::ConvexShape map, std::vector<sf::Vector3f> positionList) {
 }
 
 /*
-Main Menu - V
+Main Menu - F
 
 Game :
-	Effect : - V
+	Effect : - F
 		when hit 
 		when dead 
 		when kill monster
@@ -299,11 +299,10 @@ Game :
 		2 hit
 		3 hit + Fire back
 	UI :
-		Score - V
-Game Over
+		Score - F
+Game Over - F
 
 LevelTransition :
-	When ?
-	Transition - V
-	Change Level
+	Transition - F
+	Change Level - V
 */
