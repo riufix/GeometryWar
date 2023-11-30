@@ -210,7 +210,7 @@ int main()
 								currentGameState = GameOver;
 							else
 							{
-								effect.ChangeFlashScreen(1.f, false, sf::Color::Red);
+								effect.ChangeFlashScreen(1.0f, false, sf::Color::Red);
 							}
 					}
 

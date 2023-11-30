@@ -71,7 +71,7 @@ sf::ConvexShape InitializePantagone() {
     return pantagone;
 }
 
-void DrawLevel(sf::RenderWindow& window, sf::ConvexShape shape, sf::Vector2f Position, float minScale, float maxScale) {
+void DrawLevel(sf::RenderWindow& window, sf::ConvexShape shape, sf::Vector2f Position, float minScale, float maxScale, sf::Color color) {
 
     //center of the screen
     //int centerX = window.getSize().x / 2;
@@ -97,8 +97,8 @@ void DrawLevel(sf::RenderWindow& window, sf::ConvexShape shape, sf::Vector2f Pos
 
         sf::Vertex line[] =
         {
-            sf::Vertex(sf::Vector2f(startX, startY), sf::Color::Blue),
-            sf::Vertex(sf::Vector2f(endX, endY), sf::Color::Blue)
+            sf::Vertex(sf::Vector2f(startX, startY), color),
+            sf::Vertex(sf::Vector2f(endX, endY), color)
         };
 
         window.draw(line, 2, sf::Lines);

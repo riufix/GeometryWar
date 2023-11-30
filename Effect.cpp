@@ -27,7 +27,7 @@ void Effect::UpdateEffect(sf::RenderWindow& window, float deltatime)
 
 		if(FlashScreenRandom)
 		{
-			rectScreen.setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255));
+			rectScreen.setFillColor(RandomColor());
 		}
 		else
 		{
