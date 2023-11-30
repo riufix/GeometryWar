@@ -77,6 +77,8 @@ void DrawLevel(sf::RenderWindow& window, sf::ConvexShape shape, sf::Vector2f Pos
     //int centerX = window.getSize().x / 2;
     //int centerY = window.getSize().y / 2;
 
+    shape.setOutlineColor(color);
+
     shape.setPosition(Position);
     
     shape.setScale(maxScale, maxScale);

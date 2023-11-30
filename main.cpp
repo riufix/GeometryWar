@@ -168,7 +168,6 @@ int main()
 			break;
 
 		case GameOver:
-
 			break;
 		case LevelTransition:
 
@@ -274,7 +273,7 @@ int main()
 		break;
 		case GameOver:
 		{
-			DrawLevel(window, map, windowCenter, 5, 30);
+			DrawLevel(window, map, windowCenter, 5, 30, effect.RandomColor());
 			for (Monster& monster : monsterList)
 				monster.DrawSprite(window);
 			for (BulletBehaviour& bullet : bulletList)
