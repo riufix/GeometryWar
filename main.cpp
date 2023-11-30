@@ -274,7 +274,14 @@ int main()
 		break;
 		case GameOver:
 		{
+			DrawLevel(window, map, windowCenter, 5, 30);
+			for (Monster& monster : monsterList)
+				monster.DrawSprite(window);
+			for (BulletBehaviour& bullet : bulletList)
+				bullet.DisplayBullet(window);
+			player.DrawSprite(window);
 
+			//Display Score
 		}
 		break;
 		case LevelTransition:
@@ -307,8 +314,21 @@ Game :
 	UI :
 		Score - F
 Game Over - F
+	Logic -> goto Main Menu
+	Display Score
+	Animation
 
 LevelTransition :
 	Transition - F
 	Change Level - V
+
+Sound :
+	Player shoot
+	Player Hit
+	Monster Hit
+	Transition
+Music :
+	Title screen
+	Game
+	GameOver
 */
