@@ -22,6 +22,9 @@ constexpr enum gameState {
 	LevelTransition
 };
 
+//Prototypes
+void SpawnMonster(std::list<Monster>& monsterList, std::vector<sf::Vector3f>& positionVector, sf::Vector2f windowCenter, int currentLevel);
+
 int main()
 {
 	//Init Window
@@ -40,7 +43,8 @@ int main()
 	gameState currentGameState = Game;
 	int score = 0;
 	int scoreNeeded = 100;
-	int scoreNextLvl = 150;
+	int scoreNextLvl = 300;
+	int level = 1;
 	//Init Effect
 	Effect effect;
 
@@ -118,7 +122,7 @@ int main()
 	//Init Ennemy List
 	std::list<Monster> monsterList;
 	int newCorridor = rand() % positionVector.size();
-	monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor));
+	monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor, 1));
 
 	//Init Transition level variables
 	float transitionTime = 1.0f;
@@ -180,7 +184,16 @@ int main()
 			else
 			{
 				//Change Level
-				//currentGameState = Game;
+
+				//Add level and add new number of monsters
+				level++;
+				if (level % 3 == 0) //Give one life if complete each map
+					player.Health++;
+				monsterList.clear();
+				for(int i=0; i< level; i++)
+					SpawnMonster(monsterList, positionVector, windowCenter, level);
+				
+				currentGameState = Game;
 			}
 			break;
 		}
@@ -223,11 +236,9 @@ int main()
 								effect.ChangeFlashScreen(1.0f, false, sf::Color::Red);
 							}*/
 					}
-
+					
 					monsterListIt = monsterList.erase(monsterListIt);
-
-					int newCorridor = rand() % positionVector.size();
-					monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor));
+					SpawnMonster(monsterList, positionVector, windowCenter, level);
 				}
 				else
 				{
@@ -240,13 +251,15 @@ int main()
 							skipToNext = true;
 							score = score + 25;
 
-							monsterListIt = monsterList.erase(monsterListIt);
 							bulletCollisionListIt = bulletList.erase(bulletCollisionListIt);
-
-							int newCorridor = rand() % positionVector.size();
-							monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor));
-
 							bulletCollisionListIt = bulletList.end();
+
+							monsterListIt->Health--;
+							if (monsterListIt->Health <= 0)
+							{
+								monsterListIt = monsterList.erase(monsterListIt);
+								SpawnMonster(monsterList, positionVector, windowCenter, level);
+							}
 						}
 						else
 							bulletCollisionListIt++;			
@@ -284,6 +297,7 @@ int main()
 		break;
 		case GameOver:
 		{
+			DrawLevel(window, map, windowCenter, 5, 30);
 			for (Monster& monster : monsterList)
 				monster.DrawSprite(window);
 			for (BulletBehaviour& bullet : bulletList)
@@ -311,12 +325,20 @@ void changeLevel(sf::ConvexShape map, std::vector<sf::Vector3f> positionList) {
 
 }
 
+void SpawnMonster(std::list<Monster>& monsterList, std::vector<sf::Vector3f>& positionVector, sf::Vector2f windowCenter, int currentLevel)
+{
+	int newCorridor = rand() % positionVector.size();
+	int newHealth = 1;
+	if (currentLevel > 1)
+		newHealth = rand() % 2 + 1;
+	monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor, newHealth));
+}
+
 /*
 Main Menu - F
 
 Game :
 	Effect : - F
-		when dead 
 		when kill monster
 	Types of ennemies :
 		2 hit

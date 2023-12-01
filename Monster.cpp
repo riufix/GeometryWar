@@ -4,9 +4,10 @@
 //Prototype
 sf::Vector2f Vector2Lerp(sf::Vector2f a, sf::Vector2f b, float t);
 
-Monster::Monster(sf::Vector2f start, sf::Vector3f end, int corridor) {
+Monster::Monster(sf::Vector2f start, sf::Vector3f end, int corridor, int health) {
 	positionIndex = corridor;
 	SpawningPosition = start;
+	Health = health;
 	EndingPosition = sf::Vector2f(end.x,end.y);
 	shape.setRotation(end.z + 180);
 
@@ -33,6 +34,8 @@ void Monster::InitializeGraphic()
 
 void Monster::DrawSprite(sf::RenderWindow& window)
 {
+	sf::Color fillColor = sf::Color(255,0,128 * (Health - 1));
+	shape.setFillColor(fillColor);
 	window.draw(shape);
 }
 

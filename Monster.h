@@ -13,12 +13,13 @@ public:
 	sf::ConvexShape shape;
 	int progression = 0;
 	int positionIndex = 0;
+	int Health = 1;
 	float timeStep = .01f; //Time between step
 
 	sf::Vector2f SpawningPosition;
 	sf::Vector2f EndingPosition;
 
-	Monster(sf::Vector2f start, sf::Vector3f end, int corridor);
+	Monster(sf::Vector2f start, sf::Vector3f end, int corridor, int health);
 
 	void InitializeGraphic();
 	void DrawSprite(sf::RenderWindow& window);
