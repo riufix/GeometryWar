@@ -324,4 +324,8 @@ Music :
 //Prb :
 	Enemies on top of each others
 	Enemies projectiles more visible
+
+//optimize:
+	Transfer bullet display to bullet Manager
+	Transfer Ennemis display to ennemy Manager
 */
