@@ -16,6 +16,12 @@ void Player::InitializeGraphic()
 	shape.setOrigin(0, 0);
 }
 
+void Player::ProcessInvincibility(float deltaTime)
+{
+	if (currentInvicibilityRate <= 0) return;
+	currentInvicibilityRate = currentInvicibilityRate - deltaTime;
+}
+
 void Player::ProcessMoveInput(int maxPosition, float deltaTime)
 {
 	if (currentMoveRate <= 0)
@@ -62,5 +68,25 @@ void Player::UpdateSprite(float px, float py, float angle)
 
 void Player::DrawSprite(sf::RenderWindow& window) 
 {
+	shape.setFillColor(sf::Color::Yellow);
+	if (currentInvicibilityRate > 0)
+	{
+		int flashColor = 255 * cos(currentInvicibilityRate * 100);
+		shape.setFillColor(sf::Color(flashColor, flashColor, 0));
+	}
+
 	window.draw(shape);
+}
+
+
+bool Player::isInvincible()
+{
+	return currentInvicibilityRate > 0;
+}
+bool Player::Hit() 
+{
+	currentInvicibilityRate = invicibilityRate;
+	Health = Health - 1;
+
+	return Health == 0;
 }

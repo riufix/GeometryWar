@@ -6,12 +6,12 @@
 class Monster
 {
 private :
-	int progression = 0;
 	float maxScale = 2;
 	float currentStep;
 
 public:
 	sf::ConvexShape shape;
+	int progression = 0;
 	int positionIndex = 0;
 	float timeStep = .01f; //Time between step
 

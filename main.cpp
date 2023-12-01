@@ -7,6 +7,7 @@
 #include "BulletBehaviour.h"
 #include "map.h"
 #include "Monster.h"
+#include "Effect.h"
 
 constexpr enum levelShape {
 	triangle,
@@ -14,6 +15,12 @@ constexpr enum levelShape {
 	pantagone
 };
 
+constexpr enum gameState {
+	MainMenu,
+	Game,
+	GameOver,
+	LevelTransition
+};
 
 int main()
 {
@@ -29,10 +36,17 @@ int main()
 	windowCenter.x = window.getSize().x / 2.0f;
 	windowCenter.y = window.getSize().y / 2.0f;
 	
+	//Init GameState
+	gameState currentGameState = Game;
+	int score = 0;
+	int scoreNeeded = 100;
+	int scoreNextLvl = 150;
+	//Init Effect
+	Effect effect;
+
 	//Init Player
 	Player player;
 	player.InitializeGraphic();
-	float convexRotate = 0;
 	
 	//Init Bullet List
 	std::list<BulletBehaviour> bulletList;
@@ -71,8 +85,8 @@ int main()
 	};
 
 	std::vector<sf::Vector3f> positionVector;
-	levelShape currentlevel = pantagone;
-
+	levelShape currentlevel = triangle;
+	positionVector.clear();
 	switch (currentlevel)
 	{
 	case triangle:
@@ -106,6 +120,9 @@ int main()
 	int newCorridor = rand() % positionVector.size();
 	monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor));
 
+	//Init Transition level variables
+	float transitionTime = 1.0f;
+
 	while (window.isOpen())
 	{
 		float deltaTime = frameClock.restart().asSeconds();
@@ -127,86 +144,201 @@ int main()
 			}
 		}
 
-		//Process Player Input
-		if (player.ProcessFireInput(deltaTime))
+		/* --------------
+			LOGIC
+		-------------- */
+		switch (currentGameState)
 		{
-			bulletList.push_back(BulletBehaviour(BulletBehaviour::Owner::Player, 100, player.positionIndex, player.shape.getPosition()));
+		case MainMenu:
+
+			break;
+		case Game:
+			//Process Player Input
+			player.ProcessMoveInput(positionVector.size(), deltaTime);
+			player.UpdateSprite(positionVector[player.positionIndex].x, positionVector[player.positionIndex].y, positionVector[player.positionIndex].z);
+			if (player.ProcessFireInput(deltaTime))
+			{
+				bulletList.push_back(BulletBehaviour(BulletBehaviour::Owner::Player, 100, player.positionIndex, player.shape.getPosition()));
+			}
+			
+			player.ProcessInvincibility(deltaTime);
+			
+			if (score >= scoreNeeded) 
+			{
+				scoreNeeded = scoreNeeded + scoreNextLvl;
+				currentGameState = LevelTransition;
+				transitionTime = 1.0f;
+			}
+
+			break;
+
+		case GameOver:
+			break;
+		case LevelTransition:
+			if (transitionTime < 40.0f)
+				transitionTime = transitionTime + deltaTime * 15;
+			else
+			{
+				//Change Level
+				//currentGameState = Game;
+			}
+			break;
 		}
-		player.ProcessMoveInput(positionVector.size(), deltaTime);
-		//Update playerPosition
-		player.UpdateSprite(positionVector[player.positionIndex].x,
-							positionVector[player.positionIndex].y,
-							positionVector[player.positionIndex].z);
+
+
+
 
 		/* --------------
 			DISPLAY
 		-------------- */
 		window.clear();
+		effect.UpdateEffect(window, deltaTime);
 
-		//Display level
-		DrawLevel(window, map, windowCenter, 5, 30);
-
-		//Display & manage Ennemies
-		std::list<Monster>::iterator monsterListIt = monsterList.begin();
-		while (monsterListIt != monsterList.end())
+		switch (currentGameState)
 		{
-			bool skipToNext = false; //skip if collision
-			if (monsterListIt->ProcessMonster(deltaTime))
-			{
-				monsterListIt = monsterList.erase(monsterListIt);
+		case MainMenu:
+		{
 
-				int newCorridor = rand() % positionVector.size();
-				monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor));
-			}
-			else
+		}
+		break;
+		case Game:
+		{
+			//Display level
+			DrawLevel(window, map, windowCenter, 5, 30);
+
+			//Display & manage Ennemies
+			std::list<Monster>::iterator monsterListIt = monsterList.begin();
+			while (monsterListIt != monsterList.end())
 			{
-				//Manage Ennemies - Bullet Collision
-				std::list<BulletBehaviour>::iterator bulletCollisionListIt = bulletList.begin();
-				while (bulletCollisionListIt != bulletList.end())
+				bool skipToNext = false; //skip if collision
+				if (monsterListIt->ProcessMonster(deltaTime))
 				{
-					if (monsterListIt->ChkCollision(*bulletCollisionListIt))
+					if (monsterListIt->progression > 100)
 					{
-						skipToNext = true;
-
-						monsterListIt = monsterList.erase(monsterListIt);
-						bulletCollisionListIt = bulletList.erase(bulletCollisionListIt);
-
-						int newCorridor = rand() % positionVector.size();
-						monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor));
-
-						bulletCollisionListIt = bulletList.end();
+						if (!player.isInvincible())
+							if (player.Hit())
+								currentGameState = GameOver;
+							else
+							{
+								effect.ChangeFlashScreen(1.0f, false, sf::Color::Red);
+							}
 					}
-					else
-					{
-						bulletCollisionListIt++;
-					}
+
+					monsterListIt = monsterList.erase(monsterListIt);
+
+					int newCorridor = rand() % positionVector.size();
+					monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor));
 				}
+				else
+				{
+					//Manage Ennemies - Bullet Collision
+					std::list<BulletBehaviour>::iterator bulletCollisionListIt = bulletList.begin();
+					while (bulletCollisionListIt != bulletList.end())
+					{
+						if (monsterListIt->ChkCollision(*bulletCollisionListIt))
+						{
+							skipToNext = true;
+							score = score + 25;
 
-				if (skipToNext) continue;
-				monsterListIt->DrawSprite(window);
-				monsterListIt++;
+							monsterListIt = monsterList.erase(monsterListIt);
+							bulletCollisionListIt = bulletList.erase(bulletCollisionListIt);
+
+							int newCorridor = rand() % positionVector.size();
+							monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor));
+
+							bulletCollisionListIt = bulletList.end();
+						}
+						else
+							bulletCollisionListIt++;			
+					}
+
+					if (skipToNext) continue;
+					monsterListIt->DrawSprite(window);
+					monsterListIt++;
+				}
+			}
+
+			//Display & manage projectiles
+			std::list<BulletBehaviour>::iterator bulletListIt = bulletList.begin();
+			while (bulletListIt != bulletList.end())
+			{
+				if (bulletListIt->ProcessBullet(windowCenter))
+					bulletListIt = bulletList.erase(bulletListIt);
+				else
+				{
+					bulletListIt->DisplayBullet(window);
+					bulletListIt++;
+				}
+			}
+
+			//Display player
+			player.DrawSprite(window);
+
+			//Display UI
+			for (int i = 0; i < player.Health; i++)
+			{
+				player.UpdateSprite(100 + i * 150, 100, player.shape.getRotation());
+				player.DrawSprite(window);
 			}
 		}
-
-
-		//Display & manage projectiles
-		std::list<BulletBehaviour>::iterator bulletListIt = bulletList.begin();
-		while (bulletListIt != bulletList.end())
+		break;
+		case GameOver:
 		{
-			if (bulletListIt->ProcessBullet(windowCenter)) 
-			{
-				bulletListIt = bulletList.erase(bulletListIt);
-			}
-			else 
-			{
-				bulletListIt->DisplayBullet(window);
-				bulletListIt++;
-			}
+			for (Monster& monster : monsterList)
+				monster.DrawSprite(window);
+			for (BulletBehaviour& bullet : bulletList)
+				bullet.DisplayBullet(window);
+			player.DrawSprite(window);
+
+			//Display Score
+		}
+		break;
+		case LevelTransition:
+		{
+			DrawLevel(window, map, windowCenter, 5 * transitionTime, 30 * transitionTime, effect.RandomColor());
+
+		}
+		break;
+
 		}
 
-		//Display player
-		player.DrawSprite(window);
 
 		window.display();
 	}
 }
+
+void changeLevel(sf::ConvexShape map, std::vector<sf::Vector3f> positionList) {
+
+}
+
+/*
+Main Menu - F
+
+Game :
+	Effect : - F
+		when dead 
+		when kill monster
+	Types of ennemies :
+		2 hit
+		3 hit + Fire back
+	UI :
+		Score - F
+
+Game Over - F
+	Logic -> goto Main Menu
+	Display Score
+	Animation
+
+LevelTransition :
+	Change Level - V
+
+Sound :
+	Player shoot
+	Player Hit
+	Monster Hit
+	Transition
+Music :
+	Title screen
+	Game
+	GameOver
+*/
