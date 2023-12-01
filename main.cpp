@@ -251,6 +251,7 @@ int main()
 			player.DrawSprite(window);
 
 			//Display Score
+
 		}
 		break;
 		
@@ -287,17 +288,15 @@ void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState)
 }
 
 /*
-Main Menu - F
+Main Menu
 
 Game :
-	Effect : - F
+	Effect :
 		when kill monster
-	Types of ennemies :
-		3 hit + Fire back
 	UI :
-		Score - F
+		Score
 
-Game Over - F
+Game Over
 	Logic -> goto Main Menu
 	Display Score
 	Animation
