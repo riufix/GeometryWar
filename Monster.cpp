@@ -1,5 +1,4 @@
 #include "Monster.h"
-#include <iostream>
 
 //Prototype
 sf::Vector2f Vector2Lerp(sf::Vector2f a, sf::Vector2f b, float t);

@@ -1,5 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "SFML/Window.hpp"
 
 enum class levelShape {
 	triangle,
