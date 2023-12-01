@@ -109,6 +109,7 @@ int main()
 		/* --------------
 			LOGIC
 		-------------- */
+		std::cout << startTempo << std::endl;
 		switch (currentGameState)
 		{
 		case MainMenu:
@@ -117,8 +118,19 @@ int main()
 				titleScale = 20;
 				if (player.ProcessFireInput(deltaTime) || isStarting) {
 					if (startTempo < 10) startTempo += 0.1;
-					else if (startTempo >= 15) {
+					else {
 						//Start Level
+						level = 1;
+						score = 0;
+						scoreNeeded = 100;
+
+						player.Reset();
+						bulletList.clear();
+						monsterList.clear();
+						int newCorridor = rand() % positionVector.size();
+						monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor, 1));
+
+						currentGameState = Game;
 					}
 					isStarting = true;
 				}

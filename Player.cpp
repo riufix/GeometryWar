@@ -15,6 +15,12 @@ void Player::InitializeGraphic()
 	shape.setOrigin(0, 0);
 }
 
+void Player::Reset()
+{
+	positionIndex = 0;
+	Health = 3;
+}
+
 void Player::ProcessInvincibility(float deltaTime)
 {
 	if (currentInvicibilityRate <= 0) return;
