@@ -52,23 +52,23 @@ sf::ConvexShape InitializeSquare() {
     return square;
 }
 
-sf::ConvexShape InitializePantagone() {
-    sf::ConvexShape pantagone;
+sf::ConvexShape InitializePentagon() {
+    sf::ConvexShape pentagon;
 
-    pantagone.setPointCount(5);
+    pentagon.setPointCount(5);
 
-    pantagone.setOutlineColor(sf::Color::Blue);
-    pantagone.setFillColor(sf::Color::Transparent);
-    pantagone.setOutlineThickness(.75f);
-    pantagone.setOrigin(0, 0);
+    pentagon.setOutlineColor(sf::Color::Blue);
+    pentagon.setFillColor(sf::Color::Transparent);
+    pentagon.setOutlineThickness(.75f);
+    pentagon.setOrigin(0, 0);
 
-    pantagone.setPoint(0, sf::Vector2f(0,-9.5f));
-    pantagone.setPoint(1, sf::Vector2f(10,0));
-    pantagone.setPoint(2, sf::Vector2f(6,10));
-    pantagone.setPoint(3, sf::Vector2f(-6,10));
-    pantagone.setPoint(4, sf::Vector2f(-10,0));
+    pentagon.setPoint(0, sf::Vector2f(0,-9.5f));
+    pentagon.setPoint(1, sf::Vector2f(10,0));
+    pentagon.setPoint(2, sf::Vector2f(6,10));
+    pentagon.setPoint(3, sf::Vector2f(-6,10));
+    pentagon.setPoint(4, sf::Vector2f(-10,0));
 
-    return pantagone;
+    return pentagon;
 }
 
 void DrawLevel(sf::RenderWindow& window, sf::ConvexShape shape, sf::Vector2f Position, float minScale, float maxScale, sf::Color color) {
@@ -164,7 +164,7 @@ void changeLevel(sf::ConvexShape& map, std::vector<sf::Vector3f>& positionList, 
         }
         break;
 
-    case levelShape::pantagone:
+    case levelShape::pentagon:
         map = InitializePantagone();
         for (int i = 0; i < 5; i++) {
             positionList.push_back(PantagonePositionList[i]);

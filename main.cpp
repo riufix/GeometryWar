@@ -39,6 +39,7 @@ int main()
 	int scoreNeeded = 100;
 	int scoreNextLvl = 300;
 	int level = 1;
+
 	//Init Effect
 	Effect effect;
 
@@ -54,12 +55,13 @@ int main()
 	std::vector<sf::Vector3f> positionVector;
 	levelShape currentLevel = levelShape::triangle;
 	changeLevel(map, positionVector, currentLevel);
+
 	//Init Ennemy List
 	std::list<Monster> monsterList;
 	int newCorridor = rand() % positionVector.size();
 	monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor, 1));
 
-	//Init Transition level variables
+	//Init Transition level & Game Over Timer
 	float transitionTime = 1.0f;
 
 	while (window.isOpen())
@@ -86,11 +88,12 @@ int main()
 		/* --------------
 			LOGIC
 		-------------- */
+		effect.ChangeFlashScreen(1, true);
 		switch (currentGameState)
 		{
 		case MainMenu:
-
 			break;
+
 		case Game:
 			//Process Player Input
 			player.ProcessMoveInput(positionVector.size(), deltaTime);
@@ -102,6 +105,7 @@ int main()
 			
 			player.ProcessInvincibility(deltaTime);
 			
+			//Look if go to next level
 			if (score >= scoreNeeded) 
 			{
 				scoreNeeded = scoreNeeded + scoreNextLvl;
@@ -113,6 +117,7 @@ int main()
 
 		case GameOver:
 			break;
+
 		case LevelTransition:
 			if (transitionTime < 40.0f)
 				transitionTime = transitionTime + deltaTime * 15;
@@ -153,6 +158,7 @@ int main()
 
 		}
 		break;
+
 		case Game:
 		{
 			//Display level
@@ -234,6 +240,7 @@ int main()
 			}
 		}
 		break;
+
 		case GameOver:
 		{
 			DrawLevel(window, map, windowCenter, 5, 30);
@@ -246,15 +253,14 @@ int main()
 			//Display Score
 		}
 		break;
+		
 		case LevelTransition:
 		{
 			DrawLevel(window, map, windowCenter, 5 * transitionTime, 30 * transitionTime, effect.RandomColor());
 
 		}
 		break;
-
 		}
-
 
 		window.display();
 	}
