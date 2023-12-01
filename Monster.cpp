@@ -9,7 +9,7 @@ Monster::Monster(sf::Vector2f start, sf::Vector3f end, int corridor, int health)
 	Health = health;
 	EndingPosition = sf::Vector2f(end.x,end.y);
 	
-	timeStep = .01f * health;
+	timeStep = .015f * health;
 
 	shape.setRotation(end.z + 180);
 	InitializeGraphic();
