@@ -79,14 +79,14 @@ int main()
 	};
 	sf::Vector3f PantagonePositionList[5] = {
 	{1150,370,54},
-	{0,0,108},
-	{0,0,162},
-	{0,0,-108},
-	{0,0,-54}
+	{1240,700,108},
+	{975,890,175},
+	{680,700,-108},
+	{775,370,-54}
 	};
 
 	std::vector<sf::Vector3f> positionVector;
-	levelShape currentlevel = triangle;
+	levelShape currentlevel = pantagone;
 	positionVector.clear();
 	switch (currentlevel)
 	{
@@ -216,13 +216,13 @@ int main()
 				{
 					if (monsterListIt->progression > 100)
 					{
-						if (!player.isInvincible())
+						/*if (!player.isInvincible())
 							if (player.Hit())
 								currentGameState = GameOver;
 							else
 							{
 								effect.ChangeFlashScreen(1.0f, false, sf::Color::Red);
-							}
+							}*/
 					}
 
 					monsterListIt = monsterList.erase(monsterListIt);
