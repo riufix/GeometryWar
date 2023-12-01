@@ -117,6 +117,7 @@ int main()
 			break;
 
 		case GameOver:
+
 			break;
 
 		case LevelTransition:
@@ -239,12 +240,13 @@ int main()
 				player.UpdateSprite(100 + i * 150, 100, player.shape.getRotation());
 				player.DrawSprite(window);
 			}
-			
+			DisplayText(window, stringToDisplayable(std::to_string(score)), sf::Vector2f(windowCenter.x * 2 - 50, 100), 10.0f, textOrigin::right);
 		}
 		break;
 
 		case GameOver:
 		{
+			//Display static gameplay
 			DrawLevel(window, map, windowCenter, 5, 30);
 			for (Monster& monster : monsterList)
 				monster.DrawSprite(window);
@@ -253,7 +255,12 @@ int main()
 			player.DrawSprite(window);
 
 			//Display Score
+			DisplayText(window, stringToDisplayable(std::to_string(score)), sf::Vector2f(windowCenter.x * 2 - 50, 100), 10.0f, textOrigin::right);
 
+
+			//Display Game Over
+			//DisplayText(window, stringToDisplayable("GAME"),sf::Vector2f(windowCenter.x * 2 - 50, 100),);
+			//DisplayText(window, stringToDisplayable("OVER"),sf::Vector2f(windowCenter.x * 2 - 50, 100),);
 		}
 		break;
 		
@@ -295,12 +302,9 @@ Main Menu
 Game :
 	Effect :
 		when kill monster
-	UI :
-		Score
 
 Game Over
 	Logic -> goto Main Menu
-	Display Score
 	Animation
 
 Sound :

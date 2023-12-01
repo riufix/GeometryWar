@@ -1,7 +1,7 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 
-constexpr enum class levelShape {
+enum class levelShape {
 	triangle,
 	square,
 	pentagon
