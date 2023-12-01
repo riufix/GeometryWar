@@ -107,3 +107,71 @@ void DrawLevel(sf::RenderWindow& window, sf::ConvexShape shape, sf::Vector2f Pos
     }
 }
 
+void AddLevel(levelShape& level) 
+{
+    int newLevel = (int)level + 1;
+    if (newLevel > 2)
+        newLevel = 0;
+    level = (levelShape)newLevel;
+}
+
+void changeLevel(sf::ConvexShape& map, std::vector<sf::Vector3f>& positionList, levelShape currentShape)
+{
+    //Init player position list
+    sf::Vector3f TrianglePositionList[9] = {
+    {1090,330,55},
+    {1220,500, 60},
+    {1360,730,55},
+    {1250,890,180},
+    {960,890,180},
+    {690,890,180},
+    {560,730,-50},
+    {690,510,-55},
+    {830,330,-55}
+    };
+    sf::Vector3f SquarePositionList[8] = {
+    {1100,195,0},
+    {1300,400,90},
+    {1300,650,90},
+    {1100,875,180},
+    {800,875,180},
+    {620,650,-90},
+    {620,400,-90},
+    {820,195,0}
+    };
+    sf::Vector3f PantagonePositionList[5] = {
+    {1150,370,54},
+    {1240,700,108},
+    {975,890,175},
+    {680,700,-108},
+    {775,370,-54}
+    };
+
+    positionList.clear();
+    switch (currentShape)
+    {
+    case levelShape::triangle:
+        map = InitializeTriangle();
+        for (int i = 0; i < 9; i++) {
+            positionList.push_back(TrianglePositionList[i]);
+        }
+        break;
+
+    case levelShape::square:
+        map = InitializeSquare();
+        for (int i = 0; i < 8; i++) {
+            positionList.push_back(SquarePositionList[i]);
+        }
+        break;
+
+    case levelShape::pantagone:
+        map = InitializePantagone();
+        for (int i = 0; i < 5; i++) {
+            positionList.push_back(PantagonePositionList[i]);
+        }
+        break;
+
+    default:
+        break;
+    }
+}

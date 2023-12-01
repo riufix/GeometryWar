@@ -9,12 +9,6 @@
 #include "Monster.h"
 #include "Effect.h"
 
-constexpr enum levelShape {
-	triangle,
-	square,
-	pantagone
-};
-
 constexpr enum gameState {
 	MainMenu,
 	Game,
@@ -57,68 +51,9 @@ int main()
 
 	//Init Map
 	sf::ConvexShape map;
-
-	//Init player position list
-	sf::Vector3f TrianglePositionList[9] = {
-	{1090,330,55},
-	{1220,500, 60},
-	{1360,730,55},
-	{1250,890,180},
-	{960,890,180},
-	{690,890,180},
-	{560,730,-50},
-	{690,510,-55},
-	{830,330,-55}
-	};
-	sf::Vector3f SquarePositionList[8] = {
-	{1100,195,0},
-	{1300,400,90},
-	{1300,650,90},
-	{1100,875,180},
-	{800,875,180},
-	{620,650,-90},
-	{620,400,-90},
-	{820,195,0}
-	};
-	sf::Vector3f PantagonePositionList[5] = {
-	{1150,370,54},
-	{1240,700,108},
-	{975,890,175},
-	{680,700,-108},
-	{775,370,-54}
-	};
-
 	std::vector<sf::Vector3f> positionVector;
-	levelShape currentlevel = pantagone;
-	positionVector.clear();
-	switch (currentlevel)
-	{
-	case triangle:
-		map = InitializeTriangle();
-		for (int i = 0; i < 9; i++) {
-			positionVector.push_back(TrianglePositionList[i]);
-		}
-		break;
-
-	case square:
-		map = InitializeSquare();
-		for (int i = 0; i < 8; i++) {
-			positionVector.push_back(SquarePositionList[i]);
-		}
-		break;
-
-	case pantagone:
-		map = InitializePantagone();
-		for (int i = 0; i < 5; i++) {
-			positionVector.push_back(PantagonePositionList[i]);
-		}
-		break;
-
-	default:
-		break;
-	}
-
-
+	levelShape currentLevel = levelShape::triangle;
+	changeLevel(map, positionVector, currentLevel);
 	//Init Ennemy List
 	std::list<Monster> monsterList;
 	int newCorridor = rand() % positionVector.size();
@@ -184,6 +119,10 @@ int main()
 			else
 			{
 				//Change Level
+				AddLevel(currentLevel);
+				changeLevel(map, positionVector, currentLevel);
+
+				bulletList.clear();
 
 				//Add level and add new number of monsters
 				level++;
@@ -228,13 +167,13 @@ int main()
 				{
 					if (monsterListIt->progression > 100)
 					{
-						/*if (!player.isInvincible())
+						if (!player.isInvincible())
 							if (player.Hit())
 								currentGameState = GameOver;
 							else
 							{
 								effect.ChangeFlashScreen(1.0f, false, sf::Color::Red);
-							}*/
+							}
 					}
 					
 					monsterListIt = monsterList.erase(monsterListIt);
@@ -321,10 +260,6 @@ int main()
 	}
 }
 
-void changeLevel(sf::ConvexShape map, std::vector<sf::Vector3f> positionList) {
-
-}
-
 void SpawnMonster(std::list<Monster>& monsterList, std::vector<sf::Vector3f>& positionVector, sf::Vector2f windowCenter, int currentLevel)
 {
 	int newCorridor = rand() % positionVector.size();
@@ -341,7 +276,6 @@ Game :
 	Effect : - F
 		when kill monster
 	Types of ennemies :
-		2 hit
 		3 hit + Fire back
 	UI :
 		Score - F
@@ -350,9 +284,6 @@ Game Over - F
 	Logic -> goto Main Menu
 	Display Score
 	Animation
-
-LevelTransition :
-	Change Level - V
 
 Sound :
 	Player shoot
