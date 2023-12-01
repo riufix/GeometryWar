@@ -120,6 +120,9 @@ int main()
 	int newCorridor = rand() % positionVector.size();
 	monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor));
 
+	//Init Transition level variables
+	float transitionTime = 1.0f;
+
 	while (window.isOpen())
 	{
 		float deltaTime = frameClock.restart().asSeconds();
@@ -163,6 +166,8 @@ int main()
 			if (score >= scoreNeeded) 
 			{
 				scoreNeeded = scoreNeeded + scoreNextLvl;
+				currentGameState = LevelTransition;
+				transitionTime = 1.0f;
 			}
 
 			break;
@@ -170,7 +175,13 @@ int main()
 		case GameOver:
 			break;
 		case LevelTransition:
-
+			if (transitionTime < 40.0f)
+				transitionTime = transitionTime + deltaTime * 15;
+			else
+			{
+				//Change Level
+				//currentGameState = Game;
+			}
 			break;
 		}
 
@@ -273,7 +284,6 @@ int main()
 		break;
 		case GameOver:
 		{
-			DrawLevel(window, map, windowCenter, 5, 30, effect.RandomColor());
 			for (Monster& monster : monsterList)
 				monster.DrawSprite(window);
 			for (BulletBehaviour& bullet : bulletList)
@@ -285,6 +295,7 @@ int main()
 		break;
 		case LevelTransition:
 		{
+			DrawLevel(window, map, windowCenter, 5 * transitionTime, 30 * transitionTime, effect.RandomColor());
 
 		}
 		break;
