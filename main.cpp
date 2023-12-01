@@ -88,7 +88,6 @@ int main()
 		/* --------------
 			LOGIC
 		-------------- */
-		effect.ChangeFlashScreen(1, true);
 		switch (currentGameState)
 		{
 		case MainMenu:
@@ -127,6 +126,8 @@ int main()
 				AddLevel(currentLevel);
 				changeLevel(map, positionVector, currentLevel);
 
+				//Clear bulletList & Reset player position
+				player.positionIndex = 0;
 				bulletList.clear();
 
 				//Add level and add new number of monsters
@@ -169,7 +170,7 @@ int main()
 			while (monsterListIt != monsterList.end())
 			{
 				bool skipToNext = false; //skip if collision
-				if (monsterListIt->ProcessMonster(deltaTime))
+				if (monsterListIt->ProcessMonster(deltaTime, bulletList))
 				{
 					if (monsterListIt->progression > 100)
 					{
@@ -200,6 +201,8 @@ int main()
 							bulletCollisionListIt = bulletList.end();
 
 							monsterListIt->Health--;
+							if(monsterListIt->progression < 95) //Knockback Effect
+								monsterListIt->progression -= 5;
 							if (monsterListIt->Health <= 0)
 							{
 								monsterListIt = monsterList.erase(monsterListIt);
@@ -269,9 +272,9 @@ int main()
 void SpawnMonster(std::list<Monster>& monsterList, std::vector<sf::Vector3f>& positionVector, sf::Vector2f windowCenter, int currentLevel)
 {
 	int newCorridor = rand() % positionVector.size();
-	int newHealth = 1;
-	if (currentLevel > 1)
-		newHealth = rand() % 2 + 1;
+	int newHealth = 1 + rand() % currentLevel > 0 ? 3: 
+								 currentLevel > 0 ? 2: 
+													1;
 	monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor, newHealth));
 }
 
@@ -300,4 +303,7 @@ Music :
 	Title screen
 	Game
 	GameOver
+
+//Prb :
+	Ennemies on top of each others
 */

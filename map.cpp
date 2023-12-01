@@ -139,7 +139,7 @@ void changeLevel(sf::ConvexShape& map, std::vector<sf::Vector3f>& positionList, 
     {620,400,-90},
     {820,195,0}
     };
-    sf::Vector3f PantagonePositionList[5] = {
+    sf::Vector3f PentagonPositionList[5] = {
     {1150,370,54},
     {1240,700,108},
     {975,890,175},
@@ -165,13 +165,10 @@ void changeLevel(sf::ConvexShape& map, std::vector<sf::Vector3f>& positionList, 
         break;
 
     case levelShape::pentagon:
-        map = InitializePantagone();
+        map = InitializePentagon();
         for (int i = 0; i < 5; i++) {
-            positionList.push_back(PantagonePositionList[i]);
+            positionList.push_back(PentagonPositionList[i]);
         }
-        break;
-
-    default:
         break;
     }
 }

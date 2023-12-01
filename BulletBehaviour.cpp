@@ -46,7 +46,6 @@ bool BulletBehaviour::ProcessBullet(sf::Vector2f origin)
 	shape.setPosition(newPosition);
 
 	shape.rotate(1);
-
 	return (progression < 0 || progression > 100);
 }
 
