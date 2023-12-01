@@ -21,6 +21,10 @@ constexpr enum gameState {
 void SpawnMonster(std::list<Monster>& monsterList, std::vector<sf::Vector3f>& positionVector, sf::Vector2f windowCenter, int currentLevel);
 void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState);
 
+//Text Const
+const std::vector<sf::ConvexShape> gameOverText1 = stringToDisplayable("GAME");
+const std::vector<sf::ConvexShape> gameOverText2 = stringToDisplayable("OVER");
+
 int main()
 {
 	//Init Window
@@ -197,7 +201,7 @@ int main()
 
 							monsterListIt->Health--;
 							if(monsterListIt->progression < 95) //Knockback Effect
-								monsterListIt->progression -= 5;
+								monsterListIt->progression -= 10;
 							if (monsterListIt->Health <= 0)
 							{
 								monsterListIt = monsterList.erase(monsterListIt);
@@ -259,8 +263,8 @@ int main()
 
 
 			//Display Game Over
-			//DisplayText(window, stringToDisplayable("GAME"),sf::Vector2f(windowCenter.x * 2 - 50, 100),);
-			//DisplayText(window, stringToDisplayable("OVER"),sf::Vector2f(windowCenter.x * 2 - 50, 100),);
+			DisplayText(window, gameOverText1,sf::Vector2f(windowCenter.x, windowCenter.y - 5 * 50.0f), 50.0f);
+			DisplayText(window, gameOverText2,sf::Vector2f(windowCenter.x, windowCenter.y + 5 * 50.0f), 50.0f);
 		}
 		break;
 		
@@ -318,5 +322,6 @@ Music :
 	GameOver
 
 //Prb :
-	Ennemies on top of each others
+	Enemies on top of each others
+	Enemies projectiles more visible
 */
