@@ -323,13 +323,13 @@ Game :
 		3 hit + Fire back
 	UI :
 		Score - F
+
 Game Over - F
 	Logic -> goto Main Menu
 	Display Score
 	Animation
 
 LevelTransition :
-	Transition - F
 	Change Level - V
 
 Sound :
