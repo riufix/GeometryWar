@@ -46,6 +46,7 @@ bool BulletBehaviour::ProcessBullet(sf::Vector2f origin)
 	shape.setPosition(newPosition);
 
 	shape.rotate(1);
+
 	return (progression < 0 || progression > 100);
 }
 
@@ -54,3 +55,7 @@ void BulletBehaviour::DisplayBullet(sf::RenderWindow& window)
 	window.draw(shape);
 }
 
+bool BulletBehaviour::ChkCollision(int playerIndex)
+{
+	return (positionIndex == playerIndex && currentOwner != Owner::Player);
+}

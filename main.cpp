@@ -18,6 +18,7 @@ constexpr enum gameState {
 
 //Prototypes
 void SpawnMonster(std::list<Monster>& monsterList, std::vector<sf::Vector3f>& positionVector, sf::Vector2f windowCenter, int currentLevel);
+void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState);
 
 int main()
 {
@@ -173,15 +174,7 @@ int main()
 				if (monsterListIt->ProcessMonster(deltaTime, bulletList))
 				{
 					if (monsterListIt->progression > 100)
-					{
-						if (!player.isInvincible())
-							if (player.Hit())
-								currentGameState = GameOver;
-							else
-							{
-								effect.ChangeFlashScreen(1.0f, false, sf::Color::Red);
-							}
-					}
+						ChkPlayerHit(player, effect, currentGameState);
 					
 					monsterListIt = monsterList.erase(monsterListIt);
 					SpawnMonster(monsterList, positionVector, windowCenter, level);
@@ -224,7 +217,11 @@ int main()
 			while (bulletListIt != bulletList.end())
 			{
 				if (bulletListIt->ProcessBullet(windowCenter))
+				{
+					if (bulletListIt->ChkCollision(player.positionIndex))
+						ChkPlayerHit(player, effect, currentGameState);
 					bulletListIt = bulletList.erase(bulletListIt);
+				}
 				else
 				{
 					bulletListIt->DisplayBullet(window);
@@ -272,10 +269,21 @@ int main()
 void SpawnMonster(std::list<Monster>& monsterList, std::vector<sf::Vector3f>& positionVector, sf::Vector2f windowCenter, int currentLevel)
 {
 	int newCorridor = rand() % positionVector.size();
-	int newHealth = 1 + rand() % currentLevel > 0 ? 3: 
-								 currentLevel > 0 ? 2: 
+	int newHealth = 1 + rand() % currentLevel > 2 ? 3: 
+								 currentLevel > 1 ? 2: 
 													1;
 	monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor, newHealth));
+}
+
+void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState)
+{
+	if (!player.isInvincible())
+		if (player.Hit())
+			currentState = GameOver;
+		else
+		{
+			effect.ChangeFlashScreen(1.0f, false, sf::Color::Red);
+		}
 }
 
 /*

@@ -13,17 +13,18 @@ public :
 		Player,
 		Ennemy
 	};
+	Owner currentOwner;
 
 	BulletBehaviour(Owner newOwner, int newProgression, int spawningCorridor,sf::Vector2f spawnPosition);
 
 	bool ProcessBullet(sf::Vector2f origin); // return true if need to be Destroy
 	void DisplayBullet(sf::RenderWindow& window);
+	bool ChkCollision(int playerIndex);
 
 private:
 	sf::CircleShape shape;
 	float fullScale = 5;
 
-	Owner currentOwner;
 
 	enum class Direction {
 		Fond = -1,

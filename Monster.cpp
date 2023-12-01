@@ -9,8 +9,10 @@ Monster::Monster(sf::Vector2f start, sf::Vector3f end, int corridor, int health)
 	SpawningPosition = start;
 	Health = health;
 	EndingPosition = sf::Vector2f(end.x,end.y);
-	shape.setRotation(end.z + 180);
+	
+	timeStep = .01f * health;
 
+	shape.setRotation(end.z + 180);
 	InitializeGraphic();
 }
 
@@ -34,13 +36,14 @@ void Monster::InitializeGraphic()
 
 void Monster::DrawSprite(sf::RenderWindow& window)
 {
-	sf::Color fillColor = sf::Color(255,0,128 * (Health - 1));
+	sf::Color fillColor = sf::Color(255,0,127 * (Health - 1));
 	shape.setFillColor(fillColor);
 	window.draw(shape);
 }
 
-bool Monster::ProcessMonster(float deltaTime) 
+bool Monster::ProcessMonster(float deltaTime, std::list<BulletBehaviour>& bulletList)
 {
+	//Movement
 	if (currentStep > 0)
 	{
 		currentStep = currentStep - deltaTime;
@@ -57,6 +60,17 @@ bool Monster::ProcessMonster(float deltaTime)
 
 	shape.rotate(cos(progression / 10) * 2);
 
+	//Shoot (if has 3HP)
+	if (Health >= 3)
+	{
+		bulletTimer -= deltaTime;
+		if (bulletTimer <= 0)
+		{
+			bulletList.push_back(BulletBehaviour(BulletBehaviour::Owner::Ennemy, progression, positionIndex, EndingPosition));
+			bulletTimer = timeBetweenBullet;
+		}
+	}
+
 	return (progression < 0 || progression > 100);
 }
 
@@ -69,5 +83,5 @@ void Monster::UpdateSprite(float px, float py, float angle)
 bool Monster::ChkCollision(BulletBehaviour bullet)
 {
 	return ((bullet.progression == progression || bullet.progression + 1 == progression) && 
-			positionIndex == bullet.positionIndex);
+			positionIndex == bullet.positionIndex && bullet.currentOwner == BulletBehaviour::Owner::Player);
 }

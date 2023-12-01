@@ -2,12 +2,16 @@
 #include "SFML/Graphics.hpp"
 #include "Lerp.h"
 #include "BulletBehaviour.h"
+#include <list>
 
 class Monster
 {
 private :
 	float maxScale = 2;
 	float currentStep;
+	
+	float timeBetweenBullet = .2f;
+	float bulletTimer = timeBetweenBullet;
 
 public:
 	sf::ConvexShape shape;
@@ -24,7 +28,7 @@ public:
 	void InitializeGraphic();
 	void DrawSprite(sf::RenderWindow& window);
 
-	bool ProcessMonster(float deltaTime);
+	bool ProcessMonster(float deltaTime, std::list<BulletBehaviour>& bulletList);
 	void UpdateSprite(float px, float py, float angle);
 	bool ChkCollision(BulletBehaviour bullet);
 };
