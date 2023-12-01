@@ -1,13 +1,11 @@
 #include "Player.h"
 #include <iostream>
 
-void Player::InitializeGraphic(sf::Vector2f origin)
+void Player::InitializeGraphic()
 {
 	shape.setPointCount(6);
 	shape.setFillColor(sf::Color::Yellow);
 	
-	int px = origin.x;
-	int py = origin.y;
 
 	shape.setPoint(0, sf::Vector2f(0, 0));
 	shape.setPoint(1, sf::Vector2f(0 + 50, 0 + 30));
@@ -16,8 +14,12 @@ void Player::InitializeGraphic(sf::Vector2f origin)
 	shape.setPoint(4, sf::Vector2f(0 - 60, 0 - 20));
 	shape.setPoint(5, sf::Vector2f(0 - 50, 0 + 30));
 	shape.setOrigin(0, 0);
-	
-	shape.setPosition(px,py);
+}
+
+void Player::ProcessInvincibility(float deltaTime)
+{
+	if (currentInvicibilityRate <= 0) return;
+	currentInvicibilityRate = currentInvicibilityRate - deltaTime;
 }
 
 void Player::ProcessMoveInput(int maxPosition, float deltaTime)
@@ -28,13 +30,13 @@ void Player::ProcessMoveInput(int maxPosition, float deltaTime)
 		{
 			positionIndex = positionIndex - 1;
 			if (positionIndex < 0) positionIndex = maxPosition - 1;
-			currentMoveRate = .3f;
+			currentMoveRate = moveRate;
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
 			positionIndex = positionIndex + 1;
 			if (positionIndex >= maxPosition) positionIndex = 0;
-			currentMoveRate = .3f;
+			currentMoveRate = moveRate;
 		};
 	}
 	if (currentMoveRate > 0) currentMoveRate = currentMoveRate - deltaTime;
@@ -66,5 +68,25 @@ void Player::UpdateSprite(float px, float py, float angle)
 
 void Player::DrawSprite(sf::RenderWindow& window) 
 {
+	shape.setFillColor(sf::Color::Yellow);
+	if (currentInvicibilityRate > 0)
+	{
+		int flashColor = 255 * cos(currentInvicibilityRate * 100);
+		shape.setFillColor(sf::Color(flashColor, flashColor, 0));
+	}
+
 	window.draw(shape);
+}
+
+
+bool Player::isInvincible()
+{
+	return currentInvicibilityRate > 0;
+}
+bool Player::Hit() 
+{
+	currentInvicibilityRate = invicibilityRate;
+	Health = Health - 1;
+
+	return Health == 0;
 }

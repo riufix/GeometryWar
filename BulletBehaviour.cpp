@@ -1,10 +1,15 @@
 #include "BulletBehaviour.h"
 #include <iostream>
 
-BulletBehaviour::BulletBehaviour(Owner newOwner, int newProgression, sf::Vector2f spawnPosition)
+//Prototype
+sf::Vector2f Vector2Lerp(sf::Vector2f a, sf::Vector2f b, float t);
+
+BulletBehaviour::BulletBehaviour(Owner newOwner, int newProgression, int spawningCorridor, sf::Vector2f newSpawnPosition)
 {
 	currentOwner = newOwner;
 	progression = newProgression;
+	positionIndex = spawningCorridor;
+	spawnPosition = newSpawnPosition;
 
 	switch (currentOwner)
 	{
@@ -22,19 +27,25 @@ BulletBehaviour::BulletBehaviour(Owner newOwner, int newProgression, sf::Vector2
 	}
 
 	//Init shape
-	shape.setRadius(10);
+	shape.setRadius(7);
+	shape.setPointCount(8);
 	shape.setFillColor(sf::Color::Transparent);
 	shape.setOutlineThickness(3);
-	shape.setPosition(spawnPosition.x - shape.getRadius(), spawnPosition.y - shape.getRadius());
+	shape.setOrigin(shape.getRadius(), shape.getRadius());
+	shape.setPosition(newSpawnPosition.x - shape.getRadius(), newSpawnPosition.y - shape.getRadius());
 }
 
 bool BulletBehaviour::ProcessBullet(sf::Vector2f origin)
 {
-	std::cout << progression << std::endl;
 	progression = progression + (int)direction;
 
 	float newScale = fullScale * ((float)progression / 100.0f);
 	shape.setScale(newScale, newScale);
+	
+	sf::Vector2f newPosition = Vector2Lerp(origin, spawnPosition, ((float)progression / 100.0f));
+	shape.setPosition(newPosition);
+
+	shape.rotate(1);
 
 	return (progression < 0 || progression > 100);
 }
@@ -44,10 +55,3 @@ void BulletBehaviour::DisplayBullet(sf::RenderWindow& window)
 	window.draw(shape);
 }
 
-/*
-public static Vector2 Lerp(Vector2 a, Vector2 b, float t)
-{
-    t = Mathf.Clamp01(t);
-    return new Vector2(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t);
-}
-*/
