@@ -10,12 +10,6 @@
 #include "Effect.h"
 #include "text.h"
 
-constexpr enum levelShape {
-	triangle,
-	square,
-	pantagone
-};
-
 constexpr enum gameState {
 	MainMenu,
 	Game,
@@ -23,12 +17,20 @@ constexpr enum gameState {
 	LevelTransition
 };
 
+//Prototypes
+void SpawnMonster(std::list<Monster>& monsterList, std::vector<sf::Vector3f>& positionVector, sf::Vector2f windowCenter, int currentLevel);
+void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState);
+
+//Text Const
+const std::vector<sf::ConvexShape> gameOverText1 = stringToDisplayable("GAME");
+const std::vector<sf::ConvexShape> gameOverText2 = stringToDisplayable("OVER");
+
 int main()
 {
 	//Init Window
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 8;
-	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Geometry Wars",sf::Style::Default, settings);
+	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Orkan", sf::Style::Default, settings);
 	window.setVerticalSyncEnabled(true);
 	//clock
 	sf::Clock frameClock;
@@ -36,108 +38,51 @@ int main()
 	sf::Vector2f windowCenter;
 	windowCenter.x = window.getSize().x / 2.0f;
 	windowCenter.y = window.getSize().y / 2.0f;
-	
+
 	//Init GameState
 	gameState currentGameState = MainMenu;
 	int score = 0;
 	int scoreNeeded = 100;
-	int scoreNextLvl = 150;
+	int scoreNextLvl = 300;
+	int level = 1;
+
 	//Init Effect
 	Effect effect;
 
 	//Init Player
 	Player player;
 	player.InitializeGraphic();
-	
+
 	//Init Bullet List
 	std::list<BulletBehaviour> bulletList;
 
 	//Init Map
 	sf::ConvexShape map;
-
-	//Init player position list
-	sf::Vector3f TrianglePositionList[9] = {
-	{1090,330,55},
-	{1220,500, 60},
-	{1360,730,55},
-	{1250,890,180},
-	{960,890,180},
-	{690,890,180},
-	{560,730,-50},
-	{690,510,-55},
-	{830,330,-55}
-	};
-	sf::Vector3f SquarePositionList[8] = {
-	{1100,195,0},
-	{1300,400,90},
-	{1300,650,90},
-	{1100,875,180},
-	{800,875,180},
-	{620,650,-90},
-	{620,400,-90},
-	{820,195,0}
-	};
-	sf::Vector3f PantagonePositionList[5] = {
-	{1150,370,54},
-	{1240,700,108},
-	{975,890,175},
-	{680,700,-108},
-	{775,370,-54}
-	};
-
 	std::vector<sf::Vector3f> positionVector;
-	levelShape currentlevel = pantagone;
-	positionVector.clear();
-	switch (currentlevel)
-	{
-	case triangle:
-		map = InitializeTriangle();
-		for (int i = 0; i < 9; i++) {
-			positionVector.push_back(TrianglePositionList[i]);
-		}
-		break;
+	levelShape currentLevel = levelShape::triangle;
+	changeLevel(map, positionVector, currentLevel);
 
-	case square:
-		map = InitializeSquare();
-		for (int i = 0; i < 8; i++) {
-			positionVector.push_back(SquarePositionList[i]);
-		}
-		break;
-
-	case pantagone:
-		map = InitializePantagone();
-		for (int i = 0; i < 5; i++) {
-			positionVector.push_back(PantagonePositionList[i]);
-		}
-		break;
-
-	default:
-		break;
-	}
 
 	//Init Menu
-	std::vector<sf::ConvexShape> textCopyright = stringToDisplayable("2023 | Baptiste V | Enguerrand C | Titouan D");
-	std::vector<sf::ConvexShape> textTitle = stringToDisplayable("ORKAN");
+	const std::vector<sf::ConvexShape> textCopyright = stringToDisplayable("2023 | Baptiste V | Enguerrand C | Titouan D");
+	const std::vector<sf::ConvexShape> textTitle = stringToDisplayable("ORKAN");
+	const std::vector<sf::ConvexShape> textMission1 = stringToDisplayable("Welcome Aboard Captain!");
+	const std::vector<sf::ConvexShape> textMission2 = stringToDisplayable("Your mission is to prevent enemy ships");
+	const std::vector<sf::ConvexShape> textMission3 = stringToDisplayable("from reaching your position!");
+	const std::vector<sf::ConvexShape> textControl1 = stringToDisplayable("[SPACE] to fire   ");
+	const std::vector<sf::ConvexShape> textControl2 = stringToDisplayable("   [Q][D] to move");
+	const std::vector<sf::ConvexShape> textControl3 = stringToDisplayable("   [Arrows]");
+	const std::vector<sf::ConvexShape> textStart = stringToDisplayable("Press [Space] when ready to start");
 	float titleScale = 0;
-
-	std::vector<sf::ConvexShape> textMission1 = stringToDisplayable("Welcome Aboard Captain!");
-	std::vector<sf::ConvexShape> textMission2 = stringToDisplayable("Your mission is to prevent enemy ships");
-	std::vector<sf::ConvexShape> textMission3 = stringToDisplayable("from reaching your position!");
-
-	std::vector<sf::ConvexShape> textControl1 = stringToDisplayable("[SPACE] to fire   ");
-	std::vector<sf::ConvexShape> textControl2 = stringToDisplayable("   [Q][D] to move");
-	std::vector<sf::ConvexShape> textControl3 = stringToDisplayable("   [Arrows]");
-
-	std::vector<sf::ConvexShape> textStart = stringToDisplayable("Press [Space] when ready to start");
 	float startTempo = 0;
 	float isStarting = false;
 
 	//Init Ennemy List
 	std::list<Monster> monsterList;
 	int newCorridor = rand() % positionVector.size();
-	monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor));
+	monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor, 1));
 
-	//Init Transition level variables
+	//Init Transition level & Game Over Timer
 	float transitionTime = 1.0f;
 
 	while (window.isOpen())
@@ -152,12 +97,12 @@ int main()
 			// On gère l'événément
 			switch (event.type)
 			{
-				case sf::Event::Closed:
-					window.close();
-					break;
+			case sf::Event::Closed:
+				window.close();
+				break;
 
-				default:
-					break;
+			default:
+				break;
 			}
 		}
 
@@ -168,21 +113,18 @@ int main()
 		{
 		case MainMenu:
 			if (titleScale < 20) titleScale += 0.1;
-
 			else {
 				titleScale = 20;
-
 				if (player.ProcessFireInput(deltaTime) || isStarting) {
 					if (startTempo < 10) startTempo += 0.1;
 					else if (startTempo >= 15) {
 						//Start Level
 					}
-
 					isStarting = true;
 				}
 			}
-
 			break;
+
 		case Game:
 			//Process Player Input
 			player.ProcessMoveInput(positionVector.size(), deltaTime);
@@ -191,10 +133,11 @@ int main()
 			{
 				bulletList.push_back(BulletBehaviour(BulletBehaviour::Owner::Player, 100, player.positionIndex, player.shape.getPosition()));
 			}
-			
+
 			player.ProcessInvincibility(deltaTime);
-			
-			if (score >= scoreNeeded) 
+
+			//Look if go to next level
+			if (score >= scoreNeeded)
 			{
 				scoreNeeded = scoreNeeded + scoreNextLvl;
 				currentGameState = LevelTransition;
@@ -204,14 +147,31 @@ int main()
 			break;
 
 		case GameOver:
+
 			break;
+
 		case LevelTransition:
 			if (transitionTime < 40.0f)
 				transitionTime = transitionTime + deltaTime * 15;
 			else
 			{
 				//Change Level
-				//currentGameState = Game;
+				AddLevel(currentLevel);
+				changeLevel(map, positionVector, currentLevel);
+
+				//Clear bulletList & Reset player position
+				player.positionIndex = 0;
+				bulletList.clear();
+
+				//Add level and add new number of monsters
+				level++;
+				if (level % 3 == 0) //Give one life if complete each map
+					player.Health++;
+				monsterList.clear();
+				for (int i = 0; i < level; i++)
+					SpawnMonster(monsterList, positionVector, windowCenter, level);
+
+				currentGameState = Game;
 			}
 			break;
 		}
@@ -230,29 +190,25 @@ int main()
 		case MainMenu:
 		{
 			//ORKAN
-			float windowCenter = window.getSize().x/2;
-
+			float windowCenter = window.getSize().x / 2;
 			if (startTempo < 10) {
 				DisplayText(window, textCopyright, sf::Vector2f(windowCenter, 50), 3);
-
 				DisplayText(window, textTitle, sf::Vector2f(windowCenter, 200), titleScale, effect.RandomColor());
 				if (titleScale >= 20) {
 					DisplayText(window, textMission1, sf::Vector2f(windowCenter, 400), 6, sf::Color::Yellow);
 					DisplayText(window, textMission2, sf::Vector2f(windowCenter, 475), 6);
 					DisplayText(window, textMission3, sf::Vector2f(windowCenter, 525), 6);
-
 					DisplayText(window, textControl1, sf::Vector2f(windowCenter, 650), 6, sf::Color::Red, right);
 					DisplayText(window, textControl2, sf::Vector2f(windowCenter, 650), 6, sf::Color::Red, left);
 					DisplayText(window, textControl3, sf::Vector2f(windowCenter, 700), 6, sf::Color::Red, left);
-
 					if (!isStarting) DisplayText(window, textStart, sf::Vector2f(windowCenter, 1000), 6, sf::Color::Green);
 					else DisplayText(window, textStart, sf::Vector2f(windowCenter, 1000), 6, effect.RandomColor());
 				}
 			}
 			else window.clear();
-
 		}
 		break;
+
 		case Game:
 		{
 			//Display level
@@ -263,23 +219,13 @@ int main()
 			while (monsterListIt != monsterList.end())
 			{
 				bool skipToNext = false; //skip if collision
-				if (monsterListIt->ProcessMonster(deltaTime))
+				if (monsterListIt->ProcessMonster(deltaTime, bulletList))
 				{
 					if (monsterListIt->progression > 100)
-					{
-						/*if (!player.isInvincible())
-							if (player.Hit())
-								currentGameState = GameOver;
-							else
-							{
-								effect.ChangeFlashScreen(1.0f, false, sf::Color::Red);
-							}*/
-					}
+						ChkPlayerHit(player, effect, currentGameState);
 
 					monsterListIt = monsterList.erase(monsterListIt);
-
-					int newCorridor = rand() % positionVector.size();
-					monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor));
+					SpawnMonster(monsterList, positionVector, windowCenter, level);
 				}
 				else
 				{
@@ -292,16 +238,20 @@ int main()
 							skipToNext = true;
 							score = score + 25;
 
-							monsterListIt = monsterList.erase(monsterListIt);
 							bulletCollisionListIt = bulletList.erase(bulletCollisionListIt);
-
-							int newCorridor = rand() % positionVector.size();
-							monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor));
-
 							bulletCollisionListIt = bulletList.end();
+
+							monsterListIt->Health--;
+							if (monsterListIt->progression < 95) //Knockback Effect
+								monsterListIt->progression -= 10;
+							if (monsterListIt->Health <= 0)
+							{
+								monsterListIt = monsterList.erase(monsterListIt);
+								SpawnMonster(monsterList, positionVector, windowCenter, level);
+							}
 						}
 						else
-							bulletCollisionListIt++;			
+							bulletCollisionListIt++;
 					}
 
 					if (skipToNext) continue;
@@ -315,7 +265,11 @@ int main()
 			while (bulletListIt != bulletList.end())
 			{
 				if (bulletListIt->ProcessBullet(windowCenter))
+				{
+					if (bulletListIt->ChkCollision(player.positionIndex))
+						ChkPlayerHit(player, effect, currentGameState);
 					bulletListIt = bulletList.erase(bulletListIt);
+				}
 				else
 				{
 					bulletListIt->DisplayBullet(window);
@@ -332,11 +286,14 @@ int main()
 				player.UpdateSprite(100 + i * 150, 100, player.shape.getRotation());
 				player.DrawSprite(window);
 			}
-
+			DisplayText(window, stringToDisplayable(std::to_string(score)), sf::Vector2f(windowCenter.x * 2 - 50, 100), 10.0f, sf::Color::White, textOrigin::right);
 		}
 		break;
+
 		case GameOver:
 		{
+			//Display static gameplay
+			DrawLevel(window, map, windowCenter, 5, 30);
 			for (Monster& monster : monsterList)
 				monster.DrawSprite(window);
 			for (BulletBehaviour& bullet : bulletList)
@@ -344,46 +301,55 @@ int main()
 			player.DrawSprite(window);
 
 			//Display Score
+			DisplayText(window, stringToDisplayable(std::to_string(score)), sf::Vector2f(windowCenter.x * 2 - 50, 100), 10.0f, sf::Color::White, textOrigin::right);
+
+
+			//Display Game Over
+			DisplayText(window, gameOverText1, sf::Vector2f(windowCenter.x, windowCenter.y - 5 * 50.0f), 50.0f);
+			DisplayText(window, gameOverText2, sf::Vector2f(windowCenter.x, windowCenter.y + 5 * 50.0f), 50.0f);
 		}
 		break;
+
 		case LevelTransition:
 		{
 			DrawLevel(window, map, windowCenter, 5 * transitionTime, 30 * transitionTime, effect.RandomColor());
 
 		}
 		break;
-
 		}
-
 
 		window.display();
 	}
 }
 
-void changeLevel(sf::ConvexShape map, std::vector<sf::Vector3f> positionList) {
+void SpawnMonster(std::list<Monster>& monsterList, std::vector<sf::Vector3f>& positionVector, sf::Vector2f windowCenter, int currentLevel)
+{
+	int newCorridor = rand() % positionVector.size();
+	int newHealth = 1 + rand() % currentLevel > 2 ? 3 :
+		currentLevel > 1 ? 2 :
+		1;
+	monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor, newHealth));
+}
 
+void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState)
+{
+	if (!player.isInvincible())
+		if (player.Hit())
+			currentState = GameOver;
+		else
+		{
+			effect.ChangeFlashScreen(1.0f, false, sf::Color::Red);
+		}
 }
 
 /*
-Main Menu - F
-
 Game :
-	Effect : - F
-		when dead 
+	Effect :
 		when kill monster
-	Types of ennemies :
-		2 hit
-		3 hit + Fire back
-	UI :
-		Score - F
 
-Game Over - F
+Game Over
 	Logic -> goto Main Menu
-	Display Score
 	Animation
-
-LevelTransition :
-	Change Level - V
 
 Sound :
 	Player shoot
@@ -394,4 +360,12 @@ Music :
 	Title screen
 	Game
 	GameOver
+
+//Prb :
+	Enemies on top of each others
+	Enemies projectiles more visible
+
+//optimize:
+	Transfer bullet display to bullet Manager
+	Transfer Ennemis display to ennemy Manager
 */
