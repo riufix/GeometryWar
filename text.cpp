@@ -16,6 +16,7 @@ sf::ConvexShape defineCharacter(char letter) {
 	shape.setOutlineThickness(0.5f);
 	shape.setOutlineColor(sf::Color::White);
 
+	//Letter size 6x8
 	//Schema de création des lettres
 	//(-2,-3) | ( 0,-3) | ( 2,-3)
 	//(-2,-1) | ( 0,-1) | ( 2,-1)
@@ -398,6 +399,30 @@ sf::ConvexShape defineCharacter(char letter) {
 		shape.setPoint(5, sf::Vector2f(0.01 , 1));
 		shape.setPoint(6, sf::Vector2f(1, 2));
 		break;
+	case '[':
+		shape.setPointCount(6);
+		shape.setPoint(0, sf::Vector2f(0, -3));
+		shape.setPoint(1, sf::Vector2f(-2, -3));
+		shape.setPoint(2, sf::Vector2f(-2, 3));
+		shape.setPoint(3, sf::Vector2f(0, 3));
+		shape.setPoint(4, sf::Vector2f(-2, 3));
+		shape.setPoint(5, sf::Vector2f(-2, -3));
+		break;
+	case ']':
+		shape.setPointCount(6);
+		shape.setPoint(0, sf::Vector2f(0, -3));
+		shape.setPoint(1, sf::Vector2f(2, -3));
+		shape.setPoint(2, sf::Vector2f(2, 3));
+		shape.setPoint(3, sf::Vector2f(0, 3));
+		shape.setPoint(4, sf::Vector2f(2, 3));
+		shape.setPoint(5, sf::Vector2f(2, -3));
+		break;
+	case '|':
+		shape.setPointCount(4);
+		shape.setPoint(0, sf::Vector2f(0.01, 3));
+		shape.setPoint(1, sf::Vector2f(0.01, -3));
+		shape.setPoint(2, sf::Vector2f(-0.01, -3));
+		shape.setPoint(3, sf::Vector2f(-0.01, 3));
 
 	default:
 		break;
@@ -417,7 +442,7 @@ std::vector<sf::ConvexShape> stringToDisplayable(std::string text) {
 	return displayText;
 }
 
-void DisplayText(sf::RenderWindow& window, std::vector<sf::ConvexShape> textVector, sf::Vector2f position, float scale, textOrigin origin = center) {
+void DisplayText(sf::RenderWindow& window, std::vector<sf::ConvexShape> textVector, sf::Vector2f position, float scale, sf::Color color = sf::Color::White, textOrigin origin = center) {
 	int size = textVector.size();
 	float offset;
 
@@ -435,6 +460,7 @@ void DisplayText(sf::RenderWindow& window, std::vector<sf::ConvexShape> textVect
 	for (int i = 0; i < size; i++) {
 		textVector[i].setScale(scale, scale);
 		textVector[i].setPosition(position);
+		textVector[i].setOutlineColor(color);
 		window.draw(textVector[i]);
 
 		position.x += 5*scale + 1*scale;
