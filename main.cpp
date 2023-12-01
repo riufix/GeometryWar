@@ -8,6 +8,7 @@
 #include "map.h"
 #include "Monster.h"
 #include "Effect.h"
+#include "text.h"
 
 constexpr enum levelShape {
 	triangle,
@@ -280,6 +281,7 @@ int main()
 				player.UpdateSprite(100 + i * 150, 100, player.shape.getRotation());
 				player.DrawSprite(window);
 			}
+			
 		}
 		break;
 		case GameOver:
