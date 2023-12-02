@@ -125,13 +125,16 @@ int main()
 						score = 0;
 						scoreNeeded = 100;
 
+						//Reset Variables
 						player.Reset();
 						bulletList.clear();
 						monsterList.clear();
 						int newCorridor = rand() % positionVector.size();
 						monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor, 1));
 
-						currentGameState = Game;
+						//Reset transitionTimer & launch levelIntro
+						transitionTime = 0.0f;
+						currentGameState = LevelIntro;
 					}
 					isStarting = true;
 				}
@@ -139,7 +142,10 @@ int main()
 			break;
 
 		case LevelIntro:
-
+			if (transitionTime < 1.0f)
+				transitionTime = transitionTime + deltaTime;
+			else
+				currentGameState = Game;
 			break;
 
 		case Game:
@@ -182,13 +188,16 @@ int main()
 
 				//Add level and add new number of monsters
 				level++;
-				if (level % 3 == 0) //Give one life if complete each map
-					player.Health++;
 				monsterList.clear();
 				for (int i = 0; i < level; i++)
 					SpawnMonster(monsterList, positionVector, windowCenter, level);
 
-				currentGameState = Game;
+				if (level % 3 == 0) //Give one life if complete each map
+					player.Health++;
+
+				//Reset transitionTimer & launch levelIntro
+				transitionTime = 0.0f;
+				currentGameState = LevelIntro;
 			}
 			break;
 		}
@@ -327,6 +336,7 @@ int main()
 		}
 		break;
 
+		case LevelIntro:
 		case LevelTransition:
 		{
 			DrawLevel(window, map, windowCenter, 5 * transitionTime, 30 * transitionTime, effect.RandomColor());
@@ -363,7 +373,7 @@ void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState)
 Game :
 	Effect :
 		when kill monster
-	Add Level Intro -> after Main Menu & LevelTransition -> into Game
+
 Game Over
 	Logic -> goto Main Menu
 	Animation
