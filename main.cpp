@@ -12,6 +12,7 @@
 
 constexpr enum gameState {
 	MainMenu,
+	LevelIntro,
 	Game,
 	GameOver,
 	LevelTransition
@@ -135,6 +136,10 @@ int main()
 					isStarting = true;
 				}
 			}
+			break;
+
+		case LevelIntro:
+
 			break;
 
 		case Game:
@@ -358,7 +363,7 @@ void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState)
 Game :
 	Effect :
 		when kill monster
-
+	Add Level Intro -> after Main Menu & LevelTransition -> into Game
 Game Over
 	Logic -> goto Main Menu
 	Animation
