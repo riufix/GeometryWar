@@ -10,7 +10,7 @@ std::string getAppPath() {
 	return appPath;
 }
 
-void Audio::InitializeBuffer() 
+void Audio::InitializeSoundBuffer() 
 {
 	playerShootSoundBuffer.loadFromFile(getAppPath() + "sound\\playerShoot.wav");
 	playerHitSoundBuffer.loadFromFile(getAppPath() + "sound\\playerHit.wav");
@@ -41,4 +41,10 @@ void Audio::InitializeBuffer()
 	
 	bufferSound.setBuffer(levelEndSoundBuffer);
 	soundList["levelEnd"] = bufferSound;
+}
+
+void Audio::InitializeMusicBuffer() 
+{
+	musicList["Menu"].openFromFile(getAppPath() + "sound\\menuMusic.wav");
+	musicList["Game"].openFromFile(getAppPath() + "sound\\gameMusic.wav");
 }

@@ -96,11 +96,12 @@ int main()
 
 	//Init audio
 	Audio audioSystem;
-	audioSystem.InitializeBuffer();
+	audioSystem.InitializeSoundBuffer();
+	audioSystem.InitializeMusicBuffer();
 
 #pragma endregion
 
-
+	audioSystem.musicList["Menu"].play();
 	while (window.isOpen())
 	{
 		float deltaTime = frameClock.restart().asSeconds();
@@ -146,7 +147,9 @@ int main()
 						monsterList.clear();
 						int newCorridor = rand() % positionVector.size();
 						monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor, 1));
-
+						
+						audioSystem.musicList["Menu"].stop();
+						audioSystem.musicList["Game"].play();
 						//Reset transitionTimer & launch levelIntro
 						transitionTime = 0.0f;
 						currentGameState = LevelIntro;
@@ -197,6 +200,10 @@ int main()
 					titleScale = 0;
 					startTempo = 0;
 					isStarting = false;
+
+					audioSystem.musicList["Game"].stop();
+					audioSystem.musicList["Menu"].play();
+
 					currentGameState = MainMenu;
 				}
 			}
@@ -424,6 +431,7 @@ Game :
 
 Game Over
 	Animation
+
 Music :
 	Title screen
 	Game

@@ -16,5 +16,8 @@ private :
 
 public :
 	std::map<std::string, sf::Sound> soundList;
-	void InitializeBuffer();
+	std::map<std::string, sf::Music> musicList;
+
+	void InitializeSoundBuffer();
+	void InitializeMusicBuffer();
 };
