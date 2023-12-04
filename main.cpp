@@ -43,7 +43,7 @@ int main()
 	windowCenter.y = window.getSize().y / 2.0f;
 	
 	//Init GameState
-	gameState currentGameState = Game;
+	gameState currentGameState = MainMenu;
 	int score = 0;
 	int scoreNeeded = 100;
 	int scoreNextLvl = 150;
@@ -120,6 +120,22 @@ int main()
 		break;
 	}
 
+	//Init Menu
+	std::vector<sf::ConvexShape> textCopyright = stringToDisplayable("2023 | Baptiste V | Enguerrand C | Titouan D");
+	std::vector<sf::ConvexShape> textTitle = stringToDisplayable("ORKAN");
+	float titleScale = 0;
+
+	std::vector<sf::ConvexShape> textMission1 = stringToDisplayable("Welcome Aboard Captain!");
+	std::vector<sf::ConvexShape> textMission2 = stringToDisplayable("Your mission is to prevent enemy ships");
+	std::vector<sf::ConvexShape> textMission3 = stringToDisplayable("from reaching your position!");
+
+	std::vector<sf::ConvexShape> textControl1 = stringToDisplayable("[SPACE] to fire   ");
+	std::vector<sf::ConvexShape> textControl2 = stringToDisplayable("   [Q][D] to move");
+	std::vector<sf::ConvexShape> textControl3 = stringToDisplayable("   [Arrows]");
+
+	std::vector<sf::ConvexShape> textStart = stringToDisplayable("Press [Space] when ready to start");
+	float startTempo = 0;
+	float isStarting = false;
 
 	//Init Ennemy List
 	std::list<Monster> monsterList;
@@ -159,6 +175,20 @@ int main()
 		switch (currentGameState)
 		{
 		case MainMenu:
+			if (titleScale < 20) titleScale += 0.1;
+
+			else {
+				titleScale = 20;
+
+				if (player.ProcessFireInput(deltaTime) || isStarting) {
+					if (startTempo < 10) startTempo += 0.1;
+					else if (startTempo >= 15) {
+						//Start Level
+					}
+
+					isStarting = true;
+				}
+			}
 
 			break;
 		case Game:
@@ -210,6 +240,27 @@ int main()
 		{
 		case MainMenu:
 		{
+			//ORKAN
+			float windowCenter = window.getSize().x/2;
+
+			if (startTempo < 10) {
+				DisplayText(window, textCopyright, sf::Vector2f(windowCenter, 50), 3);
+
+				DisplayText(window, textTitle, sf::Vector2f(windowCenter, 200), titleScale, effect.RandomColor());
+				if (titleScale >= 20) {
+					DisplayText(window, textMission1, sf::Vector2f(windowCenter, 400), 6, sf::Color::Yellow);
+					DisplayText(window, textMission2, sf::Vector2f(windowCenter, 475), 6);
+					DisplayText(window, textMission3, sf::Vector2f(windowCenter, 525), 6);
+
+					DisplayText(window, textControl1, sf::Vector2f(windowCenter, 650), 6, sf::Color::Red, right);
+					DisplayText(window, textControl2, sf::Vector2f(windowCenter, 650), 6, sf::Color::Red, left);
+					DisplayText(window, textControl3, sf::Vector2f(windowCenter, 700), 6, sf::Color::Red, left);
+
+					if (!isStarting) DisplayText(window, textStart, sf::Vector2f(windowCenter, 1000), 6, sf::Color::Green);
+					else DisplayText(window, textStart, sf::Vector2f(windowCenter, 1000), 6, effect.RandomColor());
+				}
+			}
+			else window.clear();
 
 		}
 		break;
@@ -293,6 +344,7 @@ int main()
 				player.UpdateSprite(100 + i * 150, 100, player.shape.getRotation());
 				player.DrawSprite(window);
 			}
+
 		}
 		break;
 		case GameOver:
