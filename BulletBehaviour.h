@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "Lerp.h"
+#include <math.h>
 #include <list>
 
 class BulletBehaviour
@@ -19,7 +20,7 @@ public :
 	BulletBehaviour(Owner newOwner, int newProgression, int spawningCorridor,sf::Vector2f spawnPosition);
 
 	bool ProcessBullet(sf::Vector2f origin); // return true if need to be Destroy
-	void DisplayBullet(sf::RenderWindow& window);
+	void DisplayBullet(sf::RenderWindow& window, float deltaTime);
 	bool CheckPlayerCollision(int playerIndex);
 	bool CheckOtherBulletCollision(std::list<BulletBehaviour>& bulletList, std::list<BulletBehaviour>::iterator& currentBullet);
 

@@ -301,7 +301,7 @@ int main()
 				}
 				else
 				{
-					bulletListIt->DisplayBullet(window);
+					bulletListIt->DisplayBullet(window, deltaTime);
 					bulletListIt++;
 				}
 			}
@@ -326,7 +326,7 @@ int main()
 			for (Monster& monster : monsterList)
 				monster.DrawSprite(window);
 			for (BulletBehaviour& bullet : bulletList)
-				bullet.DisplayBullet(window);
+				bullet.DisplayBullet(window, 0);
 			player.DrawSprite(window);
 
 			//Display Score
@@ -376,11 +376,8 @@ void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState)
 Game :
 	Effect :
 		when kill monster
-	Bullet :
-		Destroy Ennemies bullet with ours
 
 Game Over
-	Logic -> goto Main Menu
 	Animation
 
 Sound :
@@ -395,7 +392,6 @@ Music :
 
 //Prb :
 	Enemies on top of each others
-	Enemies projectiles more visible
 
 //optimize:
 	Transfer bullet display to bullet Manager

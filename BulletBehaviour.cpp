@@ -14,11 +14,9 @@ BulletBehaviour::BulletBehaviour(Owner newOwner, int newProgression, int spawnin
 	{
 	case BulletBehaviour::Owner::Player:
 		direction = BulletBehaviour::Direction::Fond;
-		shape.setOutlineColor(sf::Color::Yellow);
 		break;
 	case BulletBehaviour::Owner::Ennemy:
 		direction = BulletBehaviour::Direction::Bord;
-		shape.setOutlineColor(sf::Color::Red);
 		break;
 	default :
 		direction = BulletBehaviour::Direction::Bord;
@@ -49,8 +47,13 @@ bool BulletBehaviour::ProcessBullet(sf::Vector2f origin)
 	return (progression < 0 || progression > 100);
 }
 
-void BulletBehaviour::DisplayBullet(sf::RenderWindow& window)
+void BulletBehaviour::DisplayBullet(sf::RenderWindow& window, float deltaTime)
 {
+	sf::Color bulletColor = sf::Color::Yellow;
+	if (currentOwner == Owner::Ennemy)
+		bulletColor = sf::Color(255, 1.1f * sin(deltaTime * 10000), 1.1f * sin(deltaTime * 10000));
+
+	shape.setOutlineColor(bulletColor);
 	window.draw(shape);
 }
 
