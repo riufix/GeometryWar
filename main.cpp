@@ -20,14 +20,12 @@ constexpr enum gameState {
 
 //Prototypes
 void SpawnMonster(std::list<Monster>& monsterList, std::vector<sf::Vector3f>& positionVector, sf::Vector2f windowCenter, int currentLevel);
-void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState);
-
-//Text Const
-const std::vector<sf::ConvexShape> gameOverText1 = stringToDisplayable("GAME");
-const std::vector<sf::ConvexShape> gameOverText2 = stringToDisplayable("OVER");
+void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState, float& gameOverTimer);
 
 int main()
 {
+
+#pragma region AwakeInitialisation
 	//Init Window
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 8;
@@ -65,7 +63,7 @@ int main()
 
 
 	//Init Menu
-	const std::vector<sf::ConvexShape> textCopyright = stringToDisplayable("2023 | Baptiste V | Enguerrand C | Titouan D");
+	const std::vector<sf::ConvexShape> textCopyright = stringToDisplayable("2023 | Baptiste V | Enguerrand C | Titouan D | A2 JV GP");
 	const std::vector<sf::ConvexShape> textTitle = stringToDisplayable("ORKAN");
 	const std::vector<sf::ConvexShape> textMission1 = stringToDisplayable("Welcome Aboard Captain!");
 	const std::vector<sf::ConvexShape> textMission2 = stringToDisplayable("Your mission is to prevent enemy ships");
@@ -85,6 +83,16 @@ int main()
 
 	//Init Transition level & Game Over Timer
 	float transitionTime = 1.0f;
+
+	//Init GameOver
+	const std::vector<sf::ConvexShape> textGameOver1 = stringToDisplayable("GAME");
+	const std::vector<sf::ConvexShape> textGameOver2 = stringToDisplayable("OVER");
+	const std::vector<sf::ConvexShape> textGOScore = stringToDisplayable("Score  ");
+	const std::vector<sf::ConvexShape> textGOHighScore = stringToDisplayable("HighScore  ");
+	const std::vector<sf::ConvexShape> textBackToMenu = stringToDisplayable("press [Space] to go back to the menu");
+	float gameOverTempo = 0;
+#pragma endregion
+
 
 	while (window.isOpen())
 	{
@@ -114,6 +122,7 @@ int main()
 		switch (currentGameState)
 		{
 		case MainMenu:
+			//Intro Title animation
 			if (titleScale < 20) titleScale += 0.1;
 			else {
 				titleScale = 20;
@@ -170,7 +179,15 @@ int main()
 			break;
 
 		case GameOver:
-
+			if (gameOverTempo < 25.0f) gameOverTempo += 0.1f;
+			else {
+				if (player.ProcessFireInput(deltaTime)) {
+					titleScale = 0;
+					startTempo = 0;
+					isStarting = false;
+					currentGameState = MainMenu;
+				}
+			}
 			break;
 
 		case LevelTransition:
@@ -215,18 +232,21 @@ int main()
 		{
 		case MainMenu:
 		{
-			//ORKAN
 			float windowCenter = window.getSize().x / 2;
+
 			if (startTempo < 10) {
 				DisplayText(window, textCopyright, sf::Vector2f(windowCenter, 50), 3);
 				DisplayText(window, textTitle, sf::Vector2f(windowCenter, 200), titleScale, effect.RandomColor());
+
 				if (titleScale >= 20) {
 					DisplayText(window, textMission1, sf::Vector2f(windowCenter, 400), 6, sf::Color::Yellow);
 					DisplayText(window, textMission2, sf::Vector2f(windowCenter, 475), 6);
 					DisplayText(window, textMission3, sf::Vector2f(windowCenter, 525), 6);
+
 					DisplayText(window, textControl1, sf::Vector2f(windowCenter, 650), 6, sf::Color::Red, right);
 					DisplayText(window, textControl2, sf::Vector2f(windowCenter, 650), 6, sf::Color::Red, left);
 					DisplayText(window, textControl3, sf::Vector2f(windowCenter, 700), 6, sf::Color::Red, left);
+
 					if (!isStarting) DisplayText(window, textStart, sf::Vector2f(windowCenter, 1000), 6, sf::Color::Green);
 					else DisplayText(window, textStart, sf::Vector2f(windowCenter, 1000), 6, effect.RandomColor());
 				}
@@ -248,7 +268,7 @@ int main()
 				if (monsterListIt->ProcessMonster(deltaTime, bulletList))
 				{
 					if (monsterListIt->progression > 100)
-						ChkPlayerHit(player, effect, currentGameState);
+						ChkPlayerHit(player, effect, currentGameState, gameOverTempo);
 
 					monsterListIt = monsterList.erase(monsterListIt);
 					SpawnMonster(monsterList, positionVector, windowCenter, level);
@@ -293,7 +313,7 @@ int main()
 				if (bulletListIt->ProcessBullet(windowCenter))
 				{
 					if (bulletListIt->ChkCollision(player.positionIndex))
-						ChkPlayerHit(player, effect, currentGameState);
+						ChkPlayerHit(player, effect, currentGameState, gameOverTempo);
 					bulletListIt = bulletList.erase(bulletListIt);
 				}
 				else
@@ -326,13 +346,16 @@ int main()
 				bullet.DisplayBullet(window);
 			player.DrawSprite(window);
 
-			//Display Score
-			DisplayText(window, stringToDisplayable(std::to_string(score)), sf::Vector2f(windowCenter.x * 2 - 50, 100), 10.0f, sf::Color::White, textOrigin::right);
-
-
 			//Display Game Over
-			DisplayText(window, gameOverText1, sf::Vector2f(windowCenter.x, windowCenter.y - 5 * 50.0f), 50.0f);
-			DisplayText(window, gameOverText2, sf::Vector2f(windowCenter.x, windowCenter.y + 5 * 50.0f), 50.0f);
+			DisplayText(window, textGameOver1, sf::Vector2f(windowCenter.x, windowCenter.y - 10 * 20.0f), 20.0f);
+			DisplayText(window, textGameOver2, sf::Vector2f(windowCenter.x, windowCenter.y + 0 * 20.0f), 20.0f);
+
+			//Display Score
+			if (gameOverTempo >= 5.0f) 	DisplayText(window, textGOScore, sf::Vector2f(windowCenter.x + 20, windowCenter.y + 10 * 20.0f), 10.0f, sf::Color::White, right);
+			if (gameOverTempo >= 10.0f) DisplayText(window, stringToDisplayable(std::to_string(score)), sf::Vector2f(windowCenter.x + 20, windowCenter.y + 10 * 20.0f), 10.0f, sf::Color::White, textOrigin::left);
+			if (gameOverTempo >= 15.0f) DisplayText(window, textGOHighScore, sf::Vector2f(windowCenter.x + 20, windowCenter.y + 15 * 20.0f), 10.0f, sf::Color::White, right);
+			if (gameOverTempo >= 20.0f) DisplayText(window, stringToDisplayable(std::to_string(score)), sf::Vector2f(windowCenter.x + 20, windowCenter.y + 15 * 20.0f), 10.0f, sf::Color::White, textOrigin::left);
+			if (gameOverTempo >= 25.0f) DisplayText(window, textBackToMenu, sf::Vector2f(windowCenter.x, windowCenter.y + 21 * 20.0f), 5.0f, sf::Color::Green);
 		}
 		break;
 
@@ -358,11 +381,13 @@ void SpawnMonster(std::list<Monster>& monsterList, std::vector<sf::Vector3f>& po
 	monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor, newHealth));
 }
 
-void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState)
+void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState, float& gameOverTimer)
 {
 	if (!player.isInvincible())
-		if (player.Hit())
+		if (player.Hit()) {
 			currentState = GameOver;
+			gameOverTimer = 0;
+		}
 		else
 		{
 			effect.ChangeFlashScreen(1.0f, false, sf::Color::Red);
