@@ -426,12 +426,10 @@ void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState, float
 
 /*
 Game :
-	Effect :
-		when kill monster
+	Implement effect when kill monster
 
 Music :
-	Game -> change.wav
-	GameOver
+	Implement GameOver
 
 //Prb :
 	Enemies on top of each others
