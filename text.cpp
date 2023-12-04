@@ -17,7 +17,7 @@ sf::ConvexShape defineCharacter(char letter) {
 	shape.setOutlineColor(sf::Color::White);
 
 	//Letter size 6x8
-	//Schema de création des lettres
+	//Schematic to create letters
 	//(-2,-3) | ( 0,-3) | ( 2,-3)
 	//(-2,-1) | ( 0,-1) | ( 2,-1)
 	//(-2, 1) | ( 0, 1) | ( 2, 1)
@@ -389,6 +389,7 @@ sf::ConvexShape defineCharacter(char letter) {
 		break;
 #pragma endregion
 
+#pragma region Symbols
 	case '!':
 		shape.setPointCount(7);
 		shape.setPoint(0, sf::Vector2f(0, 3));
@@ -396,7 +397,7 @@ sf::ConvexShape defineCharacter(char letter) {
 		shape.setPoint(2, sf::Vector2f(-0.01, 1));
 		shape.setPoint(3, sf::Vector2f(-0.01, -3));
 		shape.setPoint(4, sf::Vector2f(0.01, -3));
-		shape.setPoint(5, sf::Vector2f(0.01 , 1));
+		shape.setPoint(5, sf::Vector2f(0.01, 1));
 		shape.setPoint(6, sf::Vector2f(1, 2));
 		break;
 	case '[':
@@ -423,6 +424,7 @@ sf::ConvexShape defineCharacter(char letter) {
 		shape.setPoint(1, sf::Vector2f(0.01, -3));
 		shape.setPoint(2, sf::Vector2f(-0.01, -3));
 		shape.setPoint(3, sf::Vector2f(-0.01, 3));
+#pragma endregion
 
 	default:
 		break;
@@ -444,7 +446,7 @@ std::vector<sf::ConvexShape> stringToDisplayable(std::string text) {
 
 void DisplayText(sf::RenderWindow& window, std::vector<sf::ConvexShape> textVector, sf::Vector2f position, float scale, sf::Color color = sf::Color::White, textOrigin origin = center) {
 	int size = textVector.size();
-	float offset;
+	float offset = 0;
 
 	if (origin == center) {
 		offset = ((size - 1) * 5 * scale + (size - 1) * 1 * scale) / 2;
@@ -457,10 +459,11 @@ void DisplayText(sf::RenderWindow& window, std::vector<sf::ConvexShape> textVect
 	}
 
 	position.x -= offset;
-	for (int i = 0; i < size; i++) {
+	for (int i = 0; i < size; i++) { //Draw each letter of the string given depending on the position, origin, scale and color
 		textVector[i].setScale(scale, scale);
 		textVector[i].setPosition(position);
 		textVector[i].setOutlineColor(color);
+		textVector[i].setRotation(0);
 		window.draw(textVector[i]);
 
 		position.x += 5*scale + 1*scale;
