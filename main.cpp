@@ -429,12 +429,8 @@ Game :
 	Effect :
 		when kill monster
 
-Game Over
-	Animation
-
 Music :
-	Title screen
-	Game
+	Game -> change.wav
 	GameOver
 
 //Prb :
