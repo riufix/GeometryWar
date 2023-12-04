@@ -8,6 +8,7 @@
 #include "map.h"
 #include "Monster.h"
 #include "Effect.h"
+#include "text.h"
 #include "deathParticle.h"
 
 constexpr enum levelShape {
