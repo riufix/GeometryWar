@@ -110,7 +110,6 @@ int main()
 		/* --------------
 			LOGIC
 		-------------- */
-		std::cout << startTempo << std::endl;
 		switch (currentGameState)
 		{
 		case MainMenu:
@@ -290,9 +289,13 @@ int main()
 			std::list<BulletBehaviour>::iterator bulletListIt = bulletList.begin();
 			while (bulletListIt != bulletList.end())
 			{
+				//Collision btw Bullets
+				if (bulletListIt->CheckOtherBulletCollision(bulletList, bulletListIt))
+					continue;
+
 				if (bulletListIt->ProcessBullet(windowCenter))
 				{
-					if (bulletListIt->ChkCollision(player.positionIndex))
+					if (bulletListIt->CheckPlayerCollision(player.positionIndex)) //Collision with player
 						ChkPlayerHit(player, effect, currentGameState);
 					bulletListIt = bulletList.erase(bulletListIt);
 				}
@@ -373,6 +376,8 @@ void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState)
 Game :
 	Effect :
 		when kill monster
+	Bullet :
+		Destroy Ennemies bullet with ours
 
 Game Over
 	Logic -> goto Main Menu

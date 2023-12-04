@@ -54,7 +54,28 @@ void BulletBehaviour::DisplayBullet(sf::RenderWindow& window)
 	window.draw(shape);
 }
 
-bool BulletBehaviour::ChkCollision(int playerIndex)
+bool BulletBehaviour::CheckPlayerCollision(int playerIndex)
 {
 	return (positionIndex == playerIndex && currentOwner != Owner::Player);
+}
+
+bool BulletBehaviour::CheckOtherBulletCollision(std::list<BulletBehaviour>& bulletList, std::list<BulletBehaviour>::iterator& currentBullet)
+{
+	std::list<BulletBehaviour>::iterator bulletListCollisionIt = bulletList.begin();
+	while (bulletListCollisionIt != bulletList.end())
+	{
+		if ((currentBullet->progression == bulletListCollisionIt->progression ||
+			currentBullet->progression + 1 == bulletListCollisionIt->progression) && //IF two bullet have roughly the same progression
+			currentBullet->positionIndex == bulletListCollisionIt->positionIndex && //AND they are on the same corridor
+			currentBullet != bulletListCollisionIt && //AND they're not the same
+			currentBullet->currentOwner == BulletBehaviour::Owner::Player) //AND the first projectile is from the player
+		{
+			currentBullet = bulletList.erase(currentBullet);
+			currentBullet = bulletList.erase(bulletListCollisionIt);
+			return true;
+		}
+		bulletListCollisionIt++;
+	}
+
+	return false;
 }
