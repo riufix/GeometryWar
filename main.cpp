@@ -8,6 +8,7 @@
 #include "map.h"
 #include "Monster.h"
 #include "Effect.h"
+#include "deathParticle.h"
 
 constexpr enum levelShape {
 	triangle,
@@ -20,6 +21,11 @@ constexpr enum gameState {
 	Game,
 	GameOver,
 	LevelTransition
+};
+
+
+class deathParticle {
+	
 };
 
 int main()
@@ -123,6 +129,9 @@ int main()
 	//Init Transition level variables
 	float transitionTime = 1.0f;
 
+	//particles
+	ParticleSystem particles;
+
 	while (window.isOpen())
 	{
 		float deltaTime = frameClock.restart().asSeconds();
@@ -185,7 +194,10 @@ int main()
 			break;
 		}
 
-
+		/*-----------
+		   PARTICLES
+		------------*/
+		particles.update(sf::seconds(deltaTime));
 
 
 		/* --------------
@@ -238,6 +250,7 @@ int main()
 						if (monsterListIt->ChkCollision(*bulletCollisionListIt))
 						{
 							skipToNext = true;
+							particles.addParticles(1000 , monsterListIt->shape.getPosition());
 							score = score + 25;
 
 							monsterListIt = monsterList.erase(monsterListIt);
@@ -302,14 +315,18 @@ int main()
 
 		}
 
+		//display particle effect
+		window.draw(particles);
 
 		window.display();
 	}
+
 }
 
 void changeLevel(sf::ConvexShape map, std::vector<sf::Vector3f> positionList) {
 
 }
+
 
 /*
 Main Menu - F
