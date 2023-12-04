@@ -1,8 +1,10 @@
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
 #include <list>
 
+#include "audio.h"
 #include "Player.h"
 #include "BulletBehaviour.h"
 #include "map.h"
@@ -20,7 +22,7 @@ constexpr enum gameState {
 
 //Prototypes
 void SpawnMonster(std::list<Monster>& monsterList, std::vector<sf::Vector3f>& positionVector, sf::Vector2f windowCenter, int currentLevel);
-void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState, float& gameOverTimer);
+void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState, float& gameOverTimer, Audio& soundSystem);
 
 int main()
 {
@@ -91,6 +93,11 @@ int main()
 	const std::vector<sf::ConvexShape> textGOHighScore = stringToDisplayable("HighScore  ");
 	const std::vector<sf::ConvexShape> textBackToMenu = stringToDisplayable("press [Space] to go back to the menu");
 	float gameOverTempo = 0;
+
+	//Init audio
+	Audio audioSystem;
+	audioSystem.InitializeBuffer();
+
 #pragma endregion
 
 
@@ -150,6 +157,9 @@ int main()
 			break;
 
 		case LevelIntro:
+			if(transitionTime == 0)
+				audioSystem.soundList["levelIntro"].play();
+
 			if (transitionTime < 1.0f)
 				transitionTime = transitionTime + deltaTime;
 			else
@@ -163,6 +173,7 @@ int main()
 			if (player.ProcessFireInput(deltaTime))
 			{
 				bulletList.push_back(BulletBehaviour(BulletBehaviour::Owner::Player, 100, player.positionIndex, player.shape.getPosition()));
+				audioSystem.soundList["playerShoot"].play();
 			}
 
 			player.ProcessInvincibility(deltaTime);
@@ -171,7 +182,9 @@ int main()
 			if (score >= scoreNeeded)
 			{
 				scoreNeeded = scoreNeeded + scoreNextLvl;
+
 				currentGameState = LevelTransition;
+				audioSystem.soundList["levelEnd"].play();
 				transitionTime = 1.0f;
 			}
 
@@ -267,7 +280,7 @@ int main()
 				if (monsterListIt->ProcessMonster(deltaTime, bulletList))
 				{
 					if (monsterListIt->progression > 100)
-						ChkPlayerHit(player, effect, currentGameState, gameOverTempo);
+						ChkPlayerHit(player, effect, currentGameState, gameOverTempo, audioSystem);
 
 					monsterListIt = monsterList.erase(monsterListIt);
 					SpawnMonster(monsterList, positionVector, windowCenter, level);
@@ -292,8 +305,11 @@ int main()
 							if (monsterListIt->Health <= 0)
 							{
 								monsterListIt = monsterList.erase(monsterListIt);
+								audioSystem.soundList["monsterDeath"].play();
 								SpawnMonster(monsterList, positionVector, windowCenter, level);
 							}
+							else
+								audioSystem.soundList["monsterHit"].play();
 						}
 						else
 							bulletCollisionListIt++;
@@ -311,12 +327,15 @@ int main()
 			{
 				//Collision btw Bullets
 				if (bulletListIt->CheckOtherBulletCollision(bulletList, bulletListIt))
+				{
+					audioSystem.soundList["bulletHit"].play();
 					continue;
+				}
 
 				if (bulletListIt->ProcessBullet(windowCenter))
 				{
 					if (bulletListIt->CheckPlayerCollision(player.positionIndex)) //Collision with player
-						ChkPlayerHit(player, effect, currentGameState);
+						ChkPlayerHit(player, effect, currentGameState, gameOverTempo, audioSystem);
 					bulletListIt = bulletList.erase(bulletListIt);
 				}
 				else
@@ -384,7 +403,7 @@ void SpawnMonster(std::list<Monster>& monsterList, std::vector<sf::Vector3f>& po
 	monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor, newHealth));
 }
 
-void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState, float& gameOverTimer)
+void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState, float& gameOverTimer, Audio& audioSystem)
 {
 	if (!player.isInvincible())
 		if (player.Hit()) {
@@ -394,6 +413,7 @@ void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState, float
 		else
 		{
 			effect.ChangeFlashScreen(1.0f, false, sf::Color::Red);
+			audioSystem.soundList["playerHit"].play();
 		}
 }
 
@@ -404,12 +424,6 @@ Game :
 
 Game Over
 	Animation
-
-Sound :
-	Player shoot
-	Player Hit
-	Monster Hit
-	Transition
 Music :
 	Title screen
 	Game
