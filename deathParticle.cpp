@@ -75,3 +75,8 @@ void ParticleSystem::SetRandomColor()
         m_particles[i].m_circle.setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255));
     }
 }
+
+void ParticleSystem::ClearParticles()
+{
+    m_particles.clear();
+}

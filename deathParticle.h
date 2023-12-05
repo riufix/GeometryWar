@@ -10,6 +10,7 @@ public:
 	void update(sf::Time elapsed);
 	void AddParticle(sf::Vector2f monsterPos);
 	void addParticles(int count, sf::Vector2f monsterPos );
+	void ClearParticles();
 
 private:
 	void SetRandomColor();

@@ -186,7 +186,8 @@ int main()
 			//Look if go to next level
 			if (score >= scoreNeeded)
 			{
-				scoreNeeded = scoreNeeded + scoreNextLvl;
+				scoreNeeded = scoreNeeded + scoreNextLvl * level;
+				particles.ClearParticles();
 
 				currentGameState = LevelTransition;
 				audioSystem.soundList["levelEnd"].play();
