@@ -95,7 +95,7 @@ int main()
 	const std::vector<sf::ConvexShape> textGOHighScore = stringToDisplayable("HighScore  ");
 	const std::vector<sf::ConvexShape> textBackToMenu = stringToDisplayable("press [Space] to go back to the menu");
 	float gameOverTempo = 0;
-
+	float gameOverTimer = 0;
 	//Init audio
 	Audio audioSystem;
 	audioSystem.InitializeSoundBuffer();
@@ -196,6 +196,8 @@ int main()
 			break;
 
 		case GameOver:
+			gameOverTimer += deltaTime;
+
 			if (gameOverTempo < 25.0f) gameOverTempo += 0.1f;
 			else {
 				if (player.ProcessFireInput(deltaTime)) {
@@ -317,8 +319,8 @@ int main()
 								monsterListIt->progression -= 10;
 							if (monsterListIt->Health <= 0)
 							{
-								//particle on ennemi death position
 								particles.addParticles(10, monsterListIt->shape.getPosition());
+								//particle on ennemi death position
 								audioSystem.soundList["monsterDeath"].play();
 								monsterListIt = monsterList.erase(monsterListIt);
 
@@ -378,6 +380,7 @@ int main()
 		{
 			//Display static gameplay
 			DrawLevel(window, map, windowCenter, 5, 30);
+
 			for (Monster& monster : monsterList)
 				monster.DrawSprite(window);
 			for (BulletBehaviour& bullet : bulletList)
@@ -385,8 +388,10 @@ int main()
 			player.DrawSprite(window);
 
 			//Display Game Over
-			DisplayText(window, textGameOver1, sf::Vector2f(windowCenter.x, windowCenter.y - 10 * 20.0f), 20.0f);
-			DisplayText(window, textGameOver2, sf::Vector2f(windowCenter.x, windowCenter.y + 0 * 20.0f), 20.0f);
+			float gameOverWaveAnimation =  20 * sin(gameOverTimer);
+			sf::Color gameOverWaveColor = sf::Color(255, 64 + 64 * sin(gameOverTimer * 10), 64 + 64 * sin(gameOverTimer * 10));
+			DisplayText(window, textGameOver1, sf::Vector2f(windowCenter.x, windowCenter.y - 10 * 20.0f + gameOverWaveAnimation), 20.0f, gameOverWaveColor);
+			DisplayText(window, textGameOver2, sf::Vector2f(windowCenter.x, windowCenter.y + 0 * 20.0f + gameOverWaveAnimation), 20.0f, gameOverWaveColor);
 
 			//Display Score
 			if (gameOverTempo >= 5.0f) 	DisplayText(window, textGOScore, sf::Vector2f(windowCenter.x + 20, windowCenter.y + 10 * 20.0f), 10.0f, sf::Color::White, right);
@@ -438,8 +443,6 @@ void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState, float
 }
 
 /*
-Game Over -> glow + wave effect
-
 //Prb :
 	Enemies on top of each others
 
