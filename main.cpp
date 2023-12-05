@@ -319,7 +319,7 @@ int main()
 								monsterListIt->progression -= 10;
 							if (monsterListIt->Health <= 0)
 							{
-								particles.addParticles(10, monsterListIt->shape.getPosition());
+								particles.addParticles(100, monsterListIt->shape.getPosition());
 								//particle on ennemi death position
 								audioSystem.soundList["monsterDeath"].play();
 								monsterListIt = monsterList.erase(monsterListIt);
