@@ -201,7 +201,7 @@ int main()
 					startTempo = 0;
 					isStarting = false;
 
-					audioSystem.musicList["Game"].stop();
+					audioSystem.musicList["Gameover"].stop();
 					audioSystem.musicList["Menu"].play();
 
 					currentGameState = MainMenu;
@@ -414,6 +414,8 @@ void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState, float
 {
 	if (!player.isInvincible())
 		if (player.Hit()) {
+			audioSystem.musicList["Game"].stop();
+			audioSystem.musicList["Gameover"].play();
 			currentState = GameOver;
 			gameOverTimer = 0;
 		}
@@ -425,11 +427,9 @@ void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState, float
 }
 
 /*
-Game :
-	Implement effect when kill monster
+Game -> Implement effect when kill monster
 
-Music :
-	Implement GameOver
+Game Over -> glow + wave effect
 
 //Prb :
 	Enemies on top of each others
