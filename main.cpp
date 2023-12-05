@@ -260,23 +260,23 @@ int main()
 		{
 		case MainMenu:
 		{
-			float windowCenter = window.getSize().x / 2;
+			//float windowCenter = window.getSize().x / 2;
 
 			if (startTempo < 10) {
-				DisplayText(window, textCopyright, sf::Vector2f(windowCenter, 50), 3);
-				DisplayText(window, textTitle, sf::Vector2f(windowCenter, 200), titleScale, effect.RandomColor());
+				DisplayText(window, textCopyright, sf::Vector2f(windowCenter.x, 50), 3);
+				DisplayText(window, textTitle, sf::Vector2f(windowCenter.x, 200), titleScale, effect.RandomColor());
 
 				if (titleScale >= 20) {
-					DisplayText(window, textMission1, sf::Vector2f(windowCenter, 400), 6, sf::Color::Yellow);
-					DisplayText(window, textMission2, sf::Vector2f(windowCenter, 475), 6);
-					DisplayText(window, textMission3, sf::Vector2f(windowCenter, 525), 6);
+					DisplayText(window, textMission1, sf::Vector2f(windowCenter.x, 400), 6, sf::Color::Yellow);
+					DisplayText(window, textMission2, sf::Vector2f(windowCenter.x, 475), 6);
+					DisplayText(window, textMission3, sf::Vector2f(windowCenter.x, 525), 6);
 
-					DisplayText(window, textControl1, sf::Vector2f(windowCenter, 650), 6, sf::Color::Red, right);
-					DisplayText(window, textControl2, sf::Vector2f(windowCenter, 650), 6, sf::Color::Red, left);
-					DisplayText(window, textControl3, sf::Vector2f(windowCenter, 700), 6, sf::Color::Red, left);
+					DisplayText(window, textControl1, sf::Vector2f(windowCenter.x, 650), 6, sf::Color::Red, right);
+					DisplayText(window, textControl2, sf::Vector2f(windowCenter.x, 650), 6, sf::Color::Red, left);
+					DisplayText(window, textControl3, sf::Vector2f(windowCenter.x, 700), 6, sf::Color::Red, left);
 
-					if (!isStarting) DisplayText(window, textStart, sf::Vector2f(windowCenter, 1000), 6, sf::Color::Green);
-					else DisplayText(window, textStart, sf::Vector2f(windowCenter, 1000), 6, effect.RandomColor());
+					if (!isStarting) DisplayText(window, textStart, sf::Vector2f(windowCenter.x, 1000), 6, sf::Color::Green);
+					else DisplayText(window, textStart, sf::Vector2f(windowCenter.x, 1000), 6, effect.RandomColor());
 				}
 			}
 			else window.clear();
