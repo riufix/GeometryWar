@@ -388,7 +388,7 @@ int main()
 
 			//Display Game Over
 			float gameOverWaveAnimation =  20 * sin(gameOverTimer);
-			sf::Color gameOverWaveColor = sf::Color(255, 64 + 64 * sin(gameOverTimer * 10), 64 + 64 * sin(gameOverTimer * 10));
+			sf::Color gameOverWaveColor = sf::Color(255, 191 + 64 * sin(gameOverTimer * 30), 191 + 64 * sin(gameOverTimer * 30));
 			DisplayText(window, textGameOver1, sf::Vector2f(windowCenter.x, windowCenter.y - 10 * 20.0f + gameOverWaveAnimation), 20.0f, gameOverWaveColor);
 			DisplayText(window, textGameOver2, sf::Vector2f(windowCenter.x, windowCenter.y + 0 * 20.0f + gameOverWaveAnimation), 20.0f, gameOverWaveColor);
 
