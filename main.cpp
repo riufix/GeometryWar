@@ -11,6 +11,7 @@
 #include "Monster.h"
 #include "Effect.h"
 #include "text.h"
+#include "deathParticle.h"
 
 constexpr enum gameState {
 	MainMenu,
@@ -47,8 +48,9 @@ int main()
 	int scoreNextLvl = 300;
 	int level = 1;
 
-	//Init Effect
+	//Init Effect & Particles
 	Effect effect;
+	ParticleSystem particles;
 
 	//Init Player
 	Player player;
@@ -239,6 +241,10 @@ int main()
 		}
 
 
+		/*-------------
+		   PARTICLES
+		--------------*/
+		particles.update(sf::seconds(deltaTime));
 
 
 		/* --------------
@@ -311,8 +317,11 @@ int main()
 								monsterListIt->progression -= 10;
 							if (monsterListIt->Health <= 0)
 							{
-								monsterListIt = monsterList.erase(monsterListIt);
+								//particle on ennemi death position
+								particles.addParticles(10, monsterListIt->shape.getPosition());
 								audioSystem.soundList["monsterDeath"].play();
+								monsterListIt = monsterList.erase(monsterListIt);
+
 								SpawnMonster(monsterList, positionVector, windowCenter, level);
 							}
 							else
@@ -397,6 +406,8 @@ int main()
 		break;
 		}
 
+		//display particle effect
+		window.draw(particles);
 		window.display();
 	}
 }
@@ -427,8 +438,6 @@ void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState, float
 }
 
 /*
-Game -> Implement effect when kill monster
-
 Game Over -> glow + wave effect
 
 //Prb :
