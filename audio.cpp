@@ -47,5 +47,6 @@ void Audio::InitializeMusicBuffer()
 {
 	musicList["Menu"].openFromFile(getAppPath() + "sound\\menuMusic.wav");
 	musicList["Game"].openFromFile(getAppPath() + "sound\\gameMusic.wav");
+	musicList["Game"].setVolume(20);
 	musicList["Gameover"].openFromFile(getAppPath() + "sound\\gameoverMusic.wav");
 }
