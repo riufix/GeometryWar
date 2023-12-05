@@ -260,8 +260,6 @@ int main()
 		{
 		case MainMenu:
 		{
-			//float windowCenter = window.getSize().x / 2;
-
 			if (startTempo < 10) {
 				DisplayText(window, textCopyright, sf::Vector2f(windowCenter.x, 50), 3);
 				DisplayText(window, textTitle, sf::Vector2f(windowCenter.x, 200), titleScale, effect.RandomColor());
