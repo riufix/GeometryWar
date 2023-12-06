@@ -8,6 +8,7 @@
 #include "GameManager.h"
 #include "BulletManager.h"
 #include "MonsterManager.h"
+#include "MenuManager.h"
 
 #include "audio.h"
 #include "Player.h"
@@ -57,19 +58,7 @@ int main()
 
 
 	//Init Menu
-	const std::vector<sf::ConvexShape> textCopyright = stringToDisplayable("2023 | Baptiste V | Enguerrand C | Titouan D | A2 JV GP");
-	const std::vector<sf::ConvexShape> textTitle = stringToDisplayable("ORKAN");
-	const std::vector<sf::ConvexShape> textMission1 = stringToDisplayable("Welcome Aboard Captain!");
-	const std::vector<sf::ConvexShape> textMission2 = stringToDisplayable("Your mission is to prevent enemy ships");
-	const std::vector<sf::ConvexShape> textMission3 = stringToDisplayable("from reaching your position!");
-	const std::vector<sf::ConvexShape> textControl1 = stringToDisplayable("[SPACE] to fire   ");
-	const std::vector<sf::ConvexShape> textControl2 = stringToDisplayable("   [Q][D] to move");
-	const std::vector<sf::ConvexShape> textControl3 = stringToDisplayable("   [Arrows]");
-	const std::vector<sf::ConvexShape> textHighScore = stringToDisplayable("current HighScore   ");
-	const std::vector<sf::ConvexShape> textStart = stringToDisplayable("Press [Space] when ready to start");
-	float titleScale = 0;
-	float startTempo = 0;
-	float isStarting = false;
+	MenuManager menuManager;
 
 	//Init Ennemy List
 	MonsterManager monsterManager;
@@ -88,10 +77,9 @@ int main()
 	Audio audioSystem;
 	audioSystem.InitializeSoundBuffer();
 	audioSystem.InitializeMusicBuffer();
-
+	audioSystem.ChangeMusic("Menu");
 #pragma endregion
 
-	audioSystem.musicList["Menu"].play();
 	while (window.isOpen())
 	{
 		float deltaTime = frameClock.restart().asSeconds();
@@ -120,12 +108,12 @@ int main()
 		{
 		case MainMenu:
 			//Intro Title animation
-			if (titleScale < 20) titleScale += 0.1;
+			if (menuManager.titleScale < 20) menuManager.titleScale += 0.1;
 			else {
-				titleScale = 20;
-				if (player.ProcessFireInput(deltaTime) || isStarting) {
+				menuManager.titleScale = 20;
+				if (player.ProcessFireInput(deltaTime) || menuManager.isStarting) {
 
-					if (startTempo < 10) startTempo += 0.1;
+					if (menuManager.startTempo < 10) menuManager.startTempo += 0.1;
 					else {
 						//Reset Variables
 						player.Reset();
@@ -140,13 +128,12 @@ int main()
 						monsterManager.PushFirstMonster(positionVector, windowCenter);
 
 						
-						audioSystem.musicList["Menu"].stop();
-						audioSystem.musicList["Game"].play();
+						audioSystem.ChangeMusic("Game");
 						//Reset transitionTimer & launch levelIntro
 						gameManager.transitionTime = 0.0f;
 						gameManager.currentGameState = LevelIntro;
 					}
-					isStarting = true;
+					menuManager.isStarting = true;
 				}
 			}
 			break;
@@ -189,13 +176,8 @@ int main()
 			if (gameOverTempo < 25.0f) gameOverTempo += 0.1f;
 			else {
 				if (player.ProcessFireInput(deltaTime)) {
-					titleScale = 0;
-					startTempo = 0;
-					isStarting = false;
-
-					audioSystem.musicList["Gameover"].stop();
-					audioSystem.musicList["Menu"].play();
-
+					menuManager.Reset();
+					audioSystem.ChangeMusic("Menu");
 					gameManager.currentGameState = MainMenu;
 				}
 			}
@@ -249,27 +231,7 @@ int main()
 		{
 		case MainMenu:
 		{
-			if (startTempo < 10) {
-				DisplayText(window, textCopyright, sf::Vector2f(windowCenter.x, 50), 3);
-				DisplayText(window, textTitle, sf::Vector2f(windowCenter.x, 200), titleScale, effect.RandomColor());
-
-				if (titleScale >= 20) {
-					DisplayText(window, textMission1, sf::Vector2f(windowCenter.x, 400), 6, sf::Color::Yellow);
-					DisplayText(window, textMission2, sf::Vector2f(windowCenter.x, 475), 6);
-					DisplayText(window, textMission3, sf::Vector2f(windowCenter.x, 525), 6);
-
-					DisplayText(window, textControl1, sf::Vector2f(windowCenter.x, 650), 6, sf::Color::Red, right);
-					DisplayText(window, textControl2, sf::Vector2f(windowCenter.x, 650), 6, sf::Color::Red, left);
-					DisplayText(window, textControl3, sf::Vector2f(windowCenter.x, 700), 6, sf::Color::Red, left);
-
-					DisplayText(window, textHighScore, sf::Vector2f(windowCenter.x +180, 800), 5, sf::Color::White, right);
-					DisplayText(window, stringToDisplayable(std::to_string(gameManager.highScore)), sf::Vector2f(windowCenter.x +180, 800), 5, sf::Color::White, left);
-
-					if (!isStarting) DisplayText(window, textStart, sf::Vector2f(windowCenter.x, 1000), 6, sf::Color::Green);
-					else DisplayText(window, textStart, sf::Vector2f(windowCenter.x, 1000), 6, effect.RandomColor());
-				}
-			}
-			else window.clear();
+			menuManager.DisplayMenu(window, windowCenter, effect, gameManager);
 		}
 		break;
 
@@ -378,9 +340,3 @@ std::string readScore() {
 	std::cout << score << std::endl;
 	return score;
 }*/
-
-/*
-//optimize:
-	Transfer bullet display to bullet Manager
-	Transfer Ennemis display to ennemy Manager
-*/
