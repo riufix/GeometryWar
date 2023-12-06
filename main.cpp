@@ -140,8 +140,8 @@ int main()
 					if (startTempo < 10) startTempo += 0.1;
 					else {
 						//Reset Level
-						level = 0;
-						AddLevel(currentLevel);
+						level = 1;
+						currentLevel = levelShape::triangle;
 						changeLevel(map, positionVector, currentLevel);
 
 						//Reset Variables
