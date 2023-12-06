@@ -399,7 +399,7 @@ int main()
 		case GameOver:
 		{
 			//Display static gameplay
-			DrawLevel(window, map, windowCenter, 5, 30, player.positionIndex);
+			DrawLevel(window, map, windowCenter, 5, 30, -1);
 
 			for (Monster& monster : monsterList)
 				monster.DrawSprite(window);
