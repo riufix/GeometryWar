@@ -99,6 +99,8 @@ int main()
 	const std::vector<sf::ConvexShape> textBackToMenu = stringToDisplayable("press [Space] to go back to the menu");
 	float gameOverTempo = 0;
 	float gameOverTimer = 0;
+	int highScore = 1000;
+
 	//Init audio
 	Audio audioSystem;
 	audioSystem.InitializeSoundBuffer();
