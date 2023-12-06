@@ -290,11 +290,11 @@ int main()
 					DisplayText(window, textControl2, sf::Vector2f(windowCenter.x, 650), 6, sf::Color::Red, left);
 					DisplayText(window, textControl3, sf::Vector2f(windowCenter.x, 700), 6, sf::Color::Red, left);
 
-					DisplayText(window, textHighScore, sf::Vector2f(windowCenter + 200, 800), 4, sf::Color::White, right);
-					DisplayText(window, stringToDisplayable(std::to_string(highScore)), sf::Vector2f(windowCenter + 200, 800), 4, sf::Color::White, right);
+					DisplayText(window, textHighScore, sf::Vector2f(windowCenter.x +180, 800), 5, sf::Color::White, right);
+					DisplayText(window, stringToDisplayable(std::to_string(highScore)), sf::Vector2f(windowCenter.x +180, 800), 5, sf::Color::White, left);
 
-					if (!isStarting) DisplayText(window, textStart, sf::Vector2f(windowCenter, 1000), 6, sf::Color::Green);
-					else DisplayText(window, textStart, sf::Vector2f(windowCenter, 1000), 6, effect.RandomColor());
+					if (!isStarting) DisplayText(window, textStart, sf::Vector2f(windowCenter.x, 1000), 6, sf::Color::Green);
+					else DisplayText(window, textStart, sf::Vector2f(windowCenter.x, 1000), 6, effect.RandomColor());
 				}
 			}
 			else window.clear();
