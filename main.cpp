@@ -1,7 +1,6 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
-#include <iostream>
 #include <list>
 
 #include "audio.h"
@@ -170,9 +169,15 @@ int main()
 				audioSystem.soundList["levelIntro"].play();
 
 			if (transitionTime < 1.0f)
+			{
 				transitionTime = transitionTime + deltaTime;
+				particles.AddParticle(sf::Vector2f(rand() % (int)(windowCenter.x * 2), rand() % (int)(windowCenter.y * 2)), true, windowCenter);
+			}
 			else
+			{
+				particles.ClearParticles();
 				currentGameState = Game;
+			}
 			break;
 
 		case Game:
@@ -251,7 +256,7 @@ int main()
 		/*-------------
 		   PARTICLES
 		--------------*/
-		particles.update(sf::seconds(deltaTime));
+		particles.update(sf::seconds(deltaTime), currentGameState == LevelIntro);
 
 
 		/* --------------
