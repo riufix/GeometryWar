@@ -5,12 +5,6 @@ ParticleSystem::ParticleSystem()
 
 }
 
-void ParticleSystem::setEmitter(sf::Vector2f position)
-{
-    m_emitter = position;
-}
-
-
 void ParticleSystem::update(sf::Time elapsed)
 {
     std::vector<Particle>::iterator it = m_particles.begin();
@@ -35,6 +29,8 @@ void ParticleSystem::update(sf::Time elapsed)
         }
               
     }
+
+    SetRandomColor();
 }
 
 void ParticleSystem::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -61,7 +57,7 @@ void ParticleSystem::AddParticle(sf::Vector2f monsterPos)
     p.lifetime = sf::milliseconds((std::rand() % 2000) + 1000);
     p.remainingTime = p.lifetime;
     p.m_circle.setPointCount(16);
-    p.m_circle.setPosition(m_emitter);
+    p.m_circle.setPosition(monsterPos);
     p.m_circle.setRadius(5.f);
     m_particles.push_back(p);
 
@@ -71,4 +67,16 @@ void ParticleSystem::addParticles(int count, sf::Vector2f monsterPos) {
     for (int i = 0; i < count; i++) {
         AddParticle(monsterPos);
     }
+}
+
+void ParticleSystem::SetRandomColor()
+{
+    for (int i = 0; i < m_particles.size(); i++) {
+        m_particles[i].m_circle.setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255));
+    }
+}
+
+void ParticleSystem::ClearParticles()
+{
+    m_particles.clear();
 }

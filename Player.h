@@ -19,6 +19,7 @@ public:
 	int Health = 3;
 
 	void InitializeGraphic();
+	void Reset();
 	void DrawSprite(sf::RenderWindow& window);
 
 	void ProcessInvincibility(float deltaTime);

@@ -1,7 +1,5 @@
 #include "Effect.h"
 
-#include <iostream>
-
 void Effect::ChangeFlashScreen(int duration, bool randomness, sf::Color color)
 {
 	FlashScreenDuration = duration;

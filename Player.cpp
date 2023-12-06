@@ -1,5 +1,4 @@
 #include "Player.h"
-#include <iostream>
 
 void Player::InitializeGraphic()
 {
@@ -14,6 +13,12 @@ void Player::InitializeGraphic()
 	shape.setPoint(4, sf::Vector2f(0 - 60, 0 - 20));
 	shape.setPoint(5, sf::Vector2f(0 - 50, 0 + 30));
 	shape.setOrigin(0, 0);
+}
+
+void Player::Reset()
+{
+	positionIndex = 0;
+	Health = 3;
 }
 
 void Player::ProcessInvincibility(float deltaTime)

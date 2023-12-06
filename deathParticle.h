@@ -7,12 +7,13 @@
 class ParticleSystem : public sf::Drawable, public sf::Transformable {
 public:	
 	ParticleSystem();
-	void setEmitter(sf::Vector2f position);
 	void update(sf::Time elapsed);
 	void AddParticle(sf::Vector2f monsterPos);
 	void addParticles(int count, sf::Vector2f monsterPos );
+	void ClearParticles();
 
 private:
+	void SetRandomColor();
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const;
 
 private:
