@@ -7,8 +7,8 @@ sf::ConvexShape InitializeTriangle()
     triangle.setPointCount(9);
 
     triangle.setOutlineColor(sf::Color::Blue);
-    triangle.setOutlineThickness(.75f);
     triangle.setFillColor(sf::Color::Transparent);
+    triangle.setOutlineThickness(.75f);
     triangle.setOrigin(0, 0);
 
     triangle.setPoint(0, sf::Vector2f(-15,10));
@@ -68,13 +68,14 @@ sf::ConvexShape InitializePentagon() {
     return pentagon;
 }
 
-void DrawLevel(sf::RenderWindow& window, sf::ConvexShape shape, sf::Vector2f Position, float minScale, float maxScale, int playerPos, sf::Color color, sf::Color playerColor) {
+void DrawLevel(sf::RenderWindow& window, sf::ConvexShape shape, sf::Vector2f Position, float minScale, float maxScale,sf::Color color, sf::Color lineColor) {
 
     //center of the screen
     //int centerX = window.getSize().x / 2;
     //int centerY = window.getSize().y / 2;
 
     shape.setOutlineColor(color);
+
 
     shape.setPosition(Position);
     
@@ -93,16 +94,17 @@ void DrawLevel(sf::RenderWindow& window, sf::ConvexShape shape, sf::Vector2f Pos
         float endY = Position.y + shape.getPoint(i).y * (maxScale);
 
 
-        sf::Color drawColor = color;
-        if(playerPos != -1)
-            if (i == playerPos || i + 1 == playerPos || (i == 0 && playerPos == shape.getPointCount()))
-                drawColor = playerColor;
-
         sf::Vertex line[] =
         {
             sf::Vertex(sf::Vector2f(startX, startY), drawColor),
             sf::Vertex(sf::Vector2f(endX, endY), drawColor)
         };
+
+        for (int j = 0; i < shape.getPointCount(); j++) {
+            //line->color = sf::Color::Yellow;
+            sf::Vertex(sf::Vector2f(startX, startY), lineColor);
+            sf::Vertex(sf::Vector2f(endX, endY), lineColor);
+        }
 
         window.draw(line, 2, sf::Lines);
     }
@@ -121,7 +123,7 @@ void changeLevel(sf::ConvexShape& map, std::vector<sf::Vector3f>& positionList, 
     //Init player position list
     sf::Vector3f TrianglePositionList[9] = {
     {1090,330,55},
-    {1220,500, 60},
+    {1220,500,60},
     {1360,730,55},
     {1250,890,180},
     {960,890,180},
