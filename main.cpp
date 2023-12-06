@@ -304,7 +304,7 @@ int main()
 		case Game:
 		{
 			//Display level
-			DrawLevel(window, map, windowCenter, 5, 30);
+			DrawLevel(window, map, windowCenter, 5, 30, player.positionIndex);
 
 			//Display & manage Ennemies
 			std::list<Monster>::iterator monsterListIt = monsterList.begin();
@@ -399,7 +399,7 @@ int main()
 		case GameOver:
 		{
 			//Display static gameplay
-			DrawLevel(window, map, windowCenter, 5, 30);
+			DrawLevel(window, map, windowCenter, 5, 30, player.positionIndex);
 
 			for (Monster& monster : monsterList)
 				monster.DrawSprite(window);
@@ -433,7 +433,7 @@ int main()
 		case LevelIntro:
 		case LevelTransition:
 		{
-			DrawLevel(window, map, windowCenter, 5 * transitionTime, 30 * transitionTime, effect.RandomColor());
+			DrawLevel(window, map, windowCenter, 5 * transitionTime, 30 * transitionTime, -1, effect.RandomColor());
 
 		}
 		break;
