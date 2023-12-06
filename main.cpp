@@ -83,7 +83,6 @@ int main()
 	const std::vector<sf::ConvexShape> textBackToMenu = stringToDisplayable("press [Space] to go back to the menu");
 	float gameOverTempo = 0;
 	float gameOverTimer = 0;
-	int highScore = 1000;
 
 	//Init audio
 	Audio audioSystem;
@@ -201,7 +200,7 @@ int main()
 				}
 			}
 
-			if (gameManager.score > highScore) highScore = gameManager.score;
+			if (gameManager.score > gameManager.highScore) gameManager.highScore = gameManager.score;
 			break;
 
 		case LevelTransition:
@@ -264,7 +263,7 @@ int main()
 					DisplayText(window, textControl3, sf::Vector2f(windowCenter.x, 700), 6, sf::Color::Red, left);
 
 					DisplayText(window, textHighScore, sf::Vector2f(windowCenter.x +180, 800), 5, sf::Color::White, right);
-					DisplayText(window, stringToDisplayable(std::to_string(highScore)), sf::Vector2f(windowCenter.x +180, 800), 5, sf::Color::White, left);
+					DisplayText(window, stringToDisplayable(std::to_string(gameManager.highScore)), sf::Vector2f(windowCenter.x +180, 800), 5, sf::Color::White, left);
 
 					if (!isStarting) DisplayText(window, textStart, sf::Vector2f(windowCenter.x, 1000), 6, sf::Color::Green);
 					else DisplayText(window, textStart, sf::Vector2f(windowCenter.x, 1000), 6, effect.RandomColor());
@@ -318,12 +317,12 @@ int main()
 			if (gameOverTempo >= 10.0f) DisplayText(window, stringToDisplayable(std::to_string(gameManager.score)), sf::Vector2f(windowCenter.x + 20, windowCenter.y + 10 * 20.0f), 10.0f, sf::Color::White, textOrigin::left);
 			if (gameOverTempo >= 15.0f) DisplayText(window, textGOHighScore, sf::Vector2f(windowCenter.x + 20, windowCenter.y + 15 * 20.0f), 10.0f, sf::Color::White, right);
 			if (gameOverTempo >= 20.0f) {
-				if (gameManager.score == highScore) {
-					DisplayText(window, stringToDisplayable(std::to_string(highScore)), sf::Vector2f(windowCenter.x + 20, windowCenter.y + 15 * 20.0f), 10.0f, effect.RandomColor(), textOrigin::left);
+				if (gameManager.score == gameManager.highScore) {
+					DisplayText(window, stringToDisplayable(std::to_string(gameManager.highScore)), sf::Vector2f(windowCenter.x + 20, windowCenter.y + 15 * 20.0f), 10.0f, effect.RandomColor(), textOrigin::left);
 					DisplayText(window, textGONewRecord, sf::Vector2f(windowCenter.x + 18, windowCenter.y + 18 * 20.0f), 3.0f, effect.RandomColor(), textOrigin::left);
 				}
 				else {
-					DisplayText(window, stringToDisplayable(std::to_string(highScore)), sf::Vector2f(windowCenter.x + 20, windowCenter.y + 15 * 20.0f), 10.0f, sf::Color::White, textOrigin::left);
+					DisplayText(window, stringToDisplayable(std::to_string(gameManager.highScore)), sf::Vector2f(windowCenter.x + 20, windowCenter.y + 15 * 20.0f), 10.0f, sf::Color::White, textOrigin::left);
 				}
 			}
 			if (gameOverTempo >= 25.0f) DisplayText(window, textBackToMenu, sf::Vector2f(windowCenter.x, windowCenter.y + 21 * 20.0f), 5.0f, sf::Color::Green);
