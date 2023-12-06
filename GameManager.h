@@ -13,7 +13,7 @@ constexpr enum gameState {
 class GameManager
 {
 public:
-	gameState currentGameState;
+	gameState currentGameState = MainMenu;
 	int score = 0;
 	int scoreNeeded = 100;
 	int scoreNextLvl = 300;
