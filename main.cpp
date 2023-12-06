@@ -319,11 +319,12 @@ int main()
 								monsterListIt->progression -= 10;
 							if (monsterListIt->Health <= 0)
 							{
-								particles.addParticles(100, monsterListIt->shape.getPosition());
+								score = score + 15;
 								//particle on ennemi death position
+								particles.addParticles(100, monsterListIt->shape.getPosition());
 								audioSystem.soundList["monsterDeath"].play();
-								monsterListIt = monsterList.erase(monsterListIt);
 
+								monsterListIt = monsterList.erase(monsterListIt);
 								SpawnMonster(monsterList, positionVector, windowCenter, level, lastCorridor);
 							}
 							else
