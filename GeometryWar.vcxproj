@@ -86,7 +86,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="audio.cpp" />
     <ClCompile Include="BulletBehaviour.cpp" />
+    <ClCompile Include="deathParticle.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Lerp.cpp" />
     <ClCompile Include="main.cpp" />
@@ -96,7 +98,9 @@
     <ClCompile Include="text.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="audio.h" />
     <ClInclude Include="BulletBehaviour.h" />
+    <ClInclude Include="deathParticle.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Lerp.h" />
     <ClInclude Include="map.h" />

@@ -1,15 +1,18 @@
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
 #include <fstream>
 #include <list>
 
+#include "audio.h"
 #include "Player.h"
 #include "BulletBehaviour.h"
 #include "map.h"
 #include "Monster.h"
 #include "Effect.h"
 #include "text.h"
+#include "deathParticle.h"
 
 constexpr enum gameState {
 	MainMenu,
@@ -20,8 +23,8 @@ constexpr enum gameState {
 };
 
 //Prototypes
-void SpawnMonster(std::list<Monster>& monsterList, std::vector<sf::Vector3f>& positionVector, sf::Vector2f windowCenter, int currentLevel);
-void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState, float& gameOverTimer);
+void SpawnMonster(std::list<Monster>& monsterList, std::vector<sf::Vector3f>& positionVector, sf::Vector2f windowCenter, int currentLevel, int lastCorridor);
+void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState, float& gameOverTimer, Audio& soundSystem);
 
 int main()
 {
@@ -45,8 +48,9 @@ int main()
 	int scoreNextLvl = 300;
 	int level = 1;
 
-	//Init Effect
+	//Init Effect & Particles
 	Effect effect;
+	ParticleSystem particles;
 
 	//Init Player
 	Player player;
@@ -80,6 +84,7 @@ int main()
 	//Init Ennemy List
 	std::list<Monster> monsterList;
 	int newCorridor = rand() % positionVector.size();
+	int lastCorridor = newCorridor;
 	monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor, 1));
 
 	//Init Transition level & Game Over Timer
@@ -93,9 +98,15 @@ int main()
 	const std::vector<sf::ConvexShape> textGONewRecord = stringToDisplayable("New Record!");
 	const std::vector<sf::ConvexShape> textBackToMenu = stringToDisplayable("press [Space] to go back to the menu");
 	float gameOverTempo = 0;
-	int highScore = 1000;
+	float gameOverTimer = 0;
+	//Init audio
+	Audio audioSystem;
+	audioSystem.InitializeSoundBuffer();
+	audioSystem.InitializeMusicBuffer();
+
 #pragma endregion
 
+	audioSystem.musicList["Menu"].play();
 	while (window.isOpen())
 	{
 		float deltaTime = frameClock.restart().asSeconds();
@@ -131,18 +142,23 @@ int main()
 
 					if (startTempo < 10) startTempo += 0.1;
 					else {
-						//Start Level
+						//Reset Level
 						level = 1;
-						score = 0;
-						scoreNeeded = 100;
+						currentLevel = levelShape::triangle;
+						changeLevel(map, positionVector, currentLevel);
 
 						//Reset Variables
 						player.Reset();
+						score = 0;
+						scoreNeeded = 100;
+
 						bulletList.clear();
 						monsterList.clear();
 						int newCorridor = rand() % positionVector.size();
 						monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor, 1));
-
+						
+						audioSystem.musicList["Menu"].stop();
+						audioSystem.musicList["Game"].play();
 						//Reset transitionTimer & launch levelIntro
 						transitionTime = 0.0f;
 						currentGameState = LevelIntro;
@@ -153,10 +169,19 @@ int main()
 			break;
 
 		case LevelIntro:
+			if(transitionTime == 0)
+				audioSystem.soundList["levelIntro"].play();
+
 			if (transitionTime < 1.0f)
+			{
 				transitionTime = transitionTime + deltaTime;
+				particles.AddParticle(sf::Vector2f(rand() % (int)(windowCenter.x * 2), rand() % (int)(windowCenter.y * 2)), true, windowCenter);
+			}
 			else
+			{
+				particles.ClearParticles();
 				currentGameState = Game;
+			}
 			break;
 
 		case Game:
@@ -166,6 +191,7 @@ int main()
 			if (player.ProcessFireInput(deltaTime))
 			{
 				bulletList.push_back(BulletBehaviour(BulletBehaviour::Owner::Player, 100, player.positionIndex, player.shape.getPosition()));
+				audioSystem.soundList["playerShoot"].play();
 			}
 
 			player.ProcessInvincibility(deltaTime);
@@ -173,20 +199,29 @@ int main()
 			//Look if go to next level
 			if (score >= scoreNeeded)
 			{
-				scoreNeeded = scoreNeeded + scoreNextLvl;
+				scoreNeeded = scoreNeeded + scoreNextLvl * level;
+				particles.ClearParticles();
+
 				currentGameState = LevelTransition;
+				audioSystem.soundList["levelEnd"].play();
 				transitionTime = 1.0f;
 			}
 
 			break;
 
 		case GameOver:
+			gameOverTimer += deltaTime;
+
 			if (gameOverTempo < 25.0f) gameOverTempo += 0.1f;
 			else {
 				if (player.ProcessFireInput(deltaTime)) {
 					titleScale = 0;
 					startTempo = 0;
 					isStarting = false;
+
+					audioSystem.musicList["Gameover"].stop();
+					audioSystem.musicList["Menu"].play();
+
 					currentGameState = MainMenu;
 				}
 			}
@@ -211,7 +246,7 @@ int main()
 				level++;
 				monsterList.clear();
 				for (int i = 0; i < level; i++)
-					SpawnMonster(monsterList, positionVector, windowCenter, level);
+					SpawnMonster(monsterList, positionVector, windowCenter, level, lastCorridor);
 
 				if (level % 3 == 0) //Give one life if complete each map
 					player.Health++;
@@ -224,6 +259,10 @@ int main()
 		}
 
 
+		/*-------------
+		   PARTICLES
+		--------------*/
+		particles.update(sf::seconds(deltaTime), currentGameState == LevelIntro);
 
 
 		/* --------------
@@ -236,20 +275,18 @@ int main()
 		{
 		case MainMenu:
 		{
-			float windowCenter = window.getSize().x / 2;
-
 			if (startTempo < 10) {
-				DisplayText(window, textCopyright, sf::Vector2f(windowCenter, 50), 3);
-				DisplayText(window, textTitle, sf::Vector2f(windowCenter, 200), titleScale, effect.RandomColor());
+				DisplayText(window, textCopyright, sf::Vector2f(windowCenter.x, 50), 3);
+				DisplayText(window, textTitle, sf::Vector2f(windowCenter.x, 200), titleScale, effect.RandomColor());
 
 				if (titleScale >= 20) {
-					DisplayText(window, textMission1, sf::Vector2f(windowCenter, 400), 6, sf::Color::Yellow);
-					DisplayText(window, textMission2, sf::Vector2f(windowCenter, 475), 6);
-					DisplayText(window, textMission3, sf::Vector2f(windowCenter, 525), 6);
+					DisplayText(window, textMission1, sf::Vector2f(windowCenter.x, 400), 6, sf::Color::Yellow);
+					DisplayText(window, textMission2, sf::Vector2f(windowCenter.x, 475), 6);
+					DisplayText(window, textMission3, sf::Vector2f(windowCenter.x, 525), 6);
 
-					DisplayText(window, textControl1, sf::Vector2f(windowCenter, 650), 6, sf::Color::Red, right);
-					DisplayText(window, textControl2, sf::Vector2f(windowCenter, 650), 6, sf::Color::Red, left);
-					DisplayText(window, textControl3, sf::Vector2f(windowCenter, 700), 6, sf::Color::Red, left);
+					DisplayText(window, textControl1, sf::Vector2f(windowCenter.x, 650), 6, sf::Color::Red, right);
+					DisplayText(window, textControl2, sf::Vector2f(windowCenter.x, 650), 6, sf::Color::Red, left);
+					DisplayText(window, textControl3, sf::Vector2f(windowCenter.x, 700), 6, sf::Color::Red, left);
 
 					DisplayText(window, textHighScore, sf::Vector2f(windowCenter + 200, 800), 4, sf::Color::White, right);
 					DisplayText(window, stringToDisplayable(std::to_string(highScore)), sf::Vector2f(windowCenter + 200, 800), 4, sf::Color::White, right);
@@ -275,10 +312,10 @@ int main()
 				if (monsterListIt->ProcessMonster(deltaTime, bulletList))
 				{
 					if (monsterListIt->progression > 100)
-						ChkPlayerHit(player, effect, currentGameState, gameOverTempo);
+						ChkPlayerHit(player, effect, currentGameState, gameOverTempo, audioSystem);
 
 					monsterListIt = monsterList.erase(monsterListIt);
-					SpawnMonster(monsterList, positionVector, windowCenter, level);
+					SpawnMonster(monsterList, positionVector, windowCenter, level, lastCorridor);
 				}
 				else
 				{
@@ -299,9 +336,16 @@ int main()
 								monsterListIt->progression -= 10;
 							if (monsterListIt->Health <= 0)
 							{
+								score = score + 15;
+								//particle on ennemi death position
+								particles.addParticles(100, monsterListIt->shape.getPosition());
+								audioSystem.soundList["monsterDeath"].play();
+
 								monsterListIt = monsterList.erase(monsterListIt);
-								SpawnMonster(monsterList, positionVector, windowCenter, level);
+								SpawnMonster(monsterList, positionVector, windowCenter, level, lastCorridor);
 							}
+							else
+								audioSystem.soundList["monsterHit"].play();
 						}
 						else
 							bulletCollisionListIt++;
@@ -319,17 +363,20 @@ int main()
 			{
 				//Collision btw Bullets
 				if (bulletListIt->CheckOtherBulletCollision(bulletList, bulletListIt))
+				{
+					audioSystem.soundList["bulletHit"].play();
 					continue;
+				}
 
 				if (bulletListIt->ProcessBullet(windowCenter))
 				{
 					if (bulletListIt->CheckPlayerCollision(player.positionIndex)) //Collision with player
-						ChkPlayerHit(player, effect, currentGameState, gameOverTempo);
+						ChkPlayerHit(player, effect, currentGameState, gameOverTempo, audioSystem);
 					bulletListIt = bulletList.erase(bulletListIt);
 				}
 				else
 				{
-					bulletListIt->DisplayBullet(window);
+					bulletListIt->DisplayBullet(window, deltaTime);
 					bulletListIt++;
 				}
 			}
@@ -351,15 +398,18 @@ int main()
 		{
 			//Display static gameplay
 			DrawLevel(window, map, windowCenter, 5, 30);
+
 			for (Monster& monster : monsterList)
 				monster.DrawSprite(window);
 			for (BulletBehaviour& bullet : bulletList)
-				bullet.DisplayBullet(window);
+				bullet.DisplayBullet(window, 0);
 			player.DrawSprite(window);
 
 			//Display Game Over
-			DisplayText(window, textGameOver1, sf::Vector2f(windowCenter.x, windowCenter.y - 10 * 20.0f), 20.0f);
-			DisplayText(window, textGameOver2, sf::Vector2f(windowCenter.x, windowCenter.y + 0 * 20.0f), 20.0f);
+			float gameOverWaveAnimation =  20 * sin(gameOverTimer);
+			sf::Color gameOverWaveColor = sf::Color(255, 191 + 64 * sin(gameOverTimer * 30), 191 + 64 * sin(gameOverTimer * 30));
+			DisplayText(window, textGameOver1, sf::Vector2f(windowCenter.x, windowCenter.y - 10 * 20.0f + gameOverWaveAnimation), 20.0f, gameOverWaveColor);
+			DisplayText(window, textGameOver2, sf::Vector2f(windowCenter.x, windowCenter.y + 0 * 20.0f + gameOverWaveAnimation), 20.0f, gameOverWaveColor);
 
 			//Display Score
 			if (gameOverTempo >= 5.0f) 	DisplayText(window, textGOScore, sf::Vector2f(windowCenter.x + 20, windowCenter.y + 10 * 20.0f), 10.0f, sf::Color::White, right);
@@ -387,29 +437,39 @@ int main()
 		break;
 		}
 
+		//display particle effect
+		window.draw(particles);
 		window.display();
 	}
 }
 
-void SpawnMonster(std::list<Monster>& monsterList, std::vector<sf::Vector3f>& positionVector, sf::Vector2f windowCenter, int currentLevel)
+void SpawnMonster(std::list<Monster>& monsterList, std::vector<sf::Vector3f>& positionVector, sf::Vector2f windowCenter, int currentLevel, int lastCorridor)
 {
-	int newCorridor = rand() % positionVector.size();
+	int newCorridor = 0;
+	do
+		newCorridor = rand() % positionVector.size();
+	while (newCorridor == lastCorridor);
+
 	int newHealth = 1 + rand() % currentLevel > 2 ? 3 :
 		currentLevel > 1 ? 2 :
 		1;
+
 	monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor, newHealth));
 }
 
-void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState, float& gameOverTimer)
+void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState, float& gameOverTimer, Audio& audioSystem)
 {
 	if (!player.isInvincible())
 		if (player.Hit()) {
+			audioSystem.musicList["Game"].stop();
+			audioSystem.musicList["Gameover"].play();
 			currentState = GameOver;
 			gameOverTimer = 0;
 		}
 		else
 		{
 			effect.ChangeFlashScreen(1.0f, false, sf::Color::Red);
+			audioSystem.soundList["playerHit"].play();
 		}
 }
 
@@ -450,30 +510,6 @@ std::string readScore() {
 }*/
 
 /*
-Game :
-	Effect :
-		when kill monster
-	Bullet :
-		Destroy Ennemies bullet with ours
-
-Game Over
-	Logic -> goto Main Menu
-	Animation
-
-Sound :
-	Player shoot
-	Player Hit
-	Monster Hit
-	Transition
-Music :
-	Title screen
-	Game
-	GameOver
-
-//Prb :
-	Enemies on top of each others
-	Enemies projectiles more visible
-
 //optimize:
 	Transfer bullet display to bullet Manager
 	Transfer Ennemis display to ennemy Manager
