@@ -84,7 +84,23 @@ void Player::DrawSprite(sf::RenderWindow& window)
 }
 
 
-bool Player::isInvincible()
+void Player::ChkPlayerHit(Effect& effect, GameManager& gameManager, Audio& audioSystem, float gameOverTempo)
+{
+	if (!IsInvincible())
+		if (Hit()) {
+			audioSystem.musicList["Game"].stop();
+			audioSystem.musicList["Gameover"].play();
+			gameManager.currentGameState = GameOver;
+			gameOverTempo = 0;
+		}
+		else
+		{
+			effect.ChangeFlashScreen(1.0f, false, sf::Color::Red);
+			audioSystem.soundList["playerHit"].play();
+		}
+}
+
+bool Player::IsInvincible()
 {
 	return currentInvicibilityRate > 0;
 }

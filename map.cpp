@@ -10,18 +10,18 @@ sf::ConvexShape InitializeTriangle()
     triangle.setFillColor(sf::Color::Transparent);
     triangle.setOutlineThickness(.75f);
     triangle.setOrigin(0, 0);
-
-    triangle.setPoint(0, sf::Vector2f(-15,10));
-    triangle.setPoint(1, sf::Vector2f(-10, 3.33333333333333f));
-    triangle.setPoint(2, sf::Vector2f(-5, -3.333333333333f));
     
-    triangle.setPoint(3, sf::Vector2f(0, -10));
-    triangle.setPoint(4, sf::Vector2f(5, -3.333333333333f));
-    triangle.setPoint(5, sf::Vector2f(10, 3.33333333333333f));
+    triangle.setPoint(0, sf::Vector2f(0, -10));
+    triangle.setPoint(1, sf::Vector2f(5, -3.333333333333f));
+    triangle.setPoint(2, sf::Vector2f(10, 3.33333333333333f));
 
-    triangle.setPoint(6, sf::Vector2f(15, 10));
-    triangle.setPoint(7, sf::Vector2f(5, 10));
-    triangle.setPoint(8, sf::Vector2f(-5, 10));
+    triangle.setPoint(3, sf::Vector2f(15, 10));
+    triangle.setPoint(4, sf::Vector2f(5, 10));
+    triangle.setPoint(5, sf::Vector2f(-5, 10));
+
+    triangle.setPoint(6, sf::Vector2f(-15,10));
+    triangle.setPoint(7, sf::Vector2f(-10, 3.33333333333333f));
+    triangle.setPoint(8, sf::Vector2f(-5, -3.333333333333f));
 
     return triangle;
 }
@@ -36,15 +36,14 @@ sf::ConvexShape InitializeSquare() {
     square.setOutlineThickness(.75f);
     square.setOrigin(0, 0);
 
-    square.setPoint(0, sf::Vector2f(-10,-10));
-    square.setPoint(2, sf::Vector2f(+10,-10));
-    square.setPoint(4, sf::Vector2f(+10,+10));
-    square.setPoint(6, sf::Vector2f(-10,+10));
-    
-    square.setPoint(1, sf::Vector2f(0,-10));
-    square.setPoint(3, sf::Vector2f(+10,0));
-    square.setPoint(5, sf::Vector2f(0,+10));
-    square.setPoint(7, sf::Vector2f(-10,0));
+    square.setPoint(0, sf::Vector2f(0,-10));
+    square.setPoint(1, sf::Vector2f(+10,-10));
+    square.setPoint(2, sf::Vector2f(+10,0));
+    square.setPoint(3, sf::Vector2f(+10,+10));
+    square.setPoint(4, sf::Vector2f(0,+10));
+    square.setPoint(5, sf::Vector2f(-10,+10));
+    square.setPoint(6, sf::Vector2f(-10,0));
+    square.setPoint(7, sf::Vector2f(-10,-10));
     
     return square;
 }
@@ -93,6 +92,11 @@ void DrawLevel(sf::RenderWindow& window, sf::ConvexShape shape, sf::Vector2f Pos
         float endX = Position.x + shape.getPoint(i).x * maxScale;
         float endY = Position.y + shape.getPoint(i).y * (maxScale);
 
+
+        sf::Color drawColor = color;
+        if(playerPos != -1)
+            if (i == playerPos || i - 1 == playerPos || (i == 0 && playerPos == shape.getPointCount() - 1))
+                drawColor = playerColor;
 
         sf::Vertex line[] =
         {

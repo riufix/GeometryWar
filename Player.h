@@ -1,6 +1,9 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include "GameManager.h"
+#include "Effect.h"
+#include "audio.h"
 
 class Player
 {
@@ -27,6 +30,7 @@ public:
 	bool ProcessFireInput(float deltaTime);
 	void UpdateSprite(float px, float py, float angle);
 
-	bool isInvincible();
+	void ChkPlayerHit(Effect& effect, GameManager& gameManager, Audio& audioSystem, float gameOverTempo);
+	bool IsInvincible();
 	bool Hit();
 };
