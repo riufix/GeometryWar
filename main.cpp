@@ -22,7 +22,7 @@ constexpr enum gameState {
 };
 
 //Prototypes
-void SpawnMonster(std::list<Monster>& monsterList, std::vector<sf::Vector3f>& positionVector, sf::Vector2f windowCenter, int currentLevel);
+void SpawnMonster(std::list<Monster>& monsterList, std::vector<sf::Vector3f>& positionVector, sf::Vector2f windowCenter, int currentLevel, int lastCorridor);
 void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState, float& gameOverTimer, Audio& soundSystem);
 
 int main()
@@ -83,6 +83,7 @@ int main()
 	//Init Ennemy List
 	std::list<Monster> monsterList;
 	int newCorridor = rand() % positionVector.size();
+	int lastCorridor = newCorridor;
 	monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor, 1));
 
 	//Init Transition level & Game Over Timer
@@ -231,7 +232,7 @@ int main()
 				level++;
 				monsterList.clear();
 				for (int i = 0; i < level; i++)
-					SpawnMonster(monsterList, positionVector, windowCenter, level);
+					SpawnMonster(monsterList, positionVector, windowCenter, level, lastCorridor);
 
 				if (level % 3 == 0) //Give one life if complete each map
 					player.Health++;
@@ -297,7 +298,7 @@ int main()
 						ChkPlayerHit(player, effect, currentGameState, gameOverTempo, audioSystem);
 
 					monsterListIt = monsterList.erase(monsterListIt);
-					SpawnMonster(monsterList, positionVector, windowCenter, level);
+					SpawnMonster(monsterList, positionVector, windowCenter, level, lastCorridor);
 				}
 				else
 				{
@@ -323,7 +324,7 @@ int main()
 								audioSystem.soundList["monsterDeath"].play();
 								monsterListIt = monsterList.erase(monsterListIt);
 
-								SpawnMonster(monsterList, positionVector, windowCenter, level);
+								SpawnMonster(monsterList, positionVector, windowCenter, level, lastCorridor);
 							}
 							else
 								audioSystem.soundList["monsterHit"].play();
@@ -416,12 +417,17 @@ int main()
 	}
 }
 
-void SpawnMonster(std::list<Monster>& monsterList, std::vector<sf::Vector3f>& positionVector, sf::Vector2f windowCenter, int currentLevel)
+void SpawnMonster(std::list<Monster>& monsterList, std::vector<sf::Vector3f>& positionVector, sf::Vector2f windowCenter, int currentLevel, int lastCorridor)
 {
-	int newCorridor = rand() % positionVector.size();
+	int newCorridor = 0;
+	do
+		newCorridor = rand() % positionVector.size();
+	while (newCorridor == lastCorridor);
+
 	int newHealth = 1 + rand() % currentLevel > 2 ? 3 :
 		currentLevel > 1 ? 2 :
 		1;
+
 	monsterList.push_back(Monster(windowCenter, positionVector[newCorridor], newCorridor, newHealth));
 }
 
@@ -442,9 +448,6 @@ void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState, float
 }
 
 /*
-//Prb :
-	Enemies on top of each others
-
 //optimize:
 	Transfer bullet display to bullet Manager
 	Transfer Ennemis display to ennemy Manager
