@@ -139,13 +139,16 @@ int main()
 				if (player.ProcessFireInput(deltaTime) || isStarting) {
 					if (startTempo < 10) startTempo += 0.1;
 					else {
-						//Start Level
-						level = 1;
-						score = 0;
-						scoreNeeded = 100;
+						//Reset Level
+						level = 0;
+						AddLevel(currentLevel);
+						changeLevel(map, positionVector, currentLevel);
 
 						//Reset Variables
 						player.Reset();
+						score = 0;
+						scoreNeeded = 100;
+
 						bulletList.clear();
 						monsterList.clear();
 						int newCorridor = rand() % positionVector.size();
