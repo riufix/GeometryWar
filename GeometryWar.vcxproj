@@ -92,9 +92,11 @@
     <ClCompile Include="deathParticle.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="GameoverManager.cpp" />
     <ClCompile Include="Lerp.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
+    <ClCompile Include="MenuManager.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="MonsterManager.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -107,8 +109,10 @@
     <ClInclude Include="deathParticle.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GameoverManager.h" />
     <ClInclude Include="Lerp.h" />
     <ClInclude Include="map.h" />
+    <ClInclude Include="MenuManager.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="MonsterManager.h" />
     <ClInclude Include="Player.h" />

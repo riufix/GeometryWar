@@ -9,15 +9,10 @@
 #include "BulletManager.h"
 #include "MonsterManager.h"
 #include "MenuManager.h"
+#include "GameoverManager.h"
 
-#include "audio.h"
 #include "Player.h"
-#include "BulletBehaviour.h"
 #include "map.h"
-#include "Monster.h"
-#include "Effect.h"
-#include "text.h"
-#include "deathParticle.h"
 
 int main()
 {
@@ -27,8 +22,10 @@ int main()
 	settings.antialiasingLevel = 8;
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Orkan", sf::Style::Default, settings);
 	window.setVerticalSyncEnabled(true);
+
 	//clock
 	sf::Clock frameClock;
+
 	//Center of window
 	sf::Vector2f windowCenter;
 	windowCenter.x = window.getSize().x / 2.0f;
@@ -56,7 +53,6 @@ int main()
 	levelShape currentLevel = levelShape::triangle;
 	changeLevel(map, positionVector, currentLevel);
 
-
 	//Init Menu
 	MenuManager menuManager;
 
@@ -64,14 +60,7 @@ int main()
 	MonsterManager monsterManager;
 
 	//Init GameOver
-	const std::vector<sf::ConvexShape> textGameOver1 = stringToDisplayable("GAME");
-	const std::vector<sf::ConvexShape> textGameOver2 = stringToDisplayable("OVER");
-	const std::vector<sf::ConvexShape> textGOScore = stringToDisplayable("Score  ");
-	const std::vector<sf::ConvexShape> textGOHighScore = stringToDisplayable("HighScore  ");
-	const std::vector<sf::ConvexShape> textGONewRecord = stringToDisplayable("New Record!");
-	const std::vector<sf::ConvexShape> textBackToMenu = stringToDisplayable("press [Space] to go back to the menu");
-	float gameOverTempo = 0;
-	float gameOverTimer = 0;
+	GameoverManager gameoverManager;
 
 	//Init audio
 	Audio audioSystem;
@@ -171,9 +160,7 @@ int main()
 			break;
 
 		case GameOver:
-			gameOverTimer += deltaTime;
-
-			if (gameOverTempo < 25.0f) gameOverTempo += 0.1f;
+			if (gameoverManager.gameOverTempo < 25.0f) gameoverManager.gameOverTempo += 0.1f;
 			else {
 				if (player.ProcessFireInput(deltaTime)) {
 					menuManager.Reset();
@@ -241,8 +228,8 @@ int main()
 			DrawLevel(window, map, windowCenter, 5, 30, player.positionIndex);
 
 			//Display & manage Ennemies
-			monsterManager.ProcessMonsters(audioSystem, player, effect, particles, gameManager, window, bulletManager, positionVector, windowCenter, deltaTime, gameOverTempo);
-			bulletManager.ProcessBullets(audioSystem, effect, player, window, gameManager, deltaTime, gameOverTempo, windowCenter);
+			monsterManager.ProcessMonsters(audioSystem, player, effect, particles, gameManager, window, bulletManager, positionVector, windowCenter, deltaTime, gameoverManager.gameOverTempo);
+			bulletManager.ProcessBullets(audioSystem, effect, player, window, gameManager, deltaTime, gameoverManager.gameOverTempo, windowCenter);
 
 			//Display player
 			player.DrawSprite(window);
@@ -268,26 +255,7 @@ int main()
 				bullet.DisplayBullet(window, 0);
 			player.DrawSprite(window);
 
-			//Display Game Over
-			float gameOverWaveAnimation =  20 * sin(gameOverTimer);
-			sf::Color gameOverWaveColor = sf::Color(255, 191 + 64 * sin(gameOverTimer * 30), 191 + 64 * sin(gameOverTimer * 30));
-			DisplayText(window, textGameOver1, sf::Vector2f(windowCenter.x, windowCenter.y - 10 * 20.0f + gameOverWaveAnimation), 20.0f, gameOverWaveColor);
-			DisplayText(window, textGameOver2, sf::Vector2f(windowCenter.x, windowCenter.y + 0 * 20.0f + gameOverWaveAnimation), 20.0f, gameOverWaveColor);
-
-			//Display Score
-			if (gameOverTempo >= 5.0f) 	DisplayText(window, textGOScore, sf::Vector2f(windowCenter.x + 20, windowCenter.y + 10 * 20.0f), 10.0f, sf::Color::White, right);
-			if (gameOverTempo >= 10.0f) DisplayText(window, stringToDisplayable(std::to_string(gameManager.score)), sf::Vector2f(windowCenter.x + 20, windowCenter.y + 10 * 20.0f), 10.0f, sf::Color::White, textOrigin::left);
-			if (gameOverTempo >= 15.0f) DisplayText(window, textGOHighScore, sf::Vector2f(windowCenter.x + 20, windowCenter.y + 15 * 20.0f), 10.0f, sf::Color::White, right);
-			if (gameOverTempo >= 20.0f) {
-				if (gameManager.score == gameManager.highScore) {
-					DisplayText(window, stringToDisplayable(std::to_string(gameManager.highScore)), sf::Vector2f(windowCenter.x + 20, windowCenter.y + 15 * 20.0f), 10.0f, effect.RandomColor(), textOrigin::left);
-					DisplayText(window, textGONewRecord, sf::Vector2f(windowCenter.x + 18, windowCenter.y + 18 * 20.0f), 3.0f, effect.RandomColor(), textOrigin::left);
-				}
-				else {
-					DisplayText(window, stringToDisplayable(std::to_string(gameManager.highScore)), sf::Vector2f(windowCenter.x + 20, windowCenter.y + 15 * 20.0f), 10.0f, sf::Color::White, textOrigin::left);
-				}
-			}
-			if (gameOverTempo >= 25.0f) DisplayText(window, textBackToMenu, sf::Vector2f(windowCenter.x, windowCenter.y + 21 * 20.0f), 5.0f, sf::Color::Green);
+			gameoverManager.DisplayGameOver(window, effect, windowCenter, deltaTime, gameManager.score, gameManager.highScore);
 		}
 		break;
 
