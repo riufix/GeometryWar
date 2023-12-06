@@ -7,9 +7,9 @@
 class ParticleSystem : public sf::Drawable, public sf::Transformable {
 public:	
 	ParticleSystem();
-	void update(sf::Time elapsed);
-	void AddParticle(sf::Vector2f monsterPos);
-	void addParticles(int count, sf::Vector2f monsterPos );
+	void update(sf::Time elapsed, bool scaleUp = false);
+	void AddParticle(sf::Vector2f monsterPos, bool oppositeFromCenter = false, sf::Vector2f windowCenter = sf::Vector2f(0,0));
+	void addParticles(int count, sf::Vector2f monsterPos);
 	void ClearParticles();
 
 private:
