@@ -88,23 +88,29 @@
   <ItemGroup>
     <ClCompile Include="audio.cpp" />
     <ClCompile Include="BulletBehaviour.cpp" />
+    <ClCompile Include="BulletManager.cpp" />
     <ClCompile Include="deathParticle.cpp" />
     <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Lerp.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="Monster.cpp" />
+    <ClCompile Include="MonsterManager.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="text.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio.h" />
     <ClInclude Include="BulletBehaviour.h" />
+    <ClInclude Include="BulletManager.h" />
     <ClInclude Include="deathParticle.h" />
     <ClInclude Include="Effect.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="Lerp.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="Monster.h" />
+    <ClInclude Include="MonsterManager.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="text.h" />
   </ItemGroup>
