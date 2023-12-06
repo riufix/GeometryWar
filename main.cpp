@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
+#include <fstream>
 #include <list>
 
 #include "Player.h"
@@ -24,7 +25,6 @@ void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState, float
 
 int main()
 {
-
 #pragma region AwakeInitialisation
 	//Init Window
 	sf::ContextSettings settings;
@@ -71,6 +71,7 @@ int main()
 	const std::vector<sf::ConvexShape> textControl1 = stringToDisplayable("[SPACE] to fire   ");
 	const std::vector<sf::ConvexShape> textControl2 = stringToDisplayable("   [Q][D] to move");
 	const std::vector<sf::ConvexShape> textControl3 = stringToDisplayable("   [Arrows]");
+	const std::vector<sf::ConvexShape> textHighScore = stringToDisplayable("current HighScore   ");
 	const std::vector<sf::ConvexShape> textStart = stringToDisplayable("Press [Space] when ready to start");
 	float titleScale = 0;
 	float startTempo = 0;
@@ -89,10 +90,11 @@ int main()
 	const std::vector<sf::ConvexShape> textGameOver2 = stringToDisplayable("OVER");
 	const std::vector<sf::ConvexShape> textGOScore = stringToDisplayable("Score  ");
 	const std::vector<sf::ConvexShape> textGOHighScore = stringToDisplayable("HighScore  ");
+	const std::vector<sf::ConvexShape> textGONewRecord = stringToDisplayable("New Record!");
 	const std::vector<sf::ConvexShape> textBackToMenu = stringToDisplayable("press [Space] to go back to the menu");
 	float gameOverTempo = 0;
+	int highScore = 1000;
 #pragma endregion
-
 
 	while (window.isOpen())
 	{
@@ -126,6 +128,7 @@ int main()
 			else {
 				titleScale = 20;
 				if (player.ProcessFireInput(deltaTime) || isStarting) {
+
 					if (startTempo < 10) startTempo += 0.1;
 					else {
 						//Start Level
@@ -187,6 +190,8 @@ int main()
 					currentGameState = MainMenu;
 				}
 			}
+
+			if (score > highScore) highScore = score;
 			break;
 
 		case LevelTransition:
@@ -245,6 +250,9 @@ int main()
 					DisplayText(window, textControl1, sf::Vector2f(windowCenter, 650), 6, sf::Color::Red, right);
 					DisplayText(window, textControl2, sf::Vector2f(windowCenter, 650), 6, sf::Color::Red, left);
 					DisplayText(window, textControl3, sf::Vector2f(windowCenter, 700), 6, sf::Color::Red, left);
+
+					DisplayText(window, textHighScore, sf::Vector2f(windowCenter + 200, 800), 4, sf::Color::White, right);
+					DisplayText(window, stringToDisplayable(std::to_string(highScore)), sf::Vector2f(windowCenter + 200, 800), 4, sf::Color::White, right);
 
 					if (!isStarting) DisplayText(window, textStart, sf::Vector2f(windowCenter, 1000), 6, sf::Color::Green);
 					else DisplayText(window, textStart, sf::Vector2f(windowCenter, 1000), 6, effect.RandomColor());
@@ -316,7 +324,7 @@ int main()
 				if (bulletListIt->ProcessBullet(windowCenter))
 				{
 					if (bulletListIt->CheckPlayerCollision(player.positionIndex)) //Collision with player
-						ChkPlayerHit(player, effect, currentGameState);
+						ChkPlayerHit(player, effect, currentGameState, gameOverTempo);
 					bulletListIt = bulletList.erase(bulletListIt);
 				}
 				else
@@ -357,7 +365,15 @@ int main()
 			if (gameOverTempo >= 5.0f) 	DisplayText(window, textGOScore, sf::Vector2f(windowCenter.x + 20, windowCenter.y + 10 * 20.0f), 10.0f, sf::Color::White, right);
 			if (gameOverTempo >= 10.0f) DisplayText(window, stringToDisplayable(std::to_string(score)), sf::Vector2f(windowCenter.x + 20, windowCenter.y + 10 * 20.0f), 10.0f, sf::Color::White, textOrigin::left);
 			if (gameOverTempo >= 15.0f) DisplayText(window, textGOHighScore, sf::Vector2f(windowCenter.x + 20, windowCenter.y + 15 * 20.0f), 10.0f, sf::Color::White, right);
-			if (gameOverTempo >= 20.0f) DisplayText(window, stringToDisplayable(std::to_string(score)), sf::Vector2f(windowCenter.x + 20, windowCenter.y + 15 * 20.0f), 10.0f, sf::Color::White, textOrigin::left);
+			if (gameOverTempo >= 20.0f) {
+				if (score == highScore) {
+					DisplayText(window, stringToDisplayable(std::to_string(highScore)), sf::Vector2f(windowCenter.x + 20, windowCenter.y + 15 * 20.0f), 10.0f, effect.RandomColor(), textOrigin::left);
+					DisplayText(window, textGONewRecord, sf::Vector2f(windowCenter.x + 18, windowCenter.y + 18 * 20.0f), 3.0f, effect.RandomColor(), textOrigin::left);
+				}
+				else {
+					DisplayText(window, stringToDisplayable(std::to_string(highScore)), sf::Vector2f(windowCenter.x + 20, windowCenter.y + 15 * 20.0f), 10.0f, sf::Color::White, textOrigin::left);
+				}
+			}
 			if (gameOverTempo >= 25.0f) DisplayText(window, textBackToMenu, sf::Vector2f(windowCenter.x, windowCenter.y + 21 * 20.0f), 5.0f, sf::Color::Green);
 		}
 		break;
@@ -396,6 +412,42 @@ void ChkPlayerHit(Player& player, Effect& effect, gameState& currentState, float
 			effect.ChangeFlashScreen(1.0f, false, sf::Color::Red);
 		}
 }
+
+/*void saveScore(std::string text) {
+	std::ifstream iSavefile("score.txt");
+	std::ofstream oSavefile("score.txt");
+	std::string currentLine;
+
+	if (oSavefile.is_open()) {
+		while (std::getline(iSavefile, currentLine)) {
+			if (currentLine == "highscore:") oSavefile << text;
+			else oSavefile << "highscore:" << text;
+		}
+
+		oSavefile.close();
+		std::cout << "information written\n";
+	}
+	else std::cout << "Unable to open file 'savedData/score.txt\n'";
+}
+std::string readScore() {
+	std::ifstream iSavefile("score.txt");
+	std::string currentLine;
+	std::string score = "0";
+
+	if (iSavefile.is_open()) {
+		std::getline(iSavefile, currentLine);
+
+		if (currentLine == "highscore:") {
+			score = iSavefile.get();
+		}
+
+		iSavefile.close();
+	}
+	else std::cout << "Unable to open file 'savedData/score.txt\n'";
+
+	std::cout << score << std::endl;
+	return score;
+}*/
 
 /*
 Game :
