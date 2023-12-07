@@ -17,6 +17,6 @@ private:
 
 public :
 	float gameOverTempo = 0;
-	void DisplayGameOver(sf::RenderWindow& window, Effect& effect, sf::Vector2f windowCenter, float deltaTime, float score, float highScore);
+	void DisplayGameOver(sf::RenderWindow& window, Effect& effect, sf::Vector2f windowCenter, float deltaTime, int score, int highScore);
 };
 

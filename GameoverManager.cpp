@@ -1,6 +1,6 @@
 #include "GameoverManager.h"
 
-void GameoverManager::DisplayGameOver(sf::RenderWindow& window, Effect& effect, sf::Vector2f windowCenter, float deltaTime, float score, float highScore)
+void GameoverManager::DisplayGameOver(sf::RenderWindow& window, Effect& effect, sf::Vector2f windowCenter, float deltaTime, int score, int highScore)
 {
 	gameOverTimer += deltaTime;
 	//Display Game Over

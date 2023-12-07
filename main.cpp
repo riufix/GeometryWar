@@ -165,6 +165,7 @@ int main()
 				if (player.ProcessFireInput(deltaTime)) {
 					menuManager.Reset();
 					audioSystem.ChangeMusic("Menu");
+					gameoverManager.gameOverTempo = 0;
 					gameManager.currentGameState = MainMenu;
 				}
 			}
