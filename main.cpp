@@ -14,6 +14,8 @@
 #include "Player.h"
 #include "map.h"
 
+void saveScore(std::string text);
+
 int main()
 {
 #pragma region AwakeInitialisation
@@ -163,6 +165,8 @@ int main()
 			if (gameoverManager.gameOverTempo < 25.0f) gameoverManager.gameOverTempo += 0.1f;
 			else {
 				if (player.ProcessFireInput(deltaTime)) {
+					saveScore(std::to_string(gameManager.score));
+
 					menuManager.Reset();
 					audioSystem.ChangeMusic("Menu");
 					gameoverManager.gameOverTempo = 0;
@@ -274,23 +278,19 @@ int main()
 	}
 }
 
-/*void saveScore(std::string text) {
-	std::ifstream iSavefile("score.txt");
+void saveScore(std::string text) {
+
 	std::ofstream oSavefile("score.txt");
+	std::ifstream iSavefile("score.txt");
 	std::string currentLine;
-
 	if (oSavefile.is_open()) {
-		while (std::getline(iSavefile, currentLine)) {
-			if (currentLine == "highscore:") oSavefile << text;
-			else oSavefile << "highscore:" << text;
-		}
-
+		oSavefile << "highscore:" << text;
 		oSavefile.close();
 		std::cout << "information written\n";
 	}
 	else std::cout << "Unable to open file 'savedData/score.txt\n'";
 }
-std::string readScore() {
+std::string readHighscore() {
 	std::ifstream iSavefile("score.txt");
 	std::string currentLine;
 	std::string score = "0";
@@ -308,4 +308,4 @@ std::string readScore() {
 
 	std::cout << score << std::endl;
 	return score;
-}*/
+}
