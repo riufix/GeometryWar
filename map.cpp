@@ -67,7 +67,7 @@ sf::ConvexShape InitializePentagon() {
     return pentagon;
 }
 
-void DrawLevel(sf::RenderWindow& window, sf::ConvexShape shape, sf::Vector2f Position, float minScale, float maxScale, int playerPos,sf::Color color, sf::Color lineColor) {
+void DrawLevel(sf::RenderWindow& window, sf::ConvexShape shape, sf::Vector2f Position, float minScale, float maxScale, int playerPos,sf::Color color, sf::Color playerColor) {
 
     //center of the screen
     //int centerX = window.getSize().x / 2;
@@ -103,13 +103,6 @@ void DrawLevel(sf::RenderWindow& window, sf::ConvexShape shape, sf::Vector2f Pos
             sf::Vertex(sf::Vector2f(startX, startY), drawColor),
             sf::Vertex(sf::Vector2f(endX, endY), drawColor)
         };
-
-        for (int j = 0; i < shape.getPointCount(); j++) {
-            //line->color = sf::Color::Yellow;
-            sf::Vertex(sf::Vector2f(startX, startY), lineColor);
-            sf::Vertex(sf::Vector2f(endX, endY), lineColor);
-        }
-
         window.draw(line, 2, sf::Lines);
     }
 }
