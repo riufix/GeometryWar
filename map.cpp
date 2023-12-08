@@ -67,7 +67,7 @@ sf::ConvexShape InitializePentagon() {
     return pentagon;
 }
 
-void DrawLevel(sf::RenderWindow& window, sf::ConvexShape shape, sf::Vector2f Position, float minScale, float maxScale,sf::Color color, sf::Color lineColor) {
+void DrawLevel(sf::RenderWindow& window, sf::ConvexShape shape, sf::Vector2f Position, float minScale, float maxScale, int playerPos,sf::Color color, sf::Color lineColor) {
 
     //center of the screen
     //int centerX = window.getSize().x / 2;
