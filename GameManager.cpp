@@ -20,3 +20,12 @@ void GameManager::ChkNextLevel(Audio& audioSystem, ParticleSystem& particles)
 		transitionTime = 1.0f;
 	}
 }
+void GameManager::LoadHighscore()
+{
+	int highScoreLoaded = readHighscore();
+
+	if (highScoreLoaded > defaultHighScore)
+		highScore = highScoreLoaded;
+	else
+		highScore = defaultHighScore;
+}

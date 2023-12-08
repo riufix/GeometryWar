@@ -1,6 +1,7 @@
 #pragma once
 #include "deathParticle.h"
 #include "audio.h"
+#include "SaveManager.h"
 
 constexpr enum gameState {
 	MainMenu,
@@ -12,6 +13,9 @@ constexpr enum gameState {
 
 class GameManager
 {
+private:
+	int defaultHighScore = 1000;
+
 public:
 	gameState currentGameState = MainMenu;
 	int score = 0;
@@ -24,6 +28,7 @@ public:
 	float transitionTime = 1.0f;
 
 	void Reset();
+	void LoadHighscore();
 	void ChkNextLevel(Audio& audioSystem, ParticleSystem& particles);
 };
 

@@ -2,7 +2,6 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
-#include <fstream>
 #include <list>
 
 #include "GameManager.h"
@@ -10,11 +9,10 @@
 #include "MonsterManager.h"
 #include "MenuManager.h"
 #include "GameoverManager.h"
+#include "SaveManager.h"
 
 #include "Player.h"
 #include "map.h"
-
-void saveScore(std::string text);
 
 int main()
 {
@@ -37,6 +35,7 @@ int main()
 	GameManager gameManager;
 	gameManager.currentGameState = MainMenu;
 	gameManager.Reset();
+	gameManager.LoadHighscore();
 
 	//Init Effect & Particles
 	Effect effect;
@@ -69,7 +68,7 @@ int main()
 	audioSystem.InitializeSoundBuffer();
 	audioSystem.InitializeMusicBuffer();
 	audioSystem.ChangeMusic("Menu");
-#pragma endregion
+#pragma endregion;
 
 	while (window.isOpen())
 	{
@@ -276,36 +275,4 @@ int main()
 		window.draw(particles);
 		window.display();
 	}
-}
-
-void saveScore(std::string text) {
-
-	std::ofstream oSavefile("score.txt");
-	std::ifstream iSavefile("score.txt");
-	std::string currentLine;
-	if (oSavefile.is_open()) {
-		oSavefile << "highscore:" << text;
-		oSavefile.close();
-		std::cout << "information written\n";
-	}
-	else std::cout << "Unable to open file 'savedData/score.txt\n'";
-}
-std::string readHighscore() {
-	std::ifstream iSavefile("score.txt");
-	std::string currentLine;
-	std::string score = "0";
-
-	if (iSavefile.is_open()) {
-		std::getline(iSavefile, currentLine);
-
-		if (currentLine == "highscore:") {
-			score = iSavefile.get();
-		}
-
-		iSavefile.close();
-	}
-	else std::cout << "Unable to open file 'savedData/score.txt\n'";
-
-	std::cout << score << std::endl;
-	return score;
 }
