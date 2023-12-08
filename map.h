@@ -11,7 +11,6 @@ enum class levelShape {
 
 
 class Background {
-private:
 public :
 	sf::CircleShape backgroundCircleShape;
 	void InitializeBackground(sf::Vector2f centerWindow);
