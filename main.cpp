@@ -53,6 +53,8 @@ int main()
 	std::vector<sf::Vector3f> positionVector;
 	levelShape currentLevel = levelShape::triangle;
 	changeLevel(map, positionVector, currentLevel);
+	Background background;
+	background.InitializeBackground(windowCenter);
 
 	//Init Menu
 	MenuManager menuManager;
@@ -164,7 +166,7 @@ int main()
 			if (gameoverManager.gameOverTempo < 25.0f) gameoverManager.gameOverTempo += 0.1f;
 			else {
 				if (player.ProcessFireInput(deltaTime)) {
-					saveScore(std::to_string(gameManager.score));
+					saveScore(std::to_string(gameManager.highScore));
 
 					menuManager.Reset();
 					audioSystem.ChangeMusic("Menu");
@@ -228,7 +230,8 @@ int main()
 
 		case Game:
 		{
-			//Display level
+			//Display level & Background
+			background.DrawBackground(window, effect, deltaTime);
 			DrawLevel(window, map, windowCenter, 5, 30, player.positionIndex);
 
 			//Display & manage Ennemies
