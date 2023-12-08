@@ -172,3 +172,24 @@ void changeLevel(sf::ConvexShape& map, std::vector<sf::Vector3f>& positionList, 
         break;
     }
 }
+
+void Background::InitializeBackground(sf::Vector2f centerWindow)
+{
+    backgroundCircleShape.setPointCount(16);
+    backgroundCircleShape.setRadius(1);
+    backgroundCircleShape.setFillColor(sf::Color::Transparent);
+    backgroundCircleShape.setOrigin(backgroundCircleShape.getRadius(), backgroundCircleShape.getRadius());
+    backgroundCircleShape.setPosition(centerWindow);
+}
+
+void Background::DrawBackground(sf::RenderWindow& window, Effect& effect, float deltaTime)
+{
+    backgroundCircleShape.setOutlineColor(effect.RandomColor());
+    backgroundCircleShape.rotate(deltaTime * 30);
+
+    for (int i = 1; i < 10; i++) {
+        backgroundCircleShape.setOutlineThickness(0.05f);
+        backgroundCircleShape.setScale(sf::Vector2f(i * 100, i * 100));
+        window.draw(backgroundCircleShape);
+    }
+}
