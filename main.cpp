@@ -164,7 +164,7 @@ int main()
 			if (gameoverManager.gameOverTempo < 25.0f) gameoverManager.gameOverTempo += 0.1f;
 			else {
 				if (player.ProcessFireInput(deltaTime)) {
-					saveScore(std::to_string(gameManager.score));
+					saveScore(std::to_string(gameManager.highScore));
 
 					menuManager.Reset();
 					audioSystem.ChangeMusic("Menu");
