@@ -88,8 +88,7 @@ void Player::ChkPlayerHit(Effect& effect, GameManager& gameManager, Audio& audio
 {
 	if (!IsInvincible())
 		if (Hit()) {
-			audioSystem.musicList["Game"].stop();
-			audioSystem.musicList["Gameover"].play();
+			audioSystem.ChangeMusic("Gameover");
 			gameManager.currentGameState = GameOver;
 			gameOverTempo = 0;
 		}

@@ -13,11 +13,12 @@ constexpr enum gameState {
 class GameManager
 {
 public:
-	gameState currentGameState;
+	gameState currentGameState = MainMenu;
 	int score = 0;
 	int scoreNeeded = 100;
 	int scoreNextLvl = 300;
 	int level = 1;
+	int highScore = 1000;
 
 	//Init Transition level & Game Over Timer
 	float transitionTime = 1.0f;

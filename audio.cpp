@@ -51,3 +51,12 @@ void Audio::InitializeMusicBuffer()
 	musicList["Game"].setLoop(true);
 	musicList["Gameover"].openFromFile(getAppPath() + "sound\\gameoverMusic.wav");
 }
+
+void Audio::ChangeMusic(std::string newMusic)
+{
+	if (currentMusic != "")
+		musicList[currentMusic].stop();
+
+	musicList[newMusic].play();
+	currentMusic = newMusic;
+}

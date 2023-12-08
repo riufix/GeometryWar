@@ -6,6 +6,7 @@
 class Audio
 {
 private :
+	std::string currentMusic;
 	sf::SoundBuffer playerShootSoundBuffer;
 	sf::SoundBuffer playerHitSoundBuffer;
 	sf::SoundBuffer bulletHitSoundBuffer;
@@ -20,4 +21,6 @@ public :
 
 	void InitializeSoundBuffer();
 	void InitializeMusicBuffer();
+
+	void ChangeMusic(std::string newMusic);
 };

@@ -1,6 +1,6 @@
 #include "Effect.h"
 
-void Effect::ChangeFlashScreen(int duration, bool randomness, sf::Color color)
+void Effect::ChangeFlashScreen(float duration, bool randomness, sf::Color color)
 {
 	FlashScreenDuration = duration;
 	FlashScreenRandom = randomness;
